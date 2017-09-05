@@ -3,8 +3,10 @@ import indexBy from 'ramda/src/indexBy';
 import prop from 'ramda/src/prop';
 import evolve from 'ramda/src/evolve';
 import merge from 'ramda/src/merge';
+import always from 'ramda/src/always';
 import React, { PureComponent } from 'react';
 import { Route, Switch } from 'react-router-dom';
+import loadUser from './helpers/loadUser';
 import loadPullRequests from './helpers/loadPullRequests';
 import loadBranchQueue from './helpers/loadBranchQueue';
 import Home from './pages/Home';
@@ -27,11 +29,15 @@ class App extends PureComponent {
 
         this.state = {
             accessToken: localStorage.getItem('gh-token'),
+            user: null,
             entities: {
                 pullRequests: {},
                 queues: {},
+                users: {},
             },
         };
+
+        this._loadUser = this._loadUser.bind(this);
     }
 
     componentWillReceiveProps() {
@@ -49,27 +55,42 @@ class App extends PureComponent {
     }
 
     _renderPrivateRoutes() {
-        const { entities: { pullRequests, queues } } = this.state;
-
-        const PullRequestPage = ({ match: { params: { owner, repository, branch, pullRequest: pullRequestNumber } } }) => (
-            <PullRequest
-                owner={owner}
-                repository={repository}
-                branch={branch}
-                pullRequestNumber={parseInt(pullRequestNumber, 10)}
-                pullRequest={pullRequests[`${owner}_${repository}_${pullRequestNumber}`]}
-                queue={queues[`${owner}_${repository}_${branch}`]}
-                loadPullRequests={() => this._loadPullRequests(owner, repository)}
-                loadBranchQueue={() => this._loadBranchQueue(owner, repository, branch)}
-            />
-        );
+        const { user, entities: { pullRequests, queues, users } } = this.state;
 
         return (
             <Switch>
-                <Route exact path="/:owner/:repository/:branch/:pullRequest" component={PullRequestPage} />
+                <Route
+                    exact
+                    path="/:owner/:repository/:branch/:pullRequest"
+                    render={({ match: { params: { owner, repository, branch, pullRequest: pullRequestNumber } } }) => (
+                        <PullRequest
+                            user={users[user]}
+                            owner={owner}
+                            repository={repository}
+                            branch={branch}
+                            pullRequestNumber={parseInt(pullRequestNumber, 10)}
+                            pullRequest={pullRequests[`${owner}_${repository}_${pullRequestNumber}`]}
+                            queue={queues[`${owner}_${repository}_${branch}`]}
+                            loadUser={this._loadUser}
+                            loadPullRequests={() => this._loadPullRequests(owner, repository)}
+                            loadBranchQueue={() => this._loadBranchQueue(owner, repository, branch)}
+                        />
+                    )} />
                 <Route component={Home} />
             </Switch>
         );
+    }
+
+    _loadUser() {
+        const { accessToken } = this.state;
+
+        loadUser(accessToken)
+            .then(user => this.setState(evolve({
+                user: always(user.login),
+                entities: {
+                    users: merge(__, { [user.login]: user }),
+                },
+            })));
     }
 
     _loadPullRequests(owner, repository) {

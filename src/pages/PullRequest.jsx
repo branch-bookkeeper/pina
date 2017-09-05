@@ -19,6 +19,8 @@ const propTypes = {
     onRemoveFromQueue: PropTypes.func,
     queue: PropTypes.array,
     loadBranchQueue: PropTypes.func,
+    user: PropTypes.object,
+    loadUser: PropTypes.func,
 };
 
 const defaultProps = {
@@ -26,6 +28,7 @@ const defaultProps = {
     onAddToQueue: noop,
     onRemoveFromQueue: noop,
     loadBranchQueue: noop,
+    loadUser: noop,
 }
 
 const findPullRequestQueueItem = (pullRequestNumber, queue) =>
@@ -35,8 +38,9 @@ const isQueueItemOwnedBy = propEq('username');
 
 class PullRequest extends PureComponent {
     componentDidMount() {
-        const { pullRequest, loadPullRequests, queue, loadBranchQueue } = this.props;
+        const { pullRequest, loadPullRequests, queue, loadBranchQueue, user, loadUser } = this.props;
 
+        !user && loadUser();
         !pullRequest && loadPullRequests();
         !queue && loadBranchQueue();
     }
@@ -49,6 +53,7 @@ class PullRequest extends PureComponent {
             pullRequest,
             pullRequestNumber,
             queue,
+            user,
         } = this.props;
 
         return (
@@ -56,7 +61,7 @@ class PullRequest extends PureComponent {
                 <h1>{owner}/{repository}/{branch} #{pullRequestNumber}</h1>
                 {pullRequest &&
                     <h2>{pullRequest.title} by {pullRequest.user.login}</h2>}
-                {queue && this._renderAction()}
+                {user && queue && this._renderAction()}
             </div>
         );
     }
@@ -65,16 +70,17 @@ class PullRequest extends PureComponent {
         const {
             onAddToQueue,
             onRemoveFromQueue,
+            user,
             queue,
             pullRequestNumber,
         } = this.props;
 
         const queueItem = findPullRequestQueueItem(pullRequestNumber, queue);
-        const isUserInQueue = isQueueItemOwnedBy('mattiaocchiuto', queueItem);
+        const isUserInQueue = isQueueItemOwnedBy(user.login, queueItem);
 
         return (
             <span>
-                { isEmpty(queueItem) && (<button onClick={onAddToQueue}>Book</button>) }
+                { isEmpty(queueItem) && (<button onClick={onAddToQueue}>Book as {user.login}</button>) }
                 { isUserInQueue && (<button onClick={onRemoveFromQueue}>Cancel</button>) }
             </span>
         );
