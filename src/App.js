@@ -1,27 +1,82 @@
-import React, { Component } from 'react';
+import __ from 'ramda/src/__';
+import indexBy from 'ramda/src/indexBy';
+import prop from 'ramda/src/prop';
+import evolve from 'ramda/src/evolve';
+import merge from 'ramda/src/merge';
+import React, { PureComponent } from 'react';
 import { Route, Switch } from 'react-router-dom';
+import loadPullRequests from './helpers/loadPullRequests';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import OAuthSuccess from './pages/OAuthSuccess';
+import PullRequest from './pages/PullRequest';
 
-class App extends Component {
+const renderPublicRoutes = () => {
+    return (
+        <Switch>
+            <Route exact path="/oauth/success" component={OAuthSuccess} />
+            <Route component={Login}/>
+        </Switch>
+    );
+}
+
+class App extends PureComponent {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            accessToken: localStorage.getItem('gh-token'),
+            entities: {
+                pullRequests: {},
+            },
+        };
+    }
+
+    componentWillReceiveProps() {
+        const nextToken = localStorage.getItem('gh-token');
+
+        this.setState({
+            accessToken: nextToken,
+        });
+    }
+
     render() {
-        const token = localStorage.getItem('gh-token');
+        const { accessToken } = this.state;
 
-        if (token) {
-            return (
-                <Switch>
-                    <Route component={Home} />
-                </Switch>
-            );
-        } else {
-            return (
-                <Switch>
-                    <Route exact path="/oauth/success" component={OAuthSuccess} />
-                    <Route component={Login}/>
-                </Switch>
-            );
-        }
+        return accessToken ? this._renderPrivateRoutes() : renderPublicRoutes();
+    }
+
+    _renderPrivateRoutes() {
+        const { entities: { pullRequests } } = this.state;
+
+        const PullRequestPage = ({ match: { params: { owner, repository, branch, pullRequest: pullRequestNumber } } }) => (
+            <PullRequest
+                owner={owner}
+                repository={repository}
+                branch={branch}
+                pullRequestNumber={pullRequestNumber}
+                pullRequest={pullRequests[`${owner}_${repository}_${pullRequestNumber}`]}
+                loadPullRequests={() => this._loadPullRequests(owner, repository)}
+            />
+        );
+
+        return (
+            <Switch>
+                <Route exact path="/:owner/:repository/:branch/:pullRequest" component={PullRequestPage} />
+                <Route component={Home} />
+            </Switch>
+        );
+    }
+
+    _loadPullRequests(owner, repository) {
+        const { accessToken } = this.state;
+
+        loadPullRequests(accessToken, owner, repository)
+            .then(newPullRequests => this.setState(evolve({
+                entities: {
+                    pullRequests: merge(__, indexBy(prop('id'), newPullRequests)),
+                },
+            })));
     }
 }
 
