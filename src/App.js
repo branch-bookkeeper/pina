@@ -6,6 +6,7 @@ import merge from 'ramda/src/merge';
 import React, { PureComponent } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import loadPullRequests from './helpers/loadPullRequests';
+import loadBranchQueue from './helpers/loadBranchQueue';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import OAuthSuccess from './pages/OAuthSuccess';
@@ -28,6 +29,7 @@ class App extends PureComponent {
             accessToken: localStorage.getItem('gh-token'),
             entities: {
                 pullRequests: {},
+                queues: {},
             },
         };
     }
@@ -47,16 +49,18 @@ class App extends PureComponent {
     }
 
     _renderPrivateRoutes() {
-        const { entities: { pullRequests } } = this.state;
+        const { entities: { pullRequests, queues } } = this.state;
 
         const PullRequestPage = ({ match: { params: { owner, repository, branch, pullRequest: pullRequestNumber } } }) => (
             <PullRequest
                 owner={owner}
                 repository={repository}
                 branch={branch}
-                pullRequestNumber={pullRequestNumber}
+                pullRequestNumber={parseInt(pullRequestNumber, 10)}
                 pullRequest={pullRequests[`${owner}_${repository}_${pullRequestNumber}`]}
+                queue={queues[`${owner}_${repository}_${branch}`]}
                 loadPullRequests={() => this._loadPullRequests(owner, repository)}
+                loadBranchQueue={() => this._loadBranchQueue(owner, repository, branch)}
             />
         );
 
@@ -75,6 +79,18 @@ class App extends PureComponent {
             .then(newPullRequests => this.setState(evolve({
                 entities: {
                     pullRequests: merge(__, indexBy(prop('id'), newPullRequests)),
+                },
+            })));
+    }
+
+    _loadBranchQueue(owner, repository, branch) {
+        const { accessToken } = this.state;
+        const queueId = `${owner}_${repository}_${branch}`;
+
+        loadBranchQueue(accessToken, owner, repository, branch)
+            .then(queue => this.setState(evolve({
+                entities: {
+                    queues: merge(__, { [queueId]: queue }),
                 },
             })));
     }
