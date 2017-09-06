@@ -1,10 +1,10 @@
 import always from 'ramda/src/always';
-import find from 'ramda/src/find';
 import propEq from 'ramda/src/propEq';
-import defaultTo from 'ramda/src/defaultTo';
 import isEmpty from 'ramda/src/isEmpty';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+
+import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
 
 const noop = always(undefined);
 
@@ -30,9 +30,6 @@ const defaultProps = {
     loadBranchQueue: noop,
     loadUser: noop,
 }
-
-const findPullRequestQueueItem = (pullRequestNumber, queue) =>
-    defaultTo({}, find(propEq('pullRequestNumber', pullRequestNumber), queue));
 
 const isQueueItemOwnedBy = propEq('username');
 

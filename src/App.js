@@ -9,6 +9,8 @@ import { Route, Switch } from 'react-router-dom';
 import loadUser from './helpers/loadUser';
 import loadPullRequests from './helpers/loadPullRequests';
 import loadBranchQueue from './helpers/loadBranchQueue';
+import deleteFromBranchQueue from './helpers/deleteFromBranchQueue';
+import findPullRequestQueueItem from './helpers/findPullRequestQueueItem';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import OAuthSuccess from './pages/OAuthSuccess';
@@ -38,6 +40,7 @@ class App extends PureComponent {
         };
 
         this._loadUser = this._loadUser.bind(this);
+        this._renderPullRequestPage = this._renderPullRequestPage.bind(this);
     }
 
     componentWillReceiveProps() {
@@ -55,29 +58,38 @@ class App extends PureComponent {
     }
 
     _renderPrivateRoutes() {
-        const { user, entities: { pullRequests, queues, users } } = this.state;
-
         return (
             <Switch>
                 <Route
                     exact
                     path="/:owner/:repository/:branch/:pullRequest"
-                    render={({ match: { params: { owner, repository, branch, pullRequest: pullRequestNumber } } }) => (
-                        <PullRequest
-                            user={users[user]}
-                            owner={owner}
-                            repository={repository}
-                            branch={branch}
-                            pullRequestNumber={parseInt(pullRequestNumber, 10)}
-                            pullRequest={pullRequests[`${owner}_${repository}_${pullRequestNumber}`]}
-                            queue={queues[`${owner}_${repository}_${branch}`]}
-                            loadUser={this._loadUser}
-                            loadPullRequests={() => this._loadPullRequests(owner, repository)}
-                            loadBranchQueue={() => this._loadBranchQueue(owner, repository, branch)}
-                        />
-                    )} />
+                    render={this._renderPullRequestPage}
+                />
                 <Route component={Home} />
             </Switch>
+        );
+    }
+
+    _renderPullRequestPage({ match: { params: { owner, repository, branch, pullRequest: pullRequestString } } }) {
+        const { user, entities: { pullRequests, queues, users } } = this.state;
+        const pullRequestNumber = parseInt(pullRequestString, 10);
+        const queue = queues[`${owner}_${repository}_${branch}`];
+        const queueItem = queue ? findPullRequestQueueItem(pullRequestNumber, queue) : null;
+
+        return (
+            <PullRequest
+                user={users[user]}
+                owner={owner}
+                repository={repository}
+                branch={branch}
+                pullRequestNumber={pullRequestNumber}
+                pullRequest={pullRequests[`${owner}_${repository}_${pullRequestNumber}`]}
+                queue={queue}
+                loadUser={this._loadUser}
+                loadPullRequests={() => this._loadPullRequests(owner, repository)}
+                loadBranchQueue={() => this._loadBranchQueue(owner, repository, branch)}
+                onRemoveFromQueue={() => this._deleteFromBranchQueue(owner, repository, branch, queueItem)}
+            />
         );
     }
 
@@ -114,6 +126,13 @@ class App extends PureComponent {
                     queues: merge(__, { [queueId]: queue }),
                 },
             })));
+    }
+
+    _deleteFromBranchQueue(owner, repository, branch, queueItem) {
+        const { accessToken } = this.state;
+
+        deleteFromBranchQueue(accessToken, owner, repository, branch, queueItem)
+            .then(() => this._loadBranchQueue(owner, repository, branch));
     }
 }
 

@@ -1,5 +1,7 @@
+import generateBranchQueueUrl from './generateBranchQueueUrl';
+
 export default (accessToken, owner, repository, branch) => {
-    const url = `https://cors-anywhere.herokuapp.com/https://branch-bookkeeper.herokuapp.com/api/${owner}/${repository}/${branch}`;
+    const url = generateBranchQueueUrl(owner, repository, branch);
     const headers = {
         authorization: `token ${accessToken}`,
     };
