@@ -9,6 +9,7 @@ import { Route, Switch } from 'react-router-dom';
 import loadUser from './helpers/loadUser';
 import loadPullRequests from './helpers/loadPullRequests';
 import loadBranchQueue from './helpers/loadBranchQueue';
+import addToBranchQueue from './helpers/addToBranchQueue';
 import deleteFromBranchQueue from './helpers/deleteFromBranchQueue';
 import findPullRequestQueueItem from './helpers/findPullRequestQueueItem';
 import Home from './pages/Home';
@@ -88,6 +89,7 @@ class App extends PureComponent {
                 loadUser={this._loadUser}
                 loadPullRequests={() => this._loadPullRequests(owner, repository)}
                 loadBranchQueue={() => this._loadBranchQueue(owner, repository, branch)}
+                onAddToQueue={() => this._addToBranchQueue(owner, repository, branch, pullRequestNumber, user)}
                 onRemoveFromQueue={() => this._deleteFromBranchQueue(owner, repository, branch, queueItem)}
             />
         );
@@ -132,6 +134,13 @@ class App extends PureComponent {
         const { accessToken } = this.state;
 
         deleteFromBranchQueue(accessToken, owner, repository, branch, queueItem)
+            .then(() => this._loadBranchQueue(owner, repository, branch));
+    }
+
+    _addToBranchQueue(owner, repository, branch, pullRequestNumber, username) {
+        const { accessToken } = this.state;
+
+        addToBranchQueue(accessToken, owner, repository, branch, pullRequestNumber, username)
             .then(() => this._loadBranchQueue(owner, repository, branch));
     }
 }

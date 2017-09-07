@@ -58,7 +58,7 @@ class PullRequest extends PureComponent {
                 <h1>{owner}/{repository}/{branch} #{pullRequestNumber}</h1>
                 {pullRequest &&
                     <h2>{pullRequest.title} by {pullRequest.user.login}</h2>}
-                {user && queue && this._renderAction()}
+                {pullRequest && user && queue && this._renderAction()}
             </div>
         );
     }
