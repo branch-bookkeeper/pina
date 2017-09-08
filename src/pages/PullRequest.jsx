@@ -1,12 +1,10 @@
-import always from 'ramda/src/always';
 import propEq from 'ramda/src/propEq';
 import isEmpty from 'ramda/src/isEmpty';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
+import noop from '../helpers/noop';
 import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
-
-const noop = always(undefined);
 
 const propTypes = {
     pullRequest: PropTypes.object,
