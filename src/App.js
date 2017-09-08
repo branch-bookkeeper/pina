@@ -6,6 +6,7 @@ import merge from 'ramda/src/merge';
 import always from 'ramda/src/always';
 import React, { PureComponent } from 'react';
 import { Route, Switch } from 'react-router-dom';
+import { GITHUB_ACCESS_TOKEN } from './constants/localStorageKeys';
 import loadUser from './helpers/loadUser';
 import loadPullRequests from './helpers/loadPullRequests';
 import loadBranchQueue from './helpers/loadBranchQueue';
@@ -31,7 +32,7 @@ class App extends PureComponent {
         super(props);
 
         this.state = {
-            accessToken: localStorage.getItem('gh-token'),
+            accessToken: localStorage.getItem(GITHUB_ACCESS_TOKEN),
             user: null,
             entities: {
                 pullRequests: {},
@@ -45,7 +46,7 @@ class App extends PureComponent {
     }
 
     componentWillReceiveProps() {
-        const nextToken = localStorage.getItem('gh-token');
+        const nextToken = localStorage.getItem(GITHUB_ACCESS_TOKEN);
 
         this.setState({
             accessToken: nextToken,
