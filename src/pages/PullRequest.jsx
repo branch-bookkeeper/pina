@@ -2,6 +2,7 @@ import propEq from 'ramda/src/propEq';
 import isEmpty from 'ramda/src/isEmpty';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 import noop from '../helpers/noop';
 import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
@@ -57,6 +58,9 @@ class PullRequest extends PureComponent {
                 {pullRequest &&
                     <h2>{pullRequest.title} by {pullRequest.user.login}</h2>}
                 {pullRequest && user && queue && this._renderAction()}
+                <div>
+                    <Link to={`/${owner}/${repository}/${branch}`}>Go to {branch} queue</Link>
+                </div>
             </div>
         );
     }

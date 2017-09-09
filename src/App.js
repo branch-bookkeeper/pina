@@ -4,7 +4,7 @@ import prop from 'ramda/src/prop';
 import evolve from 'ramda/src/evolve';
 import merge from 'ramda/src/merge';
 import always from 'ramda/src/always';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { GITHUB_ACCESS_TOKEN } from './constants/localStorageKeys';
 import loadUser from './helpers/loadUser';
@@ -28,7 +28,8 @@ const renderPublicRoutes = () => {
     );
 }
 
-class App extends PureComponent {
+// Keep this a subclass of Component, or the routing won't work.
+class App extends Component {
     constructor(props) {
         super(props);
 
