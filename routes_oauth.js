@@ -1,12 +1,12 @@
 const router = require('express').Router();
 const OAuth2 = require('oauth').OAuth2;
 const qs = require('qs');
-const { CLIENT_ID, CLIENT_SECRET } = process.env;
+const { GITHUB_CLIENT_ID = 'Iv1.435916aff1ff1c91', GITHUB_CLIENT_SECRET } = process.env;
 
 router.get('/callback', (req, res) => {
     const oauthClient = new OAuth2(
-        CLIENT_ID,
-        CLIENT_SECRET,
+        GITHUB_CLIENT_ID,
+        GITHUB_CLIENT_SECRET,
         'https://github.com/',
         'login/oauth/authorize',
         'login/oauth/access_token',
