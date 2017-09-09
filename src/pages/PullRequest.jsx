@@ -72,11 +72,18 @@ class PullRequest extends PureComponent {
 
         const queueItem = findPullRequestQueueItem(pullRequestNumber, queue);
         const isUserInQueue = isQueueItemOwnedBy(user.login, queueItem);
+        const style = {
+            fontSize: '1.5em',
+            padding: '0.5em 1em',
+            margin: '0.5em 0.5em 1em 0.5em',
+        };
 
         return (
             <span>
-                { isEmpty(queueItem) && (<button onClick={onAddToQueue}>Book as {user.login}</button>) }
-                { isUserInQueue && (<button onClick={onRemoveFromQueue}>Cancel</button>) }
+                {isEmpty(queueItem) &&
+                    <button onClick={onAddToQueue} style={style}>Book as {user.login}</button>}
+                {isUserInQueue &&
+                    <button onClick={onRemoveFromQueue} style={style}>Cancel</button>}
             </span>
         );
     }
