@@ -4,7 +4,7 @@ import prop from 'ramda/src/prop';
 import evolve from 'ramda/src/evolve';
 import merge from 'ramda/src/merge';
 import always from 'ramda/src/always';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { GITHUB_ACCESS_TOKEN } from './constants/localStorageKeys';
 import loadUser from './helpers/loadUser';
@@ -16,6 +16,7 @@ import findPullRequestQueueItem from './helpers/findPullRequestQueueItem';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import OAuthSuccess from './pages/OAuthSuccess';
+import BranchQueue from './pages/BranchQueue';
 import PullRequest from './pages/PullRequest';
 
 const renderPublicRoutes = () => {
@@ -27,7 +28,8 @@ const renderPublicRoutes = () => {
     );
 }
 
-class App extends PureComponent {
+// Keep this a subclass of Component, or the routing won't work.
+class App extends Component {
     constructor(props) {
         super(props);
 
@@ -42,6 +44,7 @@ class App extends PureComponent {
         };
 
         this._loadUser = this._loadUser.bind(this);
+        this._renderBranchQueuePage = this._renderBranchQueuePage.bind(this);
         this._renderPullRequestPage = this._renderPullRequestPage.bind(this);
     }
 
@@ -64,11 +67,30 @@ class App extends PureComponent {
             <Switch>
                 <Route
                     exact
+                    path="/:owner/:repository/:branch"
+                    render={this._renderBranchQueuePage}
+                />
+                <Route
+                    exact
                     path="/:owner/:repository/:branch/:pullRequest"
                     render={this._renderPullRequestPage}
                 />
                 <Route component={Home} />
             </Switch>
+        );
+    }
+
+    _renderBranchQueuePage({ match: { params: { owner, repository, branch } } }) {
+        const { entities: { queues } } = this.state;
+
+        return (
+            <BranchQueue
+                owner={owner}
+                repository={repository}
+                branch={branch}
+                queue={queues[`${owner}_${repository}_${branch}`]}
+                loadBranchQueue={() => this._loadBranchQueue(owner, repository, branch)}
+            />
         );
     }
 

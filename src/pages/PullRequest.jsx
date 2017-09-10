@@ -1,12 +1,11 @@
-import always from 'ramda/src/always';
 import propEq from 'ramda/src/propEq';
 import isEmpty from 'ramda/src/isEmpty';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
+import noop from '../helpers/noop';
 import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
-
-const noop = always(undefined);
 
 const propTypes = {
     pullRequest: PropTypes.object,
@@ -59,6 +58,9 @@ class PullRequest extends PureComponent {
                 {pullRequest &&
                     <h2>{pullRequest.title} by {pullRequest.user.login}</h2>}
                 {pullRequest && user && queue && this._renderAction()}
+                <div>
+                    <Link to={`/${owner}/${repository}/${branch}`}>Go to {branch} queue</Link>
+                </div>
             </div>
         );
     }
@@ -74,11 +76,18 @@ class PullRequest extends PureComponent {
 
         const queueItem = findPullRequestQueueItem(pullRequestNumber, queue);
         const isUserInQueue = isQueueItemOwnedBy(user.login, queueItem);
+        const style = {
+            fontSize: '1.5em',
+            padding: '0.5em 1em',
+            margin: '0.5em 0.5em 1em 0.5em',
+        };
 
         return (
             <span>
-                { isEmpty(queueItem) && (<button onClick={onAddToQueue}>Book as {user.login}</button>) }
-                { isUserInQueue && (<button onClick={onRemoveFromQueue}>Cancel</button>) }
+                {isEmpty(queueItem) &&
+                    <button onClick={onAddToQueue} style={style}>Book as {user.login}</button>}
+                {isUserInQueue &&
+                    <button onClick={onRemoveFromQueue} style={style}>Cancel</button>}
             </span>
         );
     }
