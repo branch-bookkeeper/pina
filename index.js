@@ -9,8 +9,8 @@ const environment = app.get('env') || 'production';
 const development = environment === 'development';
 const test = environment === 'test';
 
-app.set('port', process.env.PORT || 3000);
-app.set('tlsPort', process.env.TLS_PORT || 3443);
+app.set('port', process.env.PORT || 4000);
+app.set('tlsPort', process.env.TLS_PORT || 4443);
 app.disable('x-powered-by');
 app.enable('trust proxy');
 app.use(compression());
