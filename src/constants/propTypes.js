@@ -7,3 +7,17 @@ export const queueItemShape = PropTypes.shape({
 });
 
 export const queueShape = PropTypes.arrayOf(queueItemShape);
+
+export const installationShape = PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    account: PropTypes.shape({
+        login: PropTypes.string.isRequired,
+        type: PropTypes.string.isRequired,
+    }).isRequired,
+});
+
+export const repositoryShape = PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    full_name: PropTypes.string.isRequired,
+    default_branch: PropTypes.string.isRequired,
+});

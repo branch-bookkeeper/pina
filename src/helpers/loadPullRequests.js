@@ -1,7 +1,13 @@
 import map from 'lodash/fp/map';
+import generateGithubApiUrl from './generateGithubApiUrl';
 
 export default (accessToken, owner, repository) => {
-    const url = `https://api.github.com/repos/${owner}/${repository}/pulls`;
+    const url = generateGithubApiUrl([
+        'repos',
+        owner,
+        repository,
+        'pulls',
+    ]);
     const headers = {
         authorization: `token ${accessToken}`,
     };

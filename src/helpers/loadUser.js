@@ -1,5 +1,7 @@
+import generateGithubApiUrl from './generateGithubApiUrl';
+
 export default (accessToken) => {
-    const url = `https://api.github.com/user`;
+    const url = generateGithubApiUrl(['user']);
     const headers = {
         authorization: `token ${accessToken}`,
     };

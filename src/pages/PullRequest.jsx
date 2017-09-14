@@ -54,6 +54,7 @@ class PullRequest extends PureComponent {
 
         return (
             <div>
+                <Link to="/">&laquo; Home</Link>
                 <h1>{owner}/{repository}/{branch} #{pullRequestNumber}</h1>
                 {pullRequest &&
                     <h2>{pullRequest.title} by {pullRequest.user.login}</h2>}
