@@ -15,3 +15,9 @@ export const installationShape = PropTypes.shape({
         type: PropTypes.string.isRequired,
     }).isRequired,
 });
+
+export const repositoryShape = PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    full_name: PropTypes.string.isRequired,
+    default_branch: PropTypes.string.isRequired,
+});
