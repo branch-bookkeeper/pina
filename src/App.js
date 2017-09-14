@@ -1,5 +1,6 @@
 import __ from 'ramda/src/__';
 import indexBy from 'ramda/src/indexBy';
+import map from 'ramda/src/map';
 import prop from 'ramda/src/prop';
 import evolve from 'ramda/src/evolve';
 import merge from 'ramda/src/merge';
@@ -9,6 +10,7 @@ import { Route, Switch } from 'react-router-dom';
 import { GITHUB_ACCESS_TOKEN } from './constants/localStorageKeys';
 import loadUser from './helpers/loadUser';
 import loadPullRequests from './helpers/loadPullRequests';
+import loadUserInstallations from './helpers/loadUserInstallations';
 import loadBranchQueue from './helpers/loadBranchQueue';
 import addToBranchQueue from './helpers/addToBranchQueue';
 import deleteFromBranchQueue from './helpers/deleteFromBranchQueue';
@@ -36,14 +38,18 @@ class App extends Component {
         this.state = {
             accessToken: localStorage.getItem(GITHUB_ACCESS_TOKEN),
             user: null,
+            userInstallations: null,
             entities: {
                 pullRequests: {},
                 queues: {},
                 users: {},
+                installations: {},
             },
         };
 
         this._loadUser = this._loadUser.bind(this);
+        this._loadUserInstallations = this._loadUserInstallations.bind(this);
+        this._renderHome = this._renderHome.bind(this);
         this._renderBranchQueuePage = this._renderBranchQueuePage.bind(this);
         this._renderPullRequestPage = this._renderPullRequestPage.bind(this);
     }
@@ -75,9 +81,27 @@ class App extends Component {
                     path="/:owner/:repository/:branch/:pullRequest"
                     render={this._renderPullRequestPage}
                 />
-                <Route component={Home} />
+                <Route
+                    exact
+                    path="/"
+                    render={this._renderHome}
+                />
             </Switch>
         );
+    }
+
+    _renderHome() {
+        const { entities: { installations }, userInstallations } = this.state;
+        const userInstallationEntities = userInstallations
+            ? map(installationId => installations[installationId], userInstallations)
+            : null;
+
+        return (
+            <Home
+                userInstallations={userInstallationEntities}
+                loadUserInstallations={this._loadUserInstallations}
+            />
+        )
     }
 
     _renderBranchQueuePage({ match: { params: { owner, repository, branch } } }) {
@@ -127,6 +151,18 @@ class App extends Component {
                 entities: {
                     users: merge(__, { [user.login]: user }),
                 },
+            })));
+    }
+
+    _loadUserInstallations() {
+        const { accessToken } = this.state;
+
+        loadUserInstallations(accessToken)
+            .then(newInstallations => this.setState(evolve({
+                userInstallations: always(map(prop('id'), newInstallations)),
+                entities: {
+                    installations: merge(__, indexBy(prop('id'), newInstallations)),
+                }
             })));
     }
 
