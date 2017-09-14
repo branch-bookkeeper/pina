@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 import Queue from '../components/Queue';
 
@@ -31,6 +32,7 @@ class BranchQueue extends PureComponent {
 
         return (
             <div>
+                <Link to="/">&laquo; Home</Link>
                 <h1>{owner}/{repository}/{branch}</h1>
                 {queue && <Queue owner={owner} repository={repository} queue={queue} />}
             </div>
