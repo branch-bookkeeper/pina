@@ -1,3 +1,5 @@
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import __ from 'ramda/src/__';
 import curry from 'ramda/src/curry';
 import compose from 'ramda/src/compose';
@@ -9,22 +11,23 @@ import merge from 'ramda/src/merge';
 import always from 'ramda/src/always';
 import pickBy from 'ramda/src/pickBy';
 import objOf from 'ramda/src/objOf';
-import React, { Component } from 'react';
+
 import { Route, Switch } from 'react-router-dom';
-import { GITHUB_ACCESS_TOKEN } from './constants/localStorageKeys';
-import mapKeys from './helpers/mapKeys';
-import loadUser from './helpers/loadUser';
-import loadPullRequest from './helpers/loadPullRequest';
-import loadRepositories from './helpers/loadRepositories';
-import loadBranchQueue from './helpers/loadBranchQueue';
-import addToBranchQueue from './helpers/addToBranchQueue';
-import deleteFromBranchQueue from './helpers/deleteFromBranchQueue';
-import { isMade, createInProgress, createWithResult, createWithError } from './helpers/request';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import OAuthSuccess from './pages/OAuthSuccess';
-import OAuthFailure from './pages/OAuthFailure';
-import Repository from './pages/Repository';
+import { GITHUB_ACCESS_TOKEN } from '../constants/localStorageKeys';
+import { entitiesShape, requestsShape } from '../redux';
+import noop from '../helpers/noop';
+import mapKeys from '../helpers/mapKeys';
+import loadPullRequest from '../helpers/loadPullRequest';
+import loadRepositories from '../helpers/loadRepositories';
+import loadBranchQueue from '../helpers/loadBranchQueue';
+import addToBranchQueue from '../helpers/addToBranchQueue';
+import deleteFromBranchQueue from '../helpers/deleteFromBranchQueue';
+import { isMade, createInProgress, createWithResult, createWithError } from '../helpers/request';
+import Home from './Home';
+import Login from './Login';
+import OAuthSuccess from './OAuthSuccess';
+import OAuthFailure from './OAuthFailure';
+import Repository from './Repository';
 
 const keyHasPrefix = curry((prefix, value, key) => key.substr(0, prefix.length) === prefix);
 const removePrefix = curry((length, string) => string.substr(length));
@@ -43,21 +46,32 @@ const renderPublicRoutes = () => {
     );
 }
 
-// Keep this a subclass of Component, or the routing won't work.
+const propTypes = {
+    loadUser: PropTypes.func,
+    user: PropTypes.string,
+    entities: entitiesShape,
+    requests: requestsShape,
+};
+
+const defaultProps = {
+    loadUser: noop,
+};
+
 class App extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             accessToken: localStorage.getItem(GITHUB_ACCESS_TOKEN),
-            user: null,
+            user: props.user,
             entities: {
                 pullRequests: {},
                 queues: {},
-                users: {},
+                users: props.entities.users,
                 repositories: {},
             },
             requests: {
+                ...props.requests,
                 repositories: null,
                 pullRequests: {},
             },
@@ -69,12 +83,21 @@ class App extends Component {
         this._renderRepository = this._renderRepository.bind(this);
     }
 
-    componentWillReceiveProps() {
+    componentWillReceiveProps({ user, entities, requests }) {
         const nextToken = localStorage.getItem(GITHUB_ACCESS_TOKEN);
 
-        this.setState({
+        this.setState(state => ({
+            user,
             accessToken: nextToken,
-        });
+            entities: {
+                ...state.entities,
+                users: entities.users,
+            },
+            requests: {
+                ...state.requests,
+                ...requests,
+            },
+        }));
     }
 
     render() {
@@ -155,15 +178,10 @@ class App extends Component {
     }
 
     _loadUser() {
+        const { loadUser } = this.props;
         const { accessToken } = this.state;
 
-        loadUser(accessToken)
-            .then(user => this.setState(evolve({
-                user: always(user.login),
-                entities: {
-                    users: merge(__, { [user.login]: user }),
-                },
-            })));
+        loadUser(accessToken);
     }
 
     _loadRepositories() {
@@ -241,5 +259,8 @@ class App extends Component {
             .then(() => this._loadBranchQueue(owner, repository, branch));
     }
 }
+
+App.propTypes = propTypes;
+App.defaultProps = defaultProps;
 
 export default App;
