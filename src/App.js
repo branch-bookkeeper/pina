@@ -5,20 +5,17 @@ import prop from 'ramda/src/prop';
 import evolve from 'ramda/src/evolve';
 import merge from 'ramda/src/merge';
 import always from 'ramda/src/always';
-import compose from 'ramda/src/compose';
-import filter from 'ramda/src/filter';
-import identity from 'ramda/src/identity';
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { GITHUB_ACCESS_TOKEN } from './constants/localStorageKeys';
 import loadUser from './helpers/loadUser';
 import loadPullRequests from './helpers/loadPullRequests';
-import loadUserInstallations from './helpers/loadUserInstallations';
-import loadInstallationRepositories from './helpers/loadInstallationRepositories';
+import loadRepositories from './helpers/loadRepositories';
 import loadBranchQueue from './helpers/loadBranchQueue';
 import addToBranchQueue from './helpers/addToBranchQueue';
 import deleteFromBranchQueue from './helpers/deleteFromBranchQueue';
 import findPullRequestQueueItem from './helpers/findPullRequestQueueItem';
+import { isMade, createInProgress, createWithResult } from './helpers/request';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import OAuthSuccess from './pages/OAuthSuccess';
@@ -42,19 +39,19 @@ class App extends Component {
         this.state = {
             accessToken: localStorage.getItem(GITHUB_ACCESS_TOKEN),
             user: null,
-            userInstallations: null,
             entities: {
                 pullRequests: {},
                 queues: {},
                 users: {},
-                installations: {},
                 repositories: {},
+            },
+            requests: {
+                repositories: null,
             },
         };
 
         this._loadUser = this._loadUser.bind(this);
-        this._loadUserInstallations = this._loadUserInstallations.bind(this);
-        this._loadInstallationRepositories = this._loadInstallationRepositories.bind(this);
+        this._loadRepositories = this._loadRepositories.bind(this);
         this._renderHome = this._renderHome.bind(this);
         this._renderBranchQueuePage = this._renderBranchQueuePage.bind(this);
         this._renderPullRequestPage = this._renderPullRequestPage.bind(this);
@@ -97,26 +94,16 @@ class App extends Component {
     }
 
     _renderHome() {
-        const { entities: { installations, repositories }, userInstallations } = this.state;
-        const userInstallationEntities = userInstallations
-            ? map(installationId => installations[installationId], userInstallations)
-            : null;
+        const { entities: { repositories }, requests: { repositories: repositoriesRequest } } = this.state;
 
-        const repositoriesByInstallationId = userInstallationEntities
-            ? compose(
-                map(map(repositoryId => repositories[repositoryId])),
-                filter(identity),
-                map(prop('repositories')),
-                indexBy(prop('id'))
-            )(userInstallationEntities)
+        const userRepositories = isMade(repositoriesRequest)
+            ? map(repositoryId => repositories[repositoryId], repositoriesRequest.result)
             : null;
 
         return (
             <Home
-                userInstallations={userInstallationEntities}
-                repositoriesByInstallation={repositoriesByInstallationId}
-                loadUserInstallations={this._loadUserInstallations}
-                loadInstallationRepositories={this._loadInstallationRepositories}
+                repositories={userRepositories}
+                loadRepositories={this._loadRepositories}
             />
         )
     }
@@ -171,36 +158,23 @@ class App extends Component {
             })));
     }
 
-    _loadUserInstallations() {
-        const { accessToken } = this.state;
-        const preProcessInstallation = installation => ({
-            ...installation,
-            repositories: null,
-        });
-
-        loadUserInstallations(accessToken)
-            .then(map(preProcessInstallation))
-            .then(newInstallations => this.setState(evolve({
-                userInstallations: always(map(prop('id'), newInstallations)),
-                entities: {
-                    installations: merge(__, indexBy(prop('id'), newInstallations)),
-                }
-            })));
-    }
-
-    _loadInstallationRepositories(installationId) {
+    _loadRepositories() {
         const { accessToken } = this.state;
 
-        loadInstallationRepositories(accessToken, installationId)
+        this.setState(evolve({
+            requests: {
+                repositories: always(createInProgress()),
+            },
+        }));
+
+        return loadRepositories(accessToken)
             .then(newRepositories => this.setState(evolve({
                 entities: {
-                    installations: {
-                        [installationId]: {
-                            repositories: always(map(prop('full_name'), newRepositories)),
-                        },
-                    },
                     repositories: merge(__, indexBy(prop('full_name'), newRepositories)),
-                }
+                },
+                requests: {
+                    repositories: always(createWithResult(map(prop('full_name'), newRepositories))),
+                },
             })));
     }
 
