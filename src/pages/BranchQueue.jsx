@@ -4,13 +4,12 @@ import { Link } from 'react-router-dom';
 
 import Queue from '../components/Queue';
 
-import { queueShape } from '../constants/propTypes';
+import { queueShape, repositoryShape } from '../constants/propTypes';
 import noop from '../helpers/noop';
 
 class BranchQueue extends PureComponent {
     static propTypes = {
-        owner: PropTypes.string.isRequired,
-        repository: PropTypes.string.isRequired,
+        repository: repositoryShape.isRequired,
         branch: PropTypes.string.isRequired,
         queue: queueShape,
         loadBranchQueue: PropTypes.func,
@@ -28,13 +27,13 @@ class BranchQueue extends PureComponent {
     }
 
     render() {
-        const { queue, owner, repository, branch } = this.props;
+        const { queue, repository, branch } = this.props;
 
         return (
             <div>
                 <Link to="/">&laquo; Home</Link>
-                <h1>{owner}/{repository}/{branch}</h1>
-                {queue && <Queue owner={owner} repository={repository} queue={queue} />}
+                <h1>{repository.full_name}/{branch}</h1>
+                {queue && <Queue repository={repository} queue={queue} />}
             </div>
         );
     }

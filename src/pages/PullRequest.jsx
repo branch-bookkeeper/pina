@@ -7,25 +7,26 @@ import { Link } from 'react-router-dom';
 import noop from '../helpers/noop';
 import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
 
+import { userShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
+
 const propTypes = {
-    pullRequest: PropTypes.object,
-    owner: PropTypes.string.isRequired,
-    repository: PropTypes.string.isRequired,
+    pullRequest: pullRequestShape,
+    pullRequestRequest: requestShape.isRequired,
+    repository: repositoryShape.isRequired,
     branch: PropTypes.string.isRequired,
-    pullRequestNumber: PropTypes.number.isRequired,
     loadPullRequests: PropTypes.func,
-    onAddToQueue: PropTypes.func,
-    onRemoveFromQueue: PropTypes.func,
-    queue: PropTypes.array,
+    onAddToBranchQueue: PropTypes.func,
+    onRemoveFromBranchQueue: PropTypes.func,
+    branchQueue: queueShape,
     loadBranchQueue: PropTypes.func,
-    user: PropTypes.object,
+    user: userShape,
     loadUser: PropTypes.func,
 };
 
 const defaultProps = {
     loadPullRequests: noop,
-    onAddToQueue: noop,
-    onRemoveFromQueue: noop,
+    onAddToBranchQueue: noop,
+    onRemoveFromBranchQueue: noop,
     loadBranchQueue: noop,
     loadUser: noop,
 }
@@ -34,33 +35,32 @@ const isQueueItemOwnedBy = propEq('username');
 
 class PullRequest extends PureComponent {
     componentDidMount() {
-        const { pullRequest, loadPullRequests, queue, loadBranchQueue, user, loadUser } = this.props;
+        const { pullRequest, loadPullRequests, branchQueue, loadBranchQueue, user, loadUser } = this.props;
 
         !user && loadUser();
         !pullRequest && loadPullRequests();
-        !queue && loadBranchQueue();
+        !branchQueue && loadBranchQueue();
     }
 
     render() {
         const {
-            owner,
-            repository,
+            repository: { full_name: repoFullName },
             branch,
             pullRequest,
-            pullRequestNumber,
-            queue,
+            branchQueue,
             user,
         } = this.props;
 
         return (
             <div>
                 <Link to="/">&laquo; Home</Link>
-                <h1>{owner}/{repository}/{branch} #{pullRequestNumber}</h1>
+                {pullRequest &&
+                    <h1>{repoFullName}/{branch} #{pullRequest.number}</h1>}
                 {pullRequest &&
                     <h2>{pullRequest.title} by {pullRequest.user.login}</h2>}
-                {pullRequest && user && queue && this._renderAction()}
+                {pullRequest && user && branchQueue && this._renderAction()}
                 <div>
-                    <Link to={`/${owner}/${repository}/${branch}`}>Go to {branch} queue</Link>
+                    <Link to={`/${repoFullName}/${branch}`}>Go to {branch} queue</Link>
                 </div>
             </div>
         );
@@ -68,14 +68,14 @@ class PullRequest extends PureComponent {
 
     _renderAction() {
         const {
-            onAddToQueue,
-            onRemoveFromQueue,
+            onAddToBranchQueue,
+            onRemoveFromBranchQueue,
             user,
-            queue,
-            pullRequestNumber,
+            branchQueue,
+            pullRequest,
         } = this.props;
 
-        const queueItem = findPullRequestQueueItem(pullRequestNumber, queue);
+        const queueItem = findPullRequestQueueItem(pullRequest.number, branchQueue);
         const isUserInQueue = isQueueItemOwnedBy(user.login, queueItem);
         const style = {
             fontSize: '1.5em',
@@ -86,9 +86,9 @@ class PullRequest extends PureComponent {
         return (
             <span>
                 {isEmpty(queueItem) &&
-                    <button onClick={onAddToQueue} style={style}>Book as {user.login}</button>}
+                    <button onClick={onAddToBranchQueue} style={style}>Book as {user.login}</button>}
                 {isUserInQueue &&
-                    <button onClick={onRemoveFromQueue} style={style}>Cancel</button>}
+                    <button onClick={onRemoveFromBranchQueue} style={style}>Cancel</button>}
             </span>
         );
     }
