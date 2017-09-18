@@ -114,7 +114,7 @@ class App extends Component {
     _renderRepository({ match: { params: { owner, repository: repoName }, url: baseUrl } }) {
         const {
             entities: { repositories, queues, pullRequests, users },
-            requests: { repositories: repositoriesRequest },
+            requests: { repositories: repositoriesRequest, pullRequests: pullRequestsRequests },
             user,
         } = this.state;
         const repositoryId = `${owner}/${repoName}`;
@@ -123,6 +123,7 @@ class App extends Component {
         const repositoryRequest = isMade(repositoriesRequest) && !repository
             ? createWithError('Not Found')
             : repositoriesRequest;
+        const pullRequestsRequest = pullRequestsRequests[repositoryId];
         const repositoryQueues = filterEntities(queues);
         const repositoryPullRequests = filterEntities(pullRequests);
 
@@ -139,6 +140,7 @@ class App extends Component {
                 repositoryRequest={repositoryRequest}
                 branchQueues={repositoryQueues}
                 pullRequests={repositoryPullRequests}
+                pullRequestsRequest={pullRequestsRequest}
                 loadUser={this._loadUser}
                 loadRepository={this._loadRepositories}
                 loadBranchQueue={branch => this._loadBranchQueue(owner, repoName, branch)}

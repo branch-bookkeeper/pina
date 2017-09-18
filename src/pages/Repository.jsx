@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 
 import noop from '../helpers/noop';
-import { requestShape, isMade, isErrored } from '../helpers/request';
+import { requestShape, createWithError, isMade, isErrored } from '../helpers/request';
 import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
 import { userShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
 import withPreloading from '../hocs/withPreloading';
@@ -22,6 +22,7 @@ const propTypes = {
     repositoryRequest: requestShape.isRequired,
     branchQueues: PropTypes.objectOf(queueShape).isRequired,
     pullRequests: PropTypes.objectOf(pullRequestShape).isRequired,
+    pullRequestsRequest: requestShape,
     loadUser: PropTypes.func,
     loadRepository: PropTypes.func,
     loadBranchQueue: PropTypes.func,
@@ -80,6 +81,7 @@ class Repository extends Component {
             user,
             repository,
             pullRequests,
+            pullRequestsRequest,
             branchQueues,
             loadUser,
             loadBranchQueue,
@@ -88,16 +90,20 @@ class Repository extends Component {
             onRemoveFromBranchQueue,
         } = this.props;
         const pullRequestNumber = parseInt(pullRequestString, 10);
+        const pullRequest = pullRequests[pullRequestNumber];
         const queue = branchQueues[branch];
         const queueItem = queue ? findPullRequestQueueItem(pullRequestNumber, queue) : null;
+        const pullRequestRequest = isMade(pullRequestsRequest) && !pullRequest
+            ? createWithError('Not Found')
+            : pullRequestsRequest;
 
         return (
             <PullRequest
                 user={user}
                 repository={repository}
                 branch={branch}
-                pullRequestNumber={pullRequestNumber}
-                pullRequest={pullRequests[pullRequestNumber]}
+                pullRequest={pullRequest}
+                pullRequestRequest={pullRequestRequest}
                 branchQueue={queue}
                 loadUser={loadUser}
                 loadPullRequests={() => loadPullRequests()}

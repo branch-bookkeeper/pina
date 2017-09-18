@@ -1,11 +1,17 @@
+import prop from 'ramda/src/prop';
 import propEq from 'ramda/src/propEq';
 import isEmpty from 'ramda/src/isEmpty';
+import compose from 'ramda/src/compose';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { branch, renderComponent } from 'recompose';
 
 import noop from '../helpers/noop';
+import { requestShape, isNotMade, isErrored } from '../helpers/request';
 import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
+import withPreloading from '../hocs/withPreloading';
+import NotFound from './NotFound';
 
 import { userShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
 
@@ -34,14 +40,6 @@ const defaultProps = {
 const isQueueItemOwnedBy = propEq('username');
 
 class PullRequest extends PureComponent {
-    componentDidMount() {
-        const { pullRequest, loadPullRequests, branchQueue, loadBranchQueue, user, loadUser } = this.props;
-
-        !user && loadUser();
-        !pullRequest && loadPullRequests();
-        !branchQueue && loadBranchQueue();
-    }
-
     render() {
         const {
             repository: { full_name: repoFullName },
@@ -97,4 +95,21 @@ class PullRequest extends PureComponent {
 PullRequest.propTypes = propTypes;
 PullRequest.defaultProps = defaultProps;
 
-export default PullRequest;
+const isLoadingNeeded = ({ pullRequestRequest, user, branchQueue }) =>
+    isNotMade(pullRequestRequest)
+    || !user
+    || !branchQueue;
+
+const load = ({ pullRequestRequest, user, branchQueue, loadPullRequests, loadUser, loadBranchQueue }) => {
+    isNotMade(pullRequestRequest) && loadPullRequests();
+    !user && loadUser();
+    !branchQueue && loadBranchQueue();
+}
+
+export default compose(
+    branch(
+        compose(isErrored, prop('pullRequestRequest')),
+        renderComponent(NotFound),
+    ),
+    withPreloading(isLoadingNeeded, load),
+)(PullRequest);
