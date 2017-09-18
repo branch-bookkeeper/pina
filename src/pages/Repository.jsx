@@ -11,7 +11,7 @@ import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
 import { userShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
 import withPreloading from '../hocs/withPreloading';
 
-import PullRequest from './PullRequest';
+import PullRequestPage from './PullRequestPage';
 import BranchQueue from './BranchQueue';
 import NotFound from './NotFound';
 
@@ -98,7 +98,7 @@ class Repository extends Component {
             : pullRequestsRequest;
 
         return (
-            <PullRequest
+            <PullRequestPage
                 user={user}
                 repository={repository}
                 branch={branch}
