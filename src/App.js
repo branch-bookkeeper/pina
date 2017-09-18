@@ -56,6 +56,7 @@ class App extends Component {
             },
             requests: {
                 repositories: null,
+                pullRequests: {},
             },
         };
 
@@ -182,11 +183,24 @@ class App extends Component {
 
     _loadPullRequests(owner, repository) {
         const { accessToken } = this.state;
+        const requestId = `${owner}/${repository}`;
+
+        this.setState(state => ({
+            requests: {
+                ...state.requests,
+                pullRequests: {
+                    [requestId]: createInProgress(),
+                },
+            },
+        }));
 
         loadPullRequests(accessToken, owner, repository)
             .then(newPullRequests => this.setState(evolve({
                 entities: {
                     pullRequests: merge(__, indexBy(prop('id'), newPullRequests)),
+                },
+                requests: {
+                    pullRequests: merge(__, { [requestId]: createWithResult(map(prop('id'), newPullRequests)) })
                 },
             })));
     }
