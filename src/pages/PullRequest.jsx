@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { branch, renderComponent } from 'recompose';
 
 import noop from '../helpers/noop';
-import { requestShape, isNotMade, isErrored } from '../helpers/request';
+import { requestShape, isMade, isErrored } from '../helpers/request';
 import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
 import withPreloading from '../hocs/withPreloading';
 import NotFound from './NotFound';
@@ -16,16 +16,16 @@ import NotFound from './NotFound';
 import { userShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
 
 const propTypes = {
-    pullRequest: pullRequestShape,
+    pullRequest: pullRequestShape.isRequired,
     pullRequestRequest: requestShape.isRequired,
     repository: repositoryShape.isRequired,
     branch: PropTypes.string.isRequired,
     loadPullRequests: PropTypes.func,
     onAddToBranchQueue: PropTypes.func,
     onRemoveFromBranchQueue: PropTypes.func,
-    branchQueue: queueShape,
+    branchQueue: queueShape.isRequired,
     loadBranchQueue: PropTypes.func,
-    user: userShape,
+    user: userShape.isRequired,
     loadUser: PropTypes.func,
 };
 
@@ -45,18 +45,14 @@ class PullRequest extends PureComponent {
             repository: { full_name: repoFullName },
             branch,
             pullRequest,
-            branchQueue,
-            user,
         } = this.props;
 
         return (
             <div>
                 <Link to="/">&laquo; Home</Link>
-                {pullRequest &&
-                    <h1>{repoFullName}/{branch} #{pullRequest.number}</h1>}
-                {pullRequest &&
-                    <h2>{pullRequest.title} by {pullRequest.user.login}</h2>}
-                {pullRequest && user && branchQueue && this._renderAction()}
+                <h1>{repoFullName}/{branch} #{pullRequest.number}</h1>
+                <h2>{pullRequest.title} by {pullRequest.user.login}</h2>
+                {this._renderAction()}
                 <div>
                     <Link to={`/${repoFullName}/${branch}`}>Go to {branch} queue</Link>
                 </div>
@@ -71,23 +67,36 @@ class PullRequest extends PureComponent {
             user,
             branchQueue,
             pullRequest,
+            repository,
         } = this.props;
 
         const queueItem = findPullRequestQueueItem(pullRequest.number, branchQueue);
         const isUserInQueue = isQueueItemOwnedBy(user.login, queueItem);
+        const isUserAdmin = repository.permissions.admin;
         const style = {
             fontSize: '1.5em',
             padding: '0.5em 1em',
             margin: '0.5em 0.5em 1em 0.5em',
         };
+        const dangerStyle = {
+            ...style,
+            backgroundColor: 'red',
+        };
 
         return (
-            <span>
+            <div>
                 {isEmpty(queueItem) &&
                     <button onClick={onAddToBranchQueue} style={style}>Book as {user.login}</button>}
                 {isUserInQueue &&
                     <button onClick={onRemoveFromBranchQueue} style={style}>Cancel</button>}
-            </span>
+                {!isEmpty(queueItem) && !isUserInQueue &&
+                    <button disabled style={style}><strong>{queueItem.username}</strong> is in queue to merge</button>}
+                {!isEmpty(queueItem) && !isUserInQueue && isUserAdmin &&
+                    <div>
+                        <button onClick={onRemoveFromBranchQueue} style={dangerStyle}>Cancel</button>
+                        <span>Use your administrative privileges to cancel this booking</span>
+                    </div>}
+            </div>
         );
     }
 }
@@ -96,12 +105,12 @@ PullRequest.propTypes = propTypes;
 PullRequest.defaultProps = defaultProps;
 
 const isLoadingNeeded = ({ pullRequestRequest, user, branchQueue }) =>
-    isNotMade(pullRequestRequest)
+    !isMade(pullRequestRequest)
     || !user
     || !branchQueue;
 
 const load = ({ pullRequestRequest, user, branchQueue, loadPullRequests, loadUser, loadBranchQueue }) => {
-    isNotMade(pullRequestRequest) && loadPullRequests();
+    !isMade(pullRequestRequest) && loadPullRequests();
     !user && loadUser();
     !branchQueue && loadBranchQueue();
 }
