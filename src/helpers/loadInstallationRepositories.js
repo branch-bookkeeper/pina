@@ -1,7 +1,8 @@
 import prop from 'ramda/src/prop';
+import curry from 'ramda/src/curry';
 import generateGithubApiUrl from './generateGithubApiUrl';
 
-export default (accessToken, installationId) => {
+export default curry((accessToken, installationId) => {
     const url = generateGithubApiUrl([
         'user',
         'installations',
@@ -16,4 +17,4 @@ export default (accessToken, installationId) => {
     return fetch(url, { headers })
         .then(response => response.json())
         .then(prop('repositories'));
-}
+});

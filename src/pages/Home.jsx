@@ -1,22 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { installationShape } from '../constants/propTypes';
+import { repositoryShape } from '../constants/propTypes';
 
-import InstallationsList from '../components/InstallationsList';
+import RepositoriesList from '../components/RepositoriesList';
 
-const Home = (props) => (
+const Home = ({ repositories, loadRepositories }) => (
     <div>
         <h1>Branch Bookkeeper</h1>
-        <InstallationsList
-            {...props}
+        <RepositoriesList
+            repositories={repositories}
+            loadRepositories={loadRepositories}
         />
     </div>
 );
 
 Home.propTypes = {
-    userInstallations: PropTypes.arrayOf(installationShape),
-    loadUserInstallations: PropTypes.func,
+    repositories: PropTypes.arrayOf(repositoryShape),
+    loadRepositories: PropTypes.func,
 };
 
 export default Home;

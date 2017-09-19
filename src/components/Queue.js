@@ -1,13 +1,11 @@
 import { branch, renderComponent } from 'recompose';
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import { queueShape } from '../constants/propTypes';
+import { repositoryShape, queueShape } from '../constants/propTypes';
 
 const propTypes = {
     queue: queueShape.isRequired,
-    owner: PropTypes.string.isRequired,
-    repository: PropTypes.string.isRequired,
+    repository: repositoryShape.isRequired,
 };
 
 const queueIsEmpty = ({ queue }) => queue.length === 0;
@@ -16,7 +14,7 @@ const EmptyQueue = () => (
     <p>No one in this queue</p>
 )
 
-const NotEmptyQueue = ({ owner, repository, queue }) => (
+const NotEmptyQueue = ({ repository: { full_name: repoFullName }, queue }) => (
     <div>
         <ul>
             {queue.map(({ pullRequestNumber, username }) => (
@@ -31,7 +29,7 @@ const NotEmptyQueue = ({ owner, repository, queue }) => (
                         />
                     </a>
                     <a
-                        href={`https://github.com/${owner}/${repository}/pull/${pullRequestNumber}`}
+                        href={`https://github.com/${repoFullName}/pull/${pullRequestNumber}`}
                         style={{ marginLeft: '0.5em' }}
                     >
                         #{pullRequestNumber}

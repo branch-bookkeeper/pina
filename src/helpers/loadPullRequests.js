@@ -16,6 +16,6 @@ export default (accessToken, owner, repository) => {
         .then(response => response.json())
         .then(map(pullRequest => ({
             ...pullRequest,
-            id: `${owner}_${repository}_${pullRequest.number}`,
+            id: `${owner}/${repository}/${pullRequest.number}`,
         })));
 }
