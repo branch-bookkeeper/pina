@@ -1,5 +1,9 @@
 'use strict';
 
+// App-specific environment variables
+process.env.REACT_APP_API_BASE_URL = 'https://api.branch-bookkeeper.com';
+process.env.REACT_APP_GITHUB_CLIENT_ID = 'Iv1.ae8d32938d68d499';
+
 // Do this as the first thing so that any code reading it knows the right env.
 process.env.BABEL_ENV = 'production';
 process.env.NODE_ENV = 'production';
@@ -20,6 +24,8 @@ const fs = require('fs-extra');
 const webpack = require('webpack');
 const config = require('../config/webpack.config.prod');
 const paths = require('../config/paths');
+const exec = require('child-process-promise').exec;
+const inquirer = require('inquirer');
 const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
 const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
@@ -98,7 +104,40 @@ measureFileSizesBeforeBuild(paths.appBuild)
       printBuildError(err);
       process.exit(1);
     }
-  );
+  )
+  .then(() => inquirer.prompt([{
+    name: 'deploy',
+    message: 'Push to deploy branch?',
+    type: 'confirm',
+    default: false,
+  }]))
+  .then(response => {
+    if (!response.deploy) {
+      throw new Error('USER_CANCELLED');
+    }
+  })
+  .then(() => exec('git rev-parse --abbrev-ref HEAD'))
+  .then(result => {
+    const currentBranchName = result.stdout.trim();
+
+    return exec([
+      'git branch -D deploy',
+      'git checkout --orphan deploy',
+      'git add --force build',
+      'git commit -m ":shipit:"',
+      'git push --force --set-upstream origin deploy',
+      `git checkout ${currentBranchName}`,
+    ].join(' && '))
+    .then(() => {
+      console.log();
+      console.log(chalk.green('Deploy branch pushed!\n'));
+    });
+  })
+  .catch(e => {
+    if (e.message !== 'USER_CANCELLED') {
+      return Promise.reject(e);
+    }
+  })
 
 // Create the production build and print the deployment instructions.
 function build(previousFileSizes) {
