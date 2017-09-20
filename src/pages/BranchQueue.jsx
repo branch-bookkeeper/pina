@@ -1,42 +1,39 @@
-import React, { PureComponent } from 'react';
+import compose from 'ramda/src/compose';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { setPropTypes, defaultProps, pure } from 'recompose';
 
 import Queue from '../components/Queue';
 
 import { queueShape, repositoryShape } from '../constants/propTypes';
 import noop from '../helpers/noop';
+import withPreloading from '../hocs/withPreloading';
 
-class BranchQueue extends PureComponent {
-    static propTypes = {
-        repository: repositoryShape.isRequired,
-        branch: PropTypes.string.isRequired,
-        queue: queueShape,
-        loadBranchQueue: PropTypes.func,
-    };
+const propTypes = {
+    repository: repositoryShape.isRequired,
+    branch: PropTypes.string.isRequired,
+    queue: queueShape.isRequired,
+    loadBranchQueue: PropTypes.func,
+};
 
-    static defaultProps = {
-        queue: null,
+const BranchQueue = ({ queue, repository, branch }) => (
+    <div>
+        <Link to="/">&laquo; Home</Link>
+        <h1>{repository.full_name}/{branch}</h1>
+        {queue && <Queue repository={repository} queue={queue} />}
+    </div>
+);
+
+const isLoadingNeeded = ({ queue }) => !queue;
+
+const load = ({ loadBranchQueue }) => loadBranchQueue();
+
+export default compose(
+    setPropTypes(propTypes),
+    defaultProps({
         loadBranchQueue: noop,
-    };
-
-    componentDidMount() {
-        const { queue, loadBranchQueue } = this.props;
-
-        !queue && loadBranchQueue();
-    }
-
-    render() {
-        const { queue, repository, branch } = this.props;
-
-        return (
-            <div>
-                <Link to="/">&laquo; Home</Link>
-                <h1>{repository.full_name}/{branch}</h1>
-                {queue && <Queue repository={repository} queue={queue} />}
-            </div>
-        );
-    }
-}
-
-export default BranchQueue;
+    }),
+    withPreloading(isLoadingNeeded, load),
+    pure,
+)(BranchQueue);
