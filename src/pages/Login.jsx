@@ -7,6 +7,7 @@ const Login = ({ location: { pathname, search, hash } }) => {
 
     return (
         <div>
+            <h1>Branch Bookkeeper</h1>
             <a href={`https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`}>
                 Login with GitHub
             </a>
