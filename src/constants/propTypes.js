@@ -16,6 +16,7 @@ export const pullRequestShape = PropTypes.shape({
     number: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
     user: userShape.isRequired,
+    html_url: PropTypes.string.isRequired,
 });
 
 export const installationShape = PropTypes.shape({
@@ -30,4 +31,5 @@ export const repositoryShape = PropTypes.shape({
     name: PropTypes.string.isRequired,
     full_name: PropTypes.string.isRequired,
     default_branch: PropTypes.string.isRequired,
+    html_url: PropTypes.string.isRequired,
 });

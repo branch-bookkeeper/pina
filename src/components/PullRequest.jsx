@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { setPropTypes } from 'recompose';
+import { OpenInNew } from 'material-ui-icons';
 
 import { pullRequestShape, repositoryShape, queueShape, userShape } from '../constants/propTypes';
 
@@ -16,6 +17,8 @@ const propTypes = {
     onRemoveFromBranchQueue: PropTypes.func,
 };
 
+const AlignedOpenInNew = () => <OpenInNew style={{ verticalAlign: 'middle' }} />;
+
 const PullRequest = ({
     pullRequest,
     repository,
@@ -26,8 +29,16 @@ const PullRequest = ({
     onRemoveFromBranchQueue,
 }) => (
     <div>
-        <h1>{repository.full_name}/{branch} #{pullRequest.number}</h1>
-        <h2>{pullRequest.title} by {pullRequest.user.login}</h2>
+        <h1>
+            <a href={pullRequest.html_url}>
+                {pullRequest.title} #{pullRequest.number} <AlignedOpenInNew />
+            </a>
+        </h1>
+        <h2>
+            <a href={repository.html_url}>
+                {repository.full_name} <AlignedOpenInNew />
+            </a>
+        </h2>
         <PullRequestActions
             pullRequest={pullRequest}
             repository={repository}
