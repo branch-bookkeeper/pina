@@ -22,6 +22,7 @@ import { isMade, createInProgress, createWithResult, createWithError } from './h
 import Home from './pages/Home';
 import Login from './pages/Login';
 import OAuthSuccess from './pages/OAuthSuccess';
+import OAuthFailure from './pages/OAuthFailure';
 import Repository from './pages/Repository';
 
 const keyHasPrefix = curry((prefix, value, key) => key.substr(0, prefix.length) === prefix);
@@ -35,6 +36,7 @@ const renderPublicRoutes = () => {
     return (
         <Switch>
             <Route exact path="/oauth/success" component={OAuthSuccess} />
+            <Route exact path="/oauth/failure" component={OAuthFailure} />
             <Route component={Login}/>
         </Switch>
     );
