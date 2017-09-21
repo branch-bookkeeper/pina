@@ -13,6 +13,7 @@ import NotFound from './NotFound';
 import { userShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
 
 import PullRequest from '../components/PullRequest';
+import BranchName from '../components/BranchName';
 
 const propTypes = {
     pullRequest: pullRequestShape,
@@ -49,7 +50,9 @@ const PullRequestPage = ({
             onRemoveFromBranchQueue={onRemoveFromBranchQueue}
         />
         <div>
-            <Link to={`/${repository.full_name}/${branch}`}>Go to {branch} queue</Link>
+            <Link to={`/${repository.full_name}/${branch}`}>
+                Go to <BranchName branch={branch} /> queue
+            </Link>
         </div>
     </div>
 );

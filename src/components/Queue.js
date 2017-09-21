@@ -1,7 +1,10 @@
 import { branch, renderComponent } from 'recompose';
 import React from 'react';
+import { OpenInNew } from 'material-ui-icons';
 
 import { repositoryShape, queueShape } from '../constants/propTypes';
+
+const AlignedOpenInNew = () => <OpenInNew style={{ verticalAlign: 'middle' }} />;
 
 const propTypes = {
     queue: queueShape.isRequired,
@@ -32,7 +35,7 @@ const NotEmptyQueue = ({ repository: { full_name: repoFullName }, queue }) => (
                         href={`https://github.com/${repoFullName}/pull/${pullRequestNumber}`}
                         style={{ marginLeft: '0.5em' }}
                     >
-                        #{pullRequestNumber}
+                        #{pullRequestNumber} <AlignedOpenInNew />
                     </a>
                 </li>
             ))}
