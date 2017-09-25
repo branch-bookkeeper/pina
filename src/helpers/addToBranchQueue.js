@@ -17,5 +17,5 @@ export default (accessToken, owner, repository, branch, pullRequestNumber, usern
         method: 'POST',
         body: JSON.stringify(payload),
         headers
-    }).then(response => response.json());
+    });
 };

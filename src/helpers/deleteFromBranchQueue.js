@@ -11,5 +11,5 @@ export default (accessToken, owner, repository, branch, queueItem) => {
         method: 'DELETE',
         body: JSON.stringify(queueItem),
         headers
-    }).then(response => response.json());
+    });
 };
