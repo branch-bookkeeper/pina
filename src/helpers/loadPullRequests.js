@@ -7,7 +7,7 @@ export default (accessToken, owner, repository) => {
         owner,
         repository,
         'pulls',
-    ]);
+    ]) + '?per_page=100';
     const headers = {
         authorization: `token ${accessToken}`,
     };
