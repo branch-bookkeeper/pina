@@ -1,3 +1,4 @@
+import generateApiUrl from './generateApiUrl';
 const API_BASE_URL = 'https://api.github.com';
 
-export default chunks => [API_BASE_URL].concat(chunks).join('/');
+export default generateApiUrl(API_BASE_URL);
