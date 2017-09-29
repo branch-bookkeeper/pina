@@ -18,6 +18,7 @@ process.on('unhandledRejection', err => {
 // Ensure environment variables are read.
 require('../config/env');
 
+const { ifElse, always } = require('ramda');
 const path = require('path');
 const chalk = require('chalk');
 const fs = require('fs-extra');
@@ -32,6 +33,10 @@ const printHostingInstructions = require('react-dev-utils/printHostingInstructio
 const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const printBuildError = require('react-dev-utils/printBuildError');
 
+const DEPLOY_BRANCH_NAME = 'gh-pages';
+const IS_CI = require('is-ci');
+const { CI_COMMITTER_USERNAME, CI_COMMITTER_EMAIL } = process.env;
+
 const measureFileSizesBeforeBuild =
   FileSizeReporter.measureFileSizesBeforeBuild;
 const printFileSizesAfterBuild = FileSizeReporter.printFileSizesAfterBuild;
@@ -45,6 +50,19 @@ const WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024;
 if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
   process.exit(1);
 }
+
+const isCI = always(IS_CI);
+
+const authorizeDeployment = ifElse(
+  isCI,
+  always({ deploy: true }),
+  () => inquirer.prompt([{
+    name: 'deploy',
+    message: `Push to ${DEPLOY_BRANCH_NAME} branch?`,
+    type: 'confirm',
+    default: false,
+  }])
+);
 
 // First, read the current file sizes in build directory.
 // This lets us display how much they changed later.
@@ -105,32 +123,40 @@ measureFileSizesBeforeBuild(paths.appBuild)
       process.exit(1);
     }
   )
-  .then(() => inquirer.prompt([{
-    name: 'deploy',
-    message: 'Push to deploy branch?',
-    type: 'confirm',
-    default: false,
-  }]))
+  .then(authorizeDeployment)
   .then(response => {
     if (!response.deploy) {
       throw new Error('USER_CANCELLED');
     }
   })
+  .then(ifElse(
+    isCI,
+    () => exec([
+      `git config user.name "${CI_COMMITTER_USERNAME}"`,
+      `git config user.email "${CI_COMMITTER_EMAIL}"`,
+    ].join('&&')),
+    always(undefined)
+  ))
   .then(() => exec('git rev-parse --abbrev-ref HEAD'))
   .then(result => {
     const currentBranchName = result.stdout.trim();
 
     return exec([
-      'git branch -D deploy',
-      'git checkout --orphan deploy',
-      'git add --force build',
+      `git branch -D ${DEPLOY_BRANCH_NAME}`,
+      `git checkout --orphan ${DEPLOY_BRANCH_NAME}`,
+      'git rm -rf .',
+      'mv build/* .',
+      'echo node_modules > .gitignore',
+      'git add -A',
+      'git reset .gitignore',
       'git commit -m ":shipit:"',
-      'git push --force --set-upstream origin deploy',
+      `git push --force --set-upstream origin ${DEPLOY_BRANCH_NAME}`,
+      'rm .gitignore',
       `git checkout ${currentBranchName}`,
     ].join(' && '))
     .then(() => {
       console.log();
-      console.log(chalk.green('Deploy branch pushed!\n'));
+      console.log(chalk.green(`Build pushed to ${DEPLOY_BRANCH_NAME} branch pushed!\n`));
     });
   })
   .catch(e => {
