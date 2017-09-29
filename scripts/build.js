@@ -142,7 +142,7 @@ measureFileSizesBeforeBuild(paths.appBuild)
     const currentBranchName = result.stdout.trim();
 
     return exec([
-      `git branch -D ${DEPLOY_BRANCH_NAME}`,
+      `(git branch -D ${DEPLOY_BRANCH_NAME} || true)`,
       `git checkout --orphan ${DEPLOY_BRANCH_NAME}`,
       'git rm -rf .',
       'mv build/* .',
