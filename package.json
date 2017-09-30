@@ -8,13 +8,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "compression": "^1.7.0",
-    "express": "^4.15.4",
-    "morgan": "^1.8.2",
-    "oauth": "^0.9.15",
-    "qs": "^6.5.1"
-  },
-  "devDependencies": {
     "autoprefixer": "7.1.2",
     "babel-core": "6.25.0",
     "babel-eslint": "7.2.3",
@@ -48,6 +41,7 @@
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.6",
     "promise": "8.0.1",
+    "qs": "^6.5.1",
     "ramda": "^0.24.1",
     "react": "^15.6.1",
     "react-dev-utils": "^4.0.0",
@@ -66,8 +60,7 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom",
-    "start": "node index.js"
+    "test": "node scripts/test.js --env=jsdom"
   },
   "jest": {
     "collectCoverageFrom": [
