@@ -13,10 +13,13 @@ export const queueItemShape = PropTypes.shape({
 export const queueShape = PropTypes.arrayOf(queueItemShape);
 
 export const pullRequestShape = PropTypes.shape({
-    number: PropTypes.number.isRequired,
+    statusUrl: PropTypes.string.isRequired,
+    pullRequestNumber: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
-    user: userShape.isRequired,
-    html_url: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
+    assignees: PropTypes.arrayOf(PropTypes.string).isRequired,
+    humanUrl: PropTypes.string.isRequired,
+    installationId: PropTypes.number.isRequired,
 });
 
 export const installationShape = PropTypes.shape({
