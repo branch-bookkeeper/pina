@@ -30,8 +30,8 @@ const PullRequest = ({
 }) => (
     <div>
         <h1>
-            <a href={pullRequest.html_url}>
-                {pullRequest.title} #{pullRequest.number} <AlignedOpenInNew />
+            <a href={pullRequest.humanUrl}>
+                {pullRequest.title} #{pullRequest.pullRequestNumber} <AlignedOpenInNew />
             </a>
         </h1>
         <h2>
