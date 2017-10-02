@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 
 import noop from '../helpers/noop';
-import { requestShape, createWithError, isMade, isErrored } from '../helpers/request';
+import { requestShape, isMade, isErrored } from '../helpers/request';
 import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
 import { userShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
 import withPreloading from '../hocs/withPreloading';
@@ -22,11 +22,11 @@ const propTypes = {
     repositoryRequest: requestShape.isRequired,
     branchQueues: PropTypes.objectOf(queueShape).isRequired,
     pullRequests: PropTypes.objectOf(pullRequestShape).isRequired,
-    pullRequestsRequest: requestShape,
+    pullRequestsRequests: PropTypes.objectOf(requestShape).isRequired,
     loadUser: PropTypes.func,
     loadRepository: PropTypes.func,
     loadBranchQueue: PropTypes.func,
-    loadPullRequests: PropTypes.func,
+    loadPullRequest: PropTypes.func,
     onAddToBranchQueue: PropTypes.func,
     onRemoveFromBranchQueue: PropTypes.func,
 };
@@ -81,11 +81,11 @@ class Repository extends Component {
             user,
             repository,
             pullRequests,
-            pullRequestsRequest,
+            pullRequestsRequests,
             branchQueues,
             loadUser,
             loadBranchQueue,
-            loadPullRequests,
+            loadPullRequest,
             onAddToBranchQueue,
             onRemoveFromBranchQueue,
         } = this.props;
@@ -93,9 +93,7 @@ class Repository extends Component {
         const pullRequest = pullRequests[pullRequestNumber];
         const queue = branchQueues[branch];
         const queueItem = queue ? findPullRequestQueueItem(pullRequestNumber, queue) : null;
-        const pullRequestRequest = isMade(pullRequestsRequest) && !pullRequest
-            ? createWithError('Not Found')
-            : pullRequestsRequest;
+        const pullRequestRequest = pullRequestsRequests[pullRequestNumber];
 
         return (
             <PullRequestPage
@@ -106,7 +104,7 @@ class Repository extends Component {
                 pullRequestRequest={pullRequestRequest}
                 branchQueue={queue}
                 loadUser={loadUser}
-                loadPullRequests={() => loadPullRequests()}
+                loadPullRequest={() => loadPullRequest(pullRequestNumber)}
                 loadBranchQueue={() => loadBranchQueue(branch)}
                 onAddToBranchQueue={() => onAddToBranchQueue(branch, pullRequestNumber)}
                 onRemoveFromBranchQueue={() => onRemoveFromBranchQueue(branch, queueItem)}

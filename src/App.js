@@ -8,11 +8,13 @@ import evolve from 'ramda/src/evolve';
 import merge from 'ramda/src/merge';
 import always from 'ramda/src/always';
 import pickBy from 'ramda/src/pickBy';
+import objOf from 'ramda/src/objOf';
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { GITHUB_ACCESS_TOKEN } from './constants/localStorageKeys';
 import mapKeys from './helpers/mapKeys';
 import loadUser from './helpers/loadUser';
+import loadPullRequest from './helpers/loadPullRequest';
 import loadPullRequests from './helpers/loadPullRequests';
 import loadRepositories from './helpers/loadRepositories';
 import loadBranchQueue from './helpers/loadBranchQueue';
@@ -125,7 +127,7 @@ class App extends Component {
         const repositoryRequest = isMade(repositoriesRequest) && !repository
             ? createWithError('Not Found')
             : repositoriesRequest;
-        const pullRequestsRequest = pullRequestsRequests[repositoryId];
+        const repositoryPullRequestsRequests = filterEntities(pullRequestsRequests);
         const repositoryQueues = filterEntities(queues);
         const repositoryPullRequests = filterEntities(pullRequests);
 
@@ -142,11 +144,11 @@ class App extends Component {
                 repositoryRequest={repositoryRequest}
                 branchQueues={repositoryQueues}
                 pullRequests={repositoryPullRequests}
-                pullRequestsRequest={pullRequestsRequest}
+                pullRequestsRequests={repositoryPullRequestsRequests}
                 loadUser={this._loadUser}
                 loadRepository={this._loadRepositories}
                 loadBranchQueue={branch => this._loadBranchQueue(owner, repoName, branch)}
-                loadPullRequests={() => this._loadPullRequests(owner, repoName)}
+                loadPullRequest={pullRequestNumber => this._loadPullRequest(owner, repoName, pullRequestNumber)}
                 onAddToBranchQueue={onAddToBranchQueue}
                 onRemoveFromBranchQueue={onRemoveFromBranchQueue}
             />
@@ -181,6 +183,35 @@ class App extends Component {
                 },
                 requests: {
                     repositories: always(createWithResult(map(prop('full_name'), newRepositories))),
+                },
+            })));
+    }
+
+    _loadPullRequest(owner, repository, pullRequestNumber) {
+        const { accessToken } = this.state;
+        const requestId = `${owner}/${repository}/${pullRequestNumber}`;
+
+        this.setState(state => ({
+            requests: {
+                ...state.requests,
+                pullRequests: {
+                    [requestId]: createInProgress(),
+                },
+            },
+        }));
+
+        loadPullRequest(accessToken, owner, repository, pullRequestNumber)
+            .then(newPullRequest => this.setState(evolve({
+                entities: {
+                    pullRequests: merge(__, objOf(requestId, newPullRequest) ),
+                },
+                requests: {
+                    pullRequests: merge(__, objOf(requestId, createWithResult(prop('id', newPullRequest)))),
+                },
+            })))
+            .catch(e => this.setState(evolve({
+                requests: {
+                    pullRequests: merge(__, objOf(requestId, createWithError(e))),
                 },
             })));
     }

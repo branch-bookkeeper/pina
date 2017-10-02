@@ -20,7 +20,7 @@ const propTypes = {
     pullRequestRequest: requestShape,
     repository: repositoryShape,
     branch: PropTypes.string.isRequired,
-    loadPullRequests: PropTypes.func,
+    loadPullRequest: PropTypes.func,
     onAddToBranchQueue: PropTypes.func,
     onRemoveFromBranchQueue: PropTypes.func,
     branchQueue: queueShape,
@@ -62,15 +62,15 @@ const isLoadingNeeded = ({ pullRequestRequest, user, branchQueue }) =>
     || !user
     || !branchQueue;
 
-const load = ({ pullRequestRequest, user, branchQueue, loadPullRequests, loadUser, loadBranchQueue }) => {
-    !isMade(pullRequestRequest) && loadPullRequests();
+const load = ({ pullRequestRequest, user, branchQueue, loadPullRequest, loadUser, loadBranchQueue }) => {
+    !isMade(pullRequestRequest) && loadPullRequest();
     !user && loadUser();
     !branchQueue && loadBranchQueue();
 }
 
 export default compose(
     defaultProps({
-        loadPullRequests: noop,
+        loadPullRequest: noop,
         onAddToBranchQueue: noop,
         onRemoveFromBranchQueue: noop,
         loadBranchQueue: noop,
