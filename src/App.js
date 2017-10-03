@@ -15,7 +15,6 @@ import { GITHUB_ACCESS_TOKEN } from './constants/localStorageKeys';
 import mapKeys from './helpers/mapKeys';
 import loadUser from './helpers/loadUser';
 import loadPullRequest from './helpers/loadPullRequest';
-import loadPullRequests from './helpers/loadPullRequests';
 import loadRepositories from './helpers/loadRepositories';
 import loadBranchQueue from './helpers/loadBranchQueue';
 import addToBranchQueue from './helpers/addToBranchQueue';
@@ -212,30 +211,6 @@ class App extends Component {
             .catch(e => this.setState(evolve({
                 requests: {
                     pullRequests: merge(__, objOf(requestId, createWithError(e))),
-                },
-            })));
-    }
-
-    _loadPullRequests(owner, repository) {
-        const { accessToken } = this.state;
-        const requestId = `${owner}/${repository}`;
-
-        this.setState(state => ({
-            requests: {
-                ...state.requests,
-                pullRequests: {
-                    [requestId]: createInProgress(),
-                },
-            },
-        }));
-
-        loadPullRequests(accessToken, owner, repository)
-            .then(newPullRequests => this.setState(evolve({
-                entities: {
-                    pullRequests: merge(__, indexBy(prop('id'), newPullRequests)),
-                },
-                requests: {
-                    pullRequests: merge(__, { [requestId]: createWithResult(map(prop('id'), newPullRequests)) })
                 },
             })));
     }
