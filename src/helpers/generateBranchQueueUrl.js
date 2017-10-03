@@ -1,11 +1,9 @@
-import { API_BASE_URL } from '../constants/config';
-import join from 'ramda/src/join';
+import generateBackendApiUrl from './generateBackendApiUrl';
 
 export default (owner, repository, branch) =>
-    join('/', [
-        API_BASE_URL,
+    generateBackendApiUrl([
         'queue',
         owner,
         repository,
-        branch
+        branch,
     ]);

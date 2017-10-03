@@ -39,7 +39,7 @@ const PullRequestActions = (props) => {
         repository,
     } = props;
 
-    const queueItem = findPullRequestQueueItem(pullRequest.number, branchQueue);
+    const queueItem = findPullRequestQueueItem(pullRequest.pullRequestNumber, branchQueue);
     const isUserInQueue = isQueueItemOwnedBy(user.login, queueItem);
     const isUserAdmin = repository.permissions.admin;
 
