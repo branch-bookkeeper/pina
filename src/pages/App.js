@@ -4,22 +4,20 @@ import __ from 'ramda/src/__';
 import curry from 'ramda/src/curry';
 import compose from 'ramda/src/compose';
 import values from 'ramda/src/values';
-import prop from 'ramda/src/prop';
 import evolve from 'ramda/src/evolve';
 import merge from 'ramda/src/merge';
 import pickBy from 'ramda/src/pickBy';
-import objOf from 'ramda/src/objOf';
 
 import { Route, Switch } from 'react-router-dom';
 import { GITHUB_ACCESS_TOKEN } from '../constants/localStorageKeys';
 import { entitiesShape, requestsShape } from '../redux';
 import noop from '../helpers/noop';
 import mapKeys from '../helpers/mapKeys';
-import loadPullRequest from '../helpers/loadPullRequest';
 import loadBranchQueue from '../helpers/loadBranchQueue';
 import addToBranchQueue from '../helpers/addToBranchQueue';
 import deleteFromBranchQueue from '../helpers/deleteFromBranchQueue';
-import { isMade, createInProgress, createWithResult, createWithError } from '../helpers/request';
+import { isMade, createWithError } from '../helpers/request';
+import removePrefix from '../helpers/removePrefix';
 import Home from './Home';
 import Login from './Login';
 import OAuthSuccess from './OAuthSuccess';
@@ -27,7 +25,6 @@ import OAuthFailure from './OAuthFailure';
 import Repository from './Repository';
 
 const keyHasPrefix = curry((prefix, value, key) => key.substr(0, prefix.length) === prefix);
-const removePrefix = curry((length, string) => string.substr(length));
 const filterKeysByPrefix = prefix => compose(
     mapKeys(removePrefix(prefix.length + 1)),
     pickBy(keyHasPrefix(prefix))
@@ -46,6 +43,7 @@ const renderPublicRoutes = () => {
 const propTypes = {
     loadUser: PropTypes.func,
     loadRepositories: PropTypes.func,
+    loadPullRequest: PropTypes.func,
     user: PropTypes.string,
     entities: entitiesShape,
     requests: requestsShape,
@@ -54,6 +52,7 @@ const propTypes = {
 const defaultProps = {
     loadUser: noop,
     loadRepositories: noop,
+    loadPullRequest: noop,
 };
 
 class App extends Component {
@@ -64,15 +63,12 @@ class App extends Component {
             accessToken: localStorage.getItem(GITHUB_ACCESS_TOKEN),
             user: props.user,
             entities: {
-                pullRequests: {},
                 queues: {},
                 users: props.entities.users,
                 repositories: props.entities.repositories,
+                pullRequests: props.entities.pullRequests,
             },
-            requests: {
-                ...props.requests,
-                pullRequests: {},
-            },
+            requests: props.requests,
         };
 
         this._loadUser = this._loadUser.bind(this);
@@ -91,6 +87,7 @@ class App extends Component {
                 ...state.entities,
                 users: entities.users,
                 repositories: entities.repositories,
+                pullRequests: entities.pullRequests,
             },
             requests: {
                 ...state.requests,
@@ -139,16 +136,17 @@ class App extends Component {
     _renderRepository({ match: { params: { owner, repository: repoName }, url: baseUrl } }) {
         const {
             entities: { repositories, queues, pullRequests, users },
-            requests: { repositories: repositoriesRequest, pullRequests: pullRequestsRequests },
+            requests: { repositories: repositoriesRequest, ...requests },
             user,
         } = this.state;
         const repositoryId = `${owner}/${repoName}`;
+        const filterPullRequestRequests = filterKeysByPrefix(`pullRequest/${repositoryId}`);
         const filterEntities = filterKeysByPrefix(repositoryId);
         const repository = repositories[repositoryId];
         const repositoryRequest = isMade(repositoriesRequest) && !repository
             ? createWithError('Not Found')
             : repositoriesRequest;
-        const repositoryPullRequestsRequests = filterEntities(pullRequestsRequests);
+        const repositoryPullRequestsRequests = filterPullRequestRequests(requests);
         const repositoryQueues = filterEntities(queues);
         const repositoryPullRequests = filterEntities(pullRequests);
 
@@ -191,32 +189,10 @@ class App extends Component {
     }
 
     _loadPullRequest(owner, repository, pullRequestNumber) {
+        const { loadPullRequest } = this.props;
         const { accessToken } = this.state;
-        const requestId = `${owner}/${repository}/${pullRequestNumber}`;
 
-        this.setState(state => ({
-            requests: {
-                ...state.requests,
-                pullRequests: {
-                    [requestId]: createInProgress(),
-                },
-            },
-        }));
-
-        loadPullRequest(accessToken, owner, repository, pullRequestNumber)
-            .then(newPullRequest => this.setState(evolve({
-                entities: {
-                    pullRequests: merge(__, objOf(requestId, newPullRequest) ),
-                },
-                requests: {
-                    pullRequests: merge(__, objOf(requestId, createWithResult(prop('id', newPullRequest)))),
-                },
-            })))
-            .catch(e => this.setState(evolve({
-                requests: {
-                    pullRequests: merge(__, objOf(requestId, createWithError(e))),
-                },
-            })));
+        loadPullRequest(accessToken, owner, repository, pullRequestNumber);
     }
 
     _loadBranchQueue(owner, repository, branch) {
