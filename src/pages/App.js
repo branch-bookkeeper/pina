@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import __ from 'ramda/src/__';
 import curry from 'ramda/src/curry';
 import compose from 'ramda/src/compose';
 import values from 'ramda/src/values';
-import evolve from 'ramda/src/evolve';
-import merge from 'ramda/src/merge';
 import pickBy from 'ramda/src/pickBy';
 
 import { Route, Switch } from 'react-router-dom';
@@ -13,7 +10,6 @@ import { GITHUB_ACCESS_TOKEN } from '../constants/localStorageKeys';
 import { entitiesShape, requestsShape } from '../redux';
 import noop from '../helpers/noop';
 import mapKeys from '../helpers/mapKeys';
-import loadBranchQueue from '../helpers/loadBranchQueue';
 import addToBranchQueue from '../helpers/addToBranchQueue';
 import deleteFromBranchQueue from '../helpers/deleteFromBranchQueue';
 import { isMade, createWithError } from '../helpers/request';
@@ -44,6 +40,7 @@ const propTypes = {
     loadUser: PropTypes.func,
     loadRepositories: PropTypes.func,
     loadPullRequest: PropTypes.func,
+    loadBranchQueue: PropTypes.func,
     user: PropTypes.string,
     entities: entitiesShape,
     requests: requestsShape,
@@ -53,6 +50,7 @@ const defaultProps = {
     loadUser: noop,
     loadRepositories: noop,
     loadPullRequest: noop,
+    loadBranchQueue: noop,
 };
 
 class App extends Component {
@@ -63,10 +61,10 @@ class App extends Component {
             accessToken: localStorage.getItem(GITHUB_ACCESS_TOKEN),
             user: props.user,
             entities: {
-                queues: {},
                 users: props.entities.users,
                 repositories: props.entities.repositories,
                 pullRequests: props.entities.pullRequests,
+                queues: props.entities.queues,
             },
             requests: props.requests,
         };
@@ -88,6 +86,7 @@ class App extends Component {
                 users: entities.users,
                 repositories: entities.repositories,
                 pullRequests: entities.pullRequests,
+                queues: entities.queues,
             },
             requests: {
                 ...state.requests,
@@ -196,15 +195,10 @@ class App extends Component {
     }
 
     _loadBranchQueue(owner, repository, branch) {
+        const { loadBranchQueue } = this.props;
         const { accessToken } = this.state;
-        const queueId = `${owner}/${repository}/${branch}`;
 
-        loadBranchQueue(accessToken, owner, repository, branch)
-            .then(queue => this.setState(evolve({
-                entities: {
-                    queues: merge(__, { [queueId]: queue }),
-                },
-            })));
+        loadBranchQueue(accessToken, owner, repository, branch);
     }
 
     _deleteFromBranchQueue(owner, repository, branch, queueItem) {
