@@ -4,17 +4,19 @@ import map from 'ramda/src/map';
 import evolve from 'ramda/src/evolve';
 import PropTypes from 'prop-types';
 
-import { userShape } from '../constants/propTypes';
+import { userShape, repositoryShape } from '../constants/propTypes';
 
 // Constants
 export const ENTITIES_MERGE = 'ENTITIES_MERGE';
 
 export const stateShape = PropTypes.shape({
     users: PropTypes.objectOf(userShape).isRequired,
+    repositories: PropTypes.objectOf(repositoryShape).isRequired,
 });
 
 const initialState = {
     users: {},
+    repositories: {},
 };
 
 // Reducer

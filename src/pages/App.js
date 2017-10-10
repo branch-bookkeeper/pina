@@ -3,12 +3,10 @@ import PropTypes from 'prop-types';
 import __ from 'ramda/src/__';
 import curry from 'ramda/src/curry';
 import compose from 'ramda/src/compose';
-import indexBy from 'ramda/src/indexBy';
-import map from 'ramda/src/map';
+import values from 'ramda/src/values';
 import prop from 'ramda/src/prop';
 import evolve from 'ramda/src/evolve';
 import merge from 'ramda/src/merge';
-import always from 'ramda/src/always';
 import pickBy from 'ramda/src/pickBy';
 import objOf from 'ramda/src/objOf';
 
@@ -18,7 +16,6 @@ import { entitiesShape, requestsShape } from '../redux';
 import noop from '../helpers/noop';
 import mapKeys from '../helpers/mapKeys';
 import loadPullRequest from '../helpers/loadPullRequest';
-import loadRepositories from '../helpers/loadRepositories';
 import loadBranchQueue from '../helpers/loadBranchQueue';
 import addToBranchQueue from '../helpers/addToBranchQueue';
 import deleteFromBranchQueue from '../helpers/deleteFromBranchQueue';
@@ -48,6 +45,7 @@ const renderPublicRoutes = () => {
 
 const propTypes = {
     loadUser: PropTypes.func,
+    loadRepositories: PropTypes.func,
     user: PropTypes.string,
     entities: entitiesShape,
     requests: requestsShape,
@@ -55,6 +53,7 @@ const propTypes = {
 
 const defaultProps = {
     loadUser: noop,
+    loadRepositories: noop,
 };
 
 class App extends Component {
@@ -68,11 +67,10 @@ class App extends Component {
                 pullRequests: {},
                 queues: {},
                 users: props.entities.users,
-                repositories: {},
+                repositories: props.entities.repositories,
             },
             requests: {
                 ...props.requests,
-                repositories: null,
                 pullRequests: {},
             },
         };
@@ -92,6 +90,7 @@ class App extends Component {
             entities: {
                 ...state.entities,
                 users: entities.users,
+                repositories: entities.repositories,
             },
             requests: {
                 ...state.requests,
@@ -126,7 +125,7 @@ class App extends Component {
         const { entities: { repositories }, requests: { repositories: repositoriesRequest } } = this.state;
 
         const userRepositories = isMade(repositoriesRequest)
-            ? map(repositoryId => repositories[repositoryId], repositoriesRequest.result)
+            ? values(repositories)
             : null;
 
         return (
@@ -185,23 +184,10 @@ class App extends Component {
     }
 
     _loadRepositories() {
+        const { loadRepositories } = this.props;
         const { accessToken } = this.state;
 
-        this.setState(evolve({
-            requests: {
-                repositories: always(createInProgress()),
-            },
-        }));
-
-        return loadRepositories(accessToken)
-            .then(newRepositories => this.setState(evolve({
-                entities: {
-                    repositories: merge(__, indexBy(prop('full_name'), newRepositories)),
-                },
-                requests: {
-                    repositories: always(createWithResult(map(prop('full_name'), newRepositories))),
-                },
-            })));
+        loadRepositories(accessToken);
     }
 
     _loadPullRequest(owner, repository, pullRequestNumber) {
