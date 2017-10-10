@@ -59,14 +59,6 @@ class App extends Component {
 
         this.state = {
             accessToken: localStorage.getItem(GITHUB_ACCESS_TOKEN),
-            user: props.user,
-            entities: {
-                users: props.entities.users,
-                repositories: props.entities.repositories,
-                pullRequests: props.entities.pullRequests,
-                queues: props.entities.queues,
-            },
-            requests: props.requests,
         };
 
         this._loadUser = this._loadUser.bind(this);
@@ -75,23 +67,11 @@ class App extends Component {
         this._renderRepository = this._renderRepository.bind(this);
     }
 
-    componentWillReceiveProps({ user, entities, requests }) {
+    componentWillReceiveProps() {
         const nextToken = localStorage.getItem(GITHUB_ACCESS_TOKEN);
 
         this.setState(state => ({
-            user,
             accessToken: nextToken,
-            entities: {
-                ...state.entities,
-                users: entities.users,
-                repositories: entities.repositories,
-                pullRequests: entities.pullRequests,
-                queues: entities.queues,
-            },
-            requests: {
-                ...state.requests,
-                ...requests,
-            },
         }));
     }
 
@@ -118,7 +98,7 @@ class App extends Component {
     }
 
     _renderHome() {
-        const { entities: { repositories }, requests: { repositories: repositoriesRequest } } = this.state;
+        const { entities: { repositories }, requests: { repositories: repositoriesRequest } } = this.props;
 
         const userRepositories = isMade(repositoriesRequest)
             ? values(repositories)
@@ -137,7 +117,7 @@ class App extends Component {
             entities: { repositories, queues, pullRequests, users },
             requests: { repositories: repositoriesRequest, ...requests },
             user,
-        } = this.state;
+        } = this.props;
         const repositoryId = `${owner}/${repoName}`;
         const filterPullRequestRequests = filterKeysByPrefix(`pullRequest/${repositoryId}`);
         const filterEntities = filterKeysByPrefix(repositoryId);
