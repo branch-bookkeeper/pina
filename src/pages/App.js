@@ -11,6 +11,7 @@ import { entitiesShape, requestsShape } from '../redux';
 import noop from '../helpers/noop';
 import mapKeys from '../helpers/mapKeys';
 import { isMade, createWithError } from '../helpers/request';
+import { filterRequestsByPathPrefix } from '../helpers/requestId';
 import removePrefix from '../helpers/removePrefix';
 import Home from './Home';
 import Login from './Login';
@@ -121,13 +122,15 @@ class App extends Component {
             user,
         } = this.props;
         const repositoryId = `${owner}/${repoName}`;
-        const filterPullRequestRequests = filterKeysByPrefix(`pullRequest/${repositoryId}`);
         const filterEntities = filterKeysByPrefix(repositoryId);
         const repository = repositories[repositoryId];
         const repositoryRequest = isMade(repositoriesRequest) && !repository
             ? createWithError('Not Found')
             : repositoriesRequest;
-        const repositoryPullRequestsRequests = filterPullRequestRequests(requests);
+        const repositoryRequests = {
+            repository: repositoryRequest,
+            ...filterRequestsByPathPrefix(repositoryId)(requests),
+        }
         const repositoryQueues = filterEntities(queues);
         const repositoryPullRequests = filterEntities(pullRequests);
 
@@ -141,10 +144,9 @@ class App extends Component {
                 baseUrl={baseUrl}
                 user={users[user]}
                 repository={repository}
-                repositoryRequest={repositoryRequest}
                 branchQueues={repositoryQueues}
                 pullRequests={repositoryPullRequests}
-                pullRequestsRequests={repositoryPullRequestsRequests}
+                requests={repositoryRequests}
                 loadUser={this._loadUser}
                 loadRepository={this._loadRepositories}
                 loadBranchQueue={branch => this._loadBranchQueue(owner, repoName, branch)}

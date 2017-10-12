@@ -5,8 +5,6 @@ import converge from 'ramda/src/converge';
 import objOf from 'ramda/src/objOf';
 import anyPass from 'ramda/src/anyPass';
 import path from 'ramda/src/path';
-import curry from 'ramda/src/curry';
-import map from 'ramda/src/map';
 import apply from 'ramda/src/apply';
 import concat from 'ramda/src/concat';
 import of from 'ramda/src/of';
@@ -16,6 +14,7 @@ import identity from 'ramda/src/identity';
 import fetchBranchQueue from '../../helpers/fetchBranchQueue';
 import { default as doAddToBranchQueue } from '../../helpers/addToBranchQueue';
 import { default as doDeleteFromBranchQueue } from '../../helpers/deleteFromBranchQueue';
+import pickValues from '../../helpers/pickValues';
 import removePrefix from '../../helpers/removePrefix';
 import { mergeEntities } from '../entities';
 import { requestStart, requestReset, REQUEST_SUCCESS } from './requests';
@@ -25,7 +24,6 @@ const QUEUE = 'queue/';
 const QUEUE_ADD = 'queue.add/';
 const QUEUE_DELETE = 'queue.delete/';
 
-const pickValues = curry((keys, source) => map(key => source[key], keys));
 const arrayOf = unapply(identity);
 
 // Actions
