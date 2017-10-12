@@ -1,7 +1,13 @@
 import PropTypes from 'prop-types';
 
-import { REQUEST_START, REQUEST_SUCCESS, REQUEST_ERROR } from './requests';
-import { createInProgress, createWithResult, createWithError, requestShape } from '../../helpers/request';
+import { REQUEST_START, REQUEST_SUCCESS, REQUEST_ERROR, REQUEST_RESET } from './requests';
+import {
+    createInProgress,
+    createWithResult,
+    createWithError,
+    createNotMade,
+    requestShape
+} from '../../helpers/request';
 
 export const stateShape = PropTypes.objectOf(requestShape);
 
@@ -38,6 +44,16 @@ export default function reducer(state = initialState, action) {
             state = {
                 ...state,
                 [requestId]: createWithError(error),
+            };
+
+            break;
+        }
+        case REQUEST_RESET: {
+            const { requestId } = payload;
+
+            state = {
+                ...state,
+                [requestId]: createNotMade(),
             };
 
             break;

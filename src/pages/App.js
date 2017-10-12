@@ -10,8 +10,6 @@ import { GITHUB_ACCESS_TOKEN } from '../constants/localStorageKeys';
 import { entitiesShape, requestsShape } from '../redux';
 import noop from '../helpers/noop';
 import mapKeys from '../helpers/mapKeys';
-import addToBranchQueue from '../helpers/addToBranchQueue';
-import deleteFromBranchQueue from '../helpers/deleteFromBranchQueue';
 import { isMade, createWithError } from '../helpers/request';
 import removePrefix from '../helpers/removePrefix';
 import Home from './Home';
@@ -41,6 +39,8 @@ const propTypes = {
     loadRepositories: PropTypes.func,
     loadPullRequest: PropTypes.func,
     loadBranchQueue: PropTypes.func,
+    addToBranchQueue: PropTypes.func,
+    deleteFromBranchQueue: PropTypes.func,
     user: PropTypes.string,
     entities: entitiesShape,
     requests: requestsShape,
@@ -51,6 +51,8 @@ const defaultProps = {
     loadRepositories: noop,
     loadPullRequest: noop,
     loadBranchQueue: noop,
+    addToBranchQueue: noop,
+    deleteFromBranchQueue: noop,
 };
 
 class App extends Component {
@@ -182,17 +184,17 @@ class App extends Component {
     }
 
     _deleteFromBranchQueue(owner, repository, branch, queueItem) {
+        const { deleteFromBranchQueue } = this.props;
         const { accessToken } = this.state;
 
-        deleteFromBranchQueue(accessToken, owner, repository, branch, queueItem)
-            .then(() => this._loadBranchQueue(owner, repository, branch));
+        deleteFromBranchQueue(accessToken, owner, repository, branch, queueItem);
     }
 
     _addToBranchQueue(owner, repository, branch, pullRequestNumber, username) {
+        const { addToBranchQueue } = this.props;
         const { accessToken } = this.state;
 
-        addToBranchQueue(accessToken, owner, repository, branch, pullRequestNumber, username)
-            .then(() => this._loadBranchQueue(owner, repository, branch));
+        addToBranchQueue(accessToken, owner, repository, branch, pullRequestNumber, username);
     }
 }
 

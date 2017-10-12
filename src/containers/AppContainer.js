@@ -3,7 +3,14 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import App from '../pages/App';
-import { loadUser, loadRepositories, loadPullRequest, loadBranchQueue } from '../redux/requests';
+import {
+    loadUser,
+    loadRepositories,
+    loadPullRequest,
+    loadBranchQueue,
+    addToBranchQueue,
+    deleteFromBranchQueue,
+} from '../redux/requests';
 
 const mapStateToProps = ({
     user,
@@ -20,6 +27,8 @@ const mapDispatchToProps = {
     loadRepositories,
     loadPullRequest,
     loadBranchQueue,
+    addToBranchQueue,
+    deleteFromBranchQueue,
 };
 
 export default compose(

@@ -4,7 +4,7 @@ import { requestFetchEpic } from './requests';
 import { storeUserEpic } from './user';
 import { storeRepositoriesEpic } from './repositories';
 import { storePullRequestEpic } from './pullRequests';
-import { storeBranchQueueEpic } from './queues';
+import { storeBranchQueueEpic, refreshBranchQueueOnActionEpic } from './queues';
 
 export default combineEpics(
     requestFetchEpic,
@@ -12,4 +12,5 @@ export default combineEpics(
     storeRepositoriesEpic,
     storePullRequestEpic,
     storeBranchQueueEpic,
+    refreshBranchQueueOnActionEpic,
 );
