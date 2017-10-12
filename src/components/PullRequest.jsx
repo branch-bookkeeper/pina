@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { setPropTypes } from 'recompose';
 import { OpenInNew } from 'material-ui-icons';
 
+import { requestShape } from '../helpers/request';
 import { pullRequestShape, repositoryShape, queueShape, userShape } from '../constants/propTypes';
 
 import PullRequestActions from './PullRequestActions';
@@ -15,6 +16,8 @@ const propTypes = {
     user: userShape.isRequired,
     onAddToBranchQueue: PropTypes.func,
     onRemoveFromBranchQueue: PropTypes.func,
+    addToBranchQueueRequest: requestShape,
+    removeFromBranchQueueRequest: requestShape,
 };
 
 const AlignedOpenInNew = () => <OpenInNew style={{ verticalAlign: 'middle' }} />;
@@ -27,6 +30,8 @@ const PullRequest = ({
     user,
     onAddToBranchQueue,
     onRemoveFromBranchQueue,
+    addToBranchQueueRequest,
+    removeFromBranchQueueRequest,
 }) => (
     <div>
         <h1>
@@ -46,6 +51,8 @@ const PullRequest = ({
             user={user}
             onAddToBranchQueue={onAddToBranchQueue}
             onRemoveFromBranchQueue={onRemoveFromBranchQueue}
+            addToBranchQueueRequest={addToBranchQueueRequest}
+            removeFromBranchQueueRequest={removeFromBranchQueueRequest}
         />
     </div>
 );

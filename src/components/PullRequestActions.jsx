@@ -4,6 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { setPropTypes } from 'recompose';
 
+import { requestShape, isNotMade } from '../helpers/request';
 import { pullRequestShape, repositoryShape, queueShape, userShape } from '../constants/propTypes';
 import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
 
@@ -16,6 +17,8 @@ const propTypes = {
     user: userShape.isRequired,
     onAddToBranchQueue: PropTypes.func,
     onRemoveFromBranchQueue: PropTypes.func,
+    addToBranchQueueRequest: requestShape,
+    removeFromBranchQueueRequest: requestShape,
 };
 
 const buttonStyle = {
@@ -37,21 +40,30 @@ const PullRequestActions = (props) => {
         branchQueue,
         pullRequest,
         repository,
+        addToBranchQueueRequest,
+        removeFromBranchQueueRequest,
     } = props;
 
     const queueItem = findPullRequestQueueItem(pullRequest.pullRequestNumber, branchQueue);
     const isUserInQueue = isQueueItemOwnedBy(user.login, queueItem);
     const isUserAdmin = repository.permissions.admin;
+    const bookingInProgress = !isNotMade(addToBranchQueueRequest);
+    const cancelInProgress = !isNotMade(removeFromBranchQueueRequest);
+    const requestInProgress = bookingInProgress || cancelInProgress;
 
     return (
         <div>
-            {isEmpty(queueItem) &&
+            {bookingInProgress &&
+                <button style={buttonStyle} disabled>Booking...</button>}
+            {cancelInProgress &&
+                <button style={buttonStyle} disabled>Cancelling...</button>}
+            {!requestInProgress && isEmpty(queueItem) &&
                 <button onClick={onAddToBranchQueue} style={buttonStyle}>Book as {user.login}</button>}
-            {isUserInQueue &&
+            {!requestInProgress && isUserInQueue &&
                 <button onClick={onRemoveFromBranchQueue} style={buttonStyle}>Cancel</button>}
-            {!isEmpty(queueItem) && !isUserInQueue &&
+            {!requestInProgress && !isEmpty(queueItem) && !isUserInQueue &&
                 <button disabled style={buttonStyle}><strong>{queueItem.username}</strong> is in queue to merge</button>}
-            {!isEmpty(queueItem) && !isUserInQueue && isUserAdmin &&
+            {!requestInProgress && !isEmpty(queueItem) && !isUserInQueue && isUserAdmin &&
                 <div>
                     <button onClick={onRemoveFromBranchQueue} style={dangerButtonStyle}>Cancel</button>
                     <span>Use your administrative privileges to cancel this booking</span>

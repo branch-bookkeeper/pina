@@ -25,6 +25,8 @@ const propTypes = {
     loadPullRequest: PropTypes.func,
     onAddToBranchQueue: PropTypes.func,
     onRemoveFromBranchQueue: PropTypes.func,
+    addToBranchQueueRequest: requestShape,
+    removeFromBranchQueueRequest: requestShape,
     branchQueue: queueShape,
     loadBranchQueue: PropTypes.func,
     user: userShape,
@@ -39,6 +41,8 @@ const PullRequestPage = ({
     user,
     onAddToBranchQueue,
     onRemoveFromBranchQueue,
+    addToBranchQueueRequest,
+    removeFromBranchQueueRequest,
 }) => (
     <div>
         <Link to="/">&laquo; Home</Link>
@@ -50,6 +54,8 @@ const PullRequestPage = ({
             user={user}
             onAddToBranchQueue={onAddToBranchQueue}
             onRemoveFromBranchQueue={onRemoveFromBranchQueue}
+            addToBranchQueueRequest={addToBranchQueueRequest}
+            removeFromBranchQueueRequest={removeFromBranchQueueRequest}
         />
         <div>
             <Link to={`/${repository.full_name}/${branch}`}>

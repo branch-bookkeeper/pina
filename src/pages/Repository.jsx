@@ -93,6 +93,8 @@ class Repository extends Component {
         const queue = branchQueues[branch];
         const queueItem = queue ? findPullRequestQueueItem(pullRequestNumber, queue) : null;
         const pullRequestRequest = requests[`pullRequest/${pullRequestNumber}`];
+        const addToBranchQueueRequest = requests[`queue.add/${branch}`];
+        const removeFromBranchQueueRequest = requests[`queue.delete/${branch}`];
 
         return (
             <PullRequestPage
@@ -102,6 +104,8 @@ class Repository extends Component {
                 pullRequest={pullRequest}
                 pullRequestRequest={pullRequestRequest}
                 branchQueue={queue}
+                addToBranchQueueRequest={addToBranchQueueRequest}
+                removeFromBranchQueueRequest={removeFromBranchQueueRequest}
                 loadUser={loadUser}
                 loadPullRequest={() => loadPullRequest(pullRequestNumber)}
                 loadBranchQueue={() => loadBranchQueue(branch)}
