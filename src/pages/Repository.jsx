@@ -6,10 +6,12 @@ import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 
 import noop from '../helpers/noop';
-import { requestShape, isMade, isErrored } from '../helpers/request';
+import { requestShape, isNotMade, isMade, isErrored } from '../helpers/request';
 import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
 import { userShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
 import withPreloading from '../hocs/withPreloading';
+
+import QueueCancelConfirmDialog from '../components/QueueCancelConfirmDialog';
 
 import PullRequestPage from './PullRequestPage';
 import BranchQueue from './BranchQueue';
@@ -38,39 +40,75 @@ class Repository extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            queueItemToRemove: null,
+            queueItemToRemoveBranch: null,
+            isRemoveConfirmDialogOpen: false,
+        };
+
+        this.handleQueueItemDelete = this.handleQueueItemDelete.bind(this);
+        this.canDeleteQueueItem = this.canDeleteQueueItem.bind(this);
+        this.isDeletingQueueItem = this.isDeletingQueueItem.bind(this);
+        this.handleDeleteCancel = this.handleDeleteCancel.bind(this);
+        this.handleDeleteConfirm = this.handleDeleteConfirm.bind(this);
         this._renderBranchQueuePage = this._renderBranchQueuePage.bind(this);
         this._renderPullRequestPage = this._renderPullRequestPage.bind(this);
     }
 
     render() {
-        const { baseUrl } = this.props;
+        const { baseUrl, user } = this.props;
+        const {
+            queueItemToRemove,
+            isRemoveConfirmDialogOpen,
+        } = this.state;
 
         return (
-            <Switch>
-                <Route
-                    exact
-                    path={`${baseUrl}/:branch`}
-                    render={this._renderBranchQueuePage}
-                />
-                <Route
-                    exact
-                    path={`${baseUrl}/:branch/:pullRequest`}
-                    render={this._renderPullRequestPage}
-                />
-                <Route component={NotFound} />
-            </Switch>
+            <div>
+                <Switch>
+                    <Route
+                        exact
+                        path={`${baseUrl}/:branch`}
+                        render={this._renderBranchQueuePage}
+                    />
+                    <Route
+                        exact
+                        path={`${baseUrl}/:branch/:pullRequest`}
+                        render={this._renderPullRequestPage}
+                    />
+                    <Route component={NotFound} />
+                </Switch>
+                {queueItemToRemove &&
+                    <QueueCancelConfirmDialog
+                        open={isRemoveConfirmDialogOpen}
+                        queueItemToRemove={queueItemToRemove}
+                        currentUser={user}
+                        onCancel={this.handleDeleteCancel}
+                        onConfirm={this.handleDeleteConfirm}
+                    />}
+            </div>
         );
     }
 
     _renderBranchQueuePage({ match: { params: { branch } } }) {
-        const { repository, branchQueues, loadBranchQueue } = this.props;
+        const {
+            user,
+            repository,
+            branchQueues,
+            loadUser,
+            loadBranchQueue,
+        } = this.props;
 
         return (
             <BranchQueue
+                user={user}
                 repository={repository}
                 branch={branch}
                 queue={branchQueues[branch]}
+                loadUser={loadUser}
                 loadBranchQueue={() => loadBranchQueue(branch)}
+                onRemoveFromBranchQueue={queueItem => this.handleQueueItemDelete(branch, queueItem)}
+                canRemoveFromBranchQueue={this.canDeleteQueueItem}
+                isRemovingFromBranchQueue={this.isDeletingQueueItem}
             />
         );
     }
@@ -114,13 +152,57 @@ class Repository extends Component {
             />
         );
     }
+
+    handleQueueItemDelete(branch, queueItemToRemove) {
+        this.setState({
+            isRemoveConfirmDialogOpen: true,
+            queueItemToRemoveBranch: branch,
+            queueItemToRemove,
+        });
+    }
+
+    canDeleteQueueItem(queueItem) {
+        const { user, repository } = this.props;
+
+        return repository.permissions.admin || queueItem.username === user.login;
+    }
+
+    isDeletingQueueItem(queueItem) {
+        const { requests } = this.props;
+        const { queueItemToRemove, queueItemToRemoveBranch } = this.state;
+        const removeFromBranchQueueRequest = requests[`queue.delete/${queueItemToRemoveBranch}`];
+
+        return !isNotMade(removeFromBranchQueueRequest)
+            && queueItem === queueItemToRemove;
+    }
+
+    handleDeleteCancel() {
+        this.setState({
+            isRemoveConfirmDialogOpen: false,
+        });
+    }
+
+    handleDeleteConfirm() {
+        const { onRemoveFromBranchQueue } = this.props;
+        const { queueItemToRemove, queueItemToRemoveBranch } = this.state;
+
+        this.setState({
+            isRemoveConfirmDialogOpen: false,
+        });
+        onRemoveFromBranchQueue(queueItemToRemoveBranch, queueItemToRemove);
+    }
 }
 
 Repository.propTypes = propTypes;
 Repository.defaultProps = defaultProps;
 
-const isLoadingNeeded = ({ requests: { repository: repositoryRequest } }) => !isMade(repositoryRequest);
-const load = ({ loadRepository }) => loadRepository();
+const isLoadingNeeded = ({ requests: { repository: repositoryRequest }, user }) =>
+    !isMade(repositoryRequest) || !user;
+
+const load = ({ requests: { repository: repositoryRequest }, loadRepository, user, loadUser }) => {
+    !isMade(repositoryRequest) && loadRepository();
+    !user && loadUser();
+}
 
 export default compose(
     branch(

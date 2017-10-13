@@ -19,9 +19,19 @@ const propTypes = {
     branch: PropTypes.string.isRequired,
     queue: queueShape.isRequired,
     loadBranchQueue: PropTypes.func,
+    onRemoveFromBranchQueue: PropTypes.func,
+    canRemoveFromBranchQueue: PropTypes.func,
+    isRemovingFromBranchQueue: PropTypes.func,
 };
 
-const BranchQueue = ({ queue, repository, branch }) => (
+const BranchQueue = ({
+    queue,
+    repository,
+    branch,
+    onRemoveFromBranchQueue,
+    canRemoveFromBranchQueue,
+    isRemovingFromBranchQueue,
+}) => (
     <div>
         <Link to="/">&laquo; Home</Link>
         <h1><BranchName branch={branch} /></h1>
@@ -30,7 +40,14 @@ const BranchQueue = ({ queue, repository, branch }) => (
                 {repository.full_name} <AlignedOpenInNew />
             </a>
         </h2>
-        {queue && <Queue repository={repository} queue={queue} />}
+        {queue &&
+            <Queue
+                repository={repository}
+                queue={queue}
+                onDeleteItem={onRemoveFromBranchQueue}
+                canDeleteItem={canRemoveFromBranchQueue}
+                isDeletingItem={isRemovingFromBranchQueue}
+            />}
     </div>
 );
 
