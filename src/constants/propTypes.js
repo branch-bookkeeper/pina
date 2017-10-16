@@ -35,4 +35,9 @@ export const repositoryShape = PropTypes.shape({
     full_name: PropTypes.string.isRequired,
     default_branch: PropTypes.string.isRequired,
     html_url: PropTypes.string.isRequired,
+    permissions: PropTypes.shape({
+        admin: PropTypes.bool.isRequired,
+        push: PropTypes.bool.isRequired,
+        pull: PropTypes.bool.isRequired,
+    }).isRequired,
 });
