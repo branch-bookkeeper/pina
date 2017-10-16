@@ -124,7 +124,6 @@ class Repository extends Component {
             loadBranchQueue,
             loadPullRequest,
             onAddToBranchQueue,
-            onRemoveFromBranchQueue,
         } = this.props;
         const pullRequestNumber = parseInt(pullRequestString, 10);
         const pullRequest = pullRequests[pullRequestNumber];
@@ -148,7 +147,7 @@ class Repository extends Component {
                 loadPullRequest={() => loadPullRequest(pullRequestNumber)}
                 loadBranchQueue={() => loadBranchQueue(branch)}
                 onAddToBranchQueue={() => onAddToBranchQueue(branch, pullRequestNumber)}
-                onRemoveFromBranchQueue={() => onRemoveFromBranchQueue(branch, queueItem)}
+                onRemoveFromBranchQueue={() => this.handleQueueItemDelete(branch, queueItem)}
             />
         );
     }
