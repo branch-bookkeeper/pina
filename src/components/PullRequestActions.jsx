@@ -53,16 +53,21 @@ const PullRequestActions = (props) => {
 
     return (
         <div>
+            {isUserInQueue &&
+                <button disabled style={buttonStyle}>You are in queue to merge</button>}
+            {!isEmpty(queueItem) && !isUserInQueue &&
+                <button disabled style={buttonStyle}><strong>{queueItem.username}</strong> is in queue to merge</button>}
             {bookingInProgress &&
                 <button style={buttonStyle} disabled>Booking...</button>}
             {cancelInProgress &&
-                <button style={buttonStyle} disabled>Cancelling...</button>}
+                <div><button style={buttonStyle} disabled>Cancelling...</button></div>}
             {!requestInProgress && isEmpty(queueItem) &&
                 <button onClick={onAddToBranchQueue} style={buttonStyle}>Book as {user.login}</button>}
             {!requestInProgress && isUserInQueue &&
-                <button onClick={onRemoveFromBranchQueue} style={buttonStyle}>Cancel</button>}
-            {!requestInProgress && !isEmpty(queueItem) && !isUserInQueue &&
-                <button disabled style={buttonStyle}><strong>{queueItem.username}</strong> is in queue to merge</button>}
+                <div>
+                    <button onClick={onRemoveFromBranchQueue} style={buttonStyle}>Cancel</button>
+                    <span>Click to cancel this booking</span>
+                </div>}
             {!requestInProgress && !isEmpty(queueItem) && !isUserInQueue && isUserAdmin &&
                 <div>
                     <button onClick={onRemoveFromBranchQueue} style={dangerButtonStyle}>Cancel</button>
