@@ -1,5 +1,5 @@
 import compose from 'ramda/src/compose';
-import prop from 'ramda/src/prop';
+import path from 'ramda/src/path';
 import { branch, renderComponent } from 'recompose';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
@@ -19,10 +19,9 @@ const propTypes = {
     baseUrl: PropTypes.string.isRequired,
     user: userShape,
     repository: repositoryShape,
-    repositoryRequest: requestShape.isRequired,
     branchQueues: PropTypes.objectOf(queueShape).isRequired,
     pullRequests: PropTypes.objectOf(pullRequestShape).isRequired,
-    pullRequestsRequests: PropTypes.objectOf(requestShape).isRequired,
+    requests: PropTypes.objectOf(requestShape).isRequired,
     loadUser: PropTypes.func,
     loadRepository: PropTypes.func,
     loadBranchQueue: PropTypes.func,
@@ -81,8 +80,8 @@ class Repository extends Component {
             user,
             repository,
             pullRequests,
-            pullRequestsRequests,
             branchQueues,
+            requests,
             loadUser,
             loadBranchQueue,
             loadPullRequest,
@@ -93,7 +92,9 @@ class Repository extends Component {
         const pullRequest = pullRequests[pullRequestNumber];
         const queue = branchQueues[branch];
         const queueItem = queue ? findPullRequestQueueItem(pullRequestNumber, queue) : null;
-        const pullRequestRequest = pullRequestsRequests[pullRequestNumber];
+        const pullRequestRequest = requests[`pullRequest/${pullRequestNumber}`];
+        const addToBranchQueueRequest = requests[`queue.add/${branch}`];
+        const removeFromBranchQueueRequest = requests[`queue.delete/${branch}`];
 
         return (
             <PullRequestPage
@@ -103,6 +104,8 @@ class Repository extends Component {
                 pullRequest={pullRequest}
                 pullRequestRequest={pullRequestRequest}
                 branchQueue={queue}
+                addToBranchQueueRequest={addToBranchQueueRequest}
+                removeFromBranchQueueRequest={removeFromBranchQueueRequest}
                 loadUser={loadUser}
                 loadPullRequest={() => loadPullRequest(pullRequestNumber)}
                 loadBranchQueue={() => loadBranchQueue(branch)}
@@ -116,12 +119,12 @@ class Repository extends Component {
 Repository.propTypes = propTypes;
 Repository.defaultProps = defaultProps;
 
-const isLoadingNeeded = ({ repositoryRequest }) => !isMade(repositoryRequest);
+const isLoadingNeeded = ({ requests: { repository: repositoryRequest } }) => !isMade(repositoryRequest);
 const load = ({ loadRepository }) => loadRepository();
 
 export default compose(
     branch(
-        compose(isErrored, prop('repositoryRequest')),
+        compose(isErrored, path(['requests', 'repository'])),
         renderComponent(NotFound),
     ),
     withPreloading(isLoadingNeeded, load),

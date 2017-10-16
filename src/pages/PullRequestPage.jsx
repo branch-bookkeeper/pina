@@ -1,5 +1,6 @@
 import prop from 'ramda/src/prop';
 import compose from 'ramda/src/compose';
+import isNil from 'ramda/src/isNil';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -8,6 +9,7 @@ import { branch, renderComponent, setPropTypes, defaultProps } from 'recompose';
 import noop from '../helpers/noop';
 import { requestShape, isMade, isErrored } from '../helpers/request';
 import withPreloading from '../hocs/withPreloading';
+import renderNothingIf from '../hocs/renderNothingIf';
 import NotFound from './NotFound';
 
 import { userShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
@@ -23,6 +25,8 @@ const propTypes = {
     loadPullRequest: PropTypes.func,
     onAddToBranchQueue: PropTypes.func,
     onRemoveFromBranchQueue: PropTypes.func,
+    addToBranchQueueRequest: requestShape,
+    removeFromBranchQueueRequest: requestShape,
     branchQueue: queueShape,
     loadBranchQueue: PropTypes.func,
     user: userShape,
@@ -37,6 +41,8 @@ const PullRequestPage = ({
     user,
     onAddToBranchQueue,
     onRemoveFromBranchQueue,
+    addToBranchQueueRequest,
+    removeFromBranchQueueRequest,
 }) => (
     <div>
         <Link to="/">&laquo; Home</Link>
@@ -48,6 +54,8 @@ const PullRequestPage = ({
             user={user}
             onAddToBranchQueue={onAddToBranchQueue}
             onRemoveFromBranchQueue={onRemoveFromBranchQueue}
+            addToBranchQueueRequest={addToBranchQueueRequest}
+            removeFromBranchQueueRequest={removeFromBranchQueueRequest}
         />
         <div>
             <Link to={`/${repository.full_name}/${branch}`}>
@@ -77,9 +85,11 @@ export default compose(
         loadUser: noop,
     }),
     setPropTypes(propTypes),
+    withPreloading(isLoadingNeeded, load),
     branch(
         compose(isErrored, prop('pullRequestRequest')),
         renderComponent(NotFound),
     ),
-    withPreloading(isLoadingNeeded, load),
+    // Account for a temporary misalignment between network request state and entity being present.
+    renderNothingIf(compose(isNil, prop('pullRequest'))),
 )(PullRequestPage);

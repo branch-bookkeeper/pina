@@ -1,6 +1,6 @@
-import loadPullRequest from './loadPullRequest';
+import fetchPullRequest from './fetchPullRequest';
 
-describe('loadPullRequest', () => {
+describe('fetchPullRequest', () => {
     beforeEach(() => {
         fetch.resetMocks();
     });
@@ -8,7 +8,7 @@ describe('loadPullRequest', () => {
     it('should fetch from the right URL using the provided access token', () => {
         fetch.mockResponseOnce(JSON.stringify({}));
 
-        return loadPullRequest('ACCESS_TOKEN', 'foo', 'bar', 333)
+        return fetchPullRequest('ACCESS_TOKEN', 'foo', 'bar', 333)
             .then(pullRequest => {
                 expect(fetch).toHaveBeenCalledWith(
                     'http://localhost:3000/pull-request/foo/bar/333',
@@ -25,7 +25,7 @@ describe('loadPullRequest', () => {
 
         fetch.mockResponseOnce(JSON.stringify(pullRequestData));
 
-        return loadPullRequest('ACCESS_TOKEN', 'foo', 'bar', 333)
+        return fetchPullRequest('ACCESS_TOKEN', 'foo', 'bar', 333)
             .then(pullRequest => {
                 expect(pullRequest).toEqual(pullRequestData);
             });
@@ -34,7 +34,7 @@ describe('loadPullRequest', () => {
     it('should fail when the result is empty', () => {
         fetch.mockResponseOnce('');
 
-        return loadPullRequest('ACCESS_TOKEN', 'foo', 'bar', 333)
+        return fetchPullRequest('ACCESS_TOKEN', 'foo', 'bar', 333)
             .then(() => fail('Should never reach this point'))
             .catch(e => {
                 expect(e).toBeInstanceOf(Error);
@@ -44,7 +44,7 @@ describe('loadPullRequest', () => {
     it('should fail when the status code is not one of success', () => {
         fetch.mockResponseOnce('', { status: 404, statusText: 'Not Found' });
 
-        return loadPullRequest('ACCESS_TOKEN', 'foo', 'bar', 333)
+        return fetchPullRequest('ACCESS_TOKEN', 'foo', 'bar', 333)
             .then(result => fail('Should never reach this point'))
             .catch(e => {
                 expect(e).toBeInstanceOf(Error);
