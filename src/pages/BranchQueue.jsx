@@ -56,10 +56,10 @@ const isLoadingNeeded = ({ queue }) => !queue;
 const load = ({ loadBranchQueue }) => loadBranchQueue();
 
 export default compose(
+    withPreloading(isLoadingNeeded, load),
     setPropTypes(propTypes),
     defaultProps({
         loadBranchQueue: noop,
     }),
-    withPreloading(isLoadingNeeded, load),
     pure,
 )(BranchQueue);
