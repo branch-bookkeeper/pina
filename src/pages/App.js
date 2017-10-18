@@ -13,6 +13,8 @@ import mapKeys from '../helpers/mapKeys';
 import { isMade, createWithError } from '../helpers/request';
 import { filterRequestsByPathPrefix } from '../helpers/requestId';
 import removePrefix from '../helpers/removePrefix';
+
+import TopBarContainer from '../containers/TopBarContainer';
 import Home from './Home';
 import Login from './Login';
 import OAuthSuccess from './OAuthSuccess';
@@ -85,18 +87,25 @@ class App extends Component {
     }
 
     _renderPrivateRoutes() {
+        const { loadUser } = this.props;
+        const { accessToken } = this.state;
+
         return (
-            <Switch>
-                <Route
-                    path="/:owner/:repository"
-                    render={this._renderRepository}
-                />
-                <Route
-                    exact
-                    path="/"
-                    render={this._renderHome}
-                />
-            </Switch>
+            <div>
+                <TopBarContainer loadUser={() => loadUser(accessToken)} />
+                <div style={{ height: 20 }} />
+                <Switch>
+                    <Route
+                        path="/:owner/:repository"
+                        render={this._renderRepository}
+                    />
+                    <Route
+                        exact
+                        path="/"
+                        render={this._renderHome}
+                    />
+                </Switch>
+            </div>
         );
     }
 
