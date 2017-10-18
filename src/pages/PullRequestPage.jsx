@@ -67,12 +67,10 @@ const PullRequestPage = ({
 
 const isLoadingNeeded = ({ pullRequestRequest, user, branchQueue }) =>
     !isMade(pullRequestRequest)
-    || !user
     || !branchQueue;
 
 const load = ({ pullRequestRequest, user, branchQueue, loadPullRequest, loadUser, loadBranchQueue }) => {
     !isMade(pullRequestRequest) && loadPullRequest();
-    !user && loadUser();
     !branchQueue && loadBranchQueue();
 }
 

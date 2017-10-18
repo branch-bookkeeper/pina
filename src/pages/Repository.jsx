@@ -198,9 +198,8 @@ Repository.defaultProps = defaultProps;
 const isLoadingNeeded = ({ requests: { repository: repositoryRequest }, user }) =>
     !isMade(repositoryRequest) || !user;
 
-const load = ({ requests: { repository: repositoryRequest }, loadRepository, user, loadUser }) => {
+const load = ({ requests: { repository: repositoryRequest }, loadRepository }) => {
     !isMade(repositoryRequest) && loadRepository();
-    !user && loadUser();
 }
 
 export default compose(
