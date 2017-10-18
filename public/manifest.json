@@ -1,0 +1,12 @@
+{
+  "name": "Branch Bookkeeper",
+  "short_name": "Branch Bookkeeper",
+  "start_url": "/",
+  "display": "standalone",
+  "gcm_sender_id": "482941778795",
+  "orientation": "any",
+  "theme_color": "#54b4eb",
+  "background_color": "white",
+  "lang": "en-US",
+  "description": "Branch Bookkeeper"
+}
