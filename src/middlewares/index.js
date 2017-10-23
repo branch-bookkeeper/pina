@@ -1,10 +1,14 @@
 import { applyMiddleware } from 'redux';
-import { createEpicMiddleware } from 'redux-observable';
+import { createEpicMiddleware, combineEpics } from 'redux-observable';
 
 import { epics as requestsEpics } from '../redux/requests';
+import { epics as pushEpics } from '../redux/push';
 
 export default applyMiddleware(
     createEpicMiddleware(
-        requestsEpics,
+        combineEpics(
+            requestsEpics,
+            pushEpics,
+        ),
     ),
 );

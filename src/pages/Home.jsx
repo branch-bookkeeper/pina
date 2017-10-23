@@ -6,13 +6,10 @@ import { repositoryShape } from '../constants/propTypes';
 import RepositoriesList from '../components/RepositoriesList';
 
 const Home = ({ repositories, loadRepositories }) => (
-    <div>
-        <h1>Branch Bookkeeper</h1>
-        <RepositoriesList
-            repositories={repositories}
-            loadRepositories={loadRepositories}
-        />
-    </div>
+    <RepositoriesList
+        repositories={repositories}
+        loadRepositories={loadRepositories}
+    />
 );
 
 Home.propTypes = {
