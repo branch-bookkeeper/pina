@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import curry from 'ramda/src/curry';
 import compose from 'ramda/src/compose';
-import values from 'ramda/src/values';
 import pickBy from 'ramda/src/pickBy';
 
 import { Route, Switch } from 'react-router-dom';
@@ -15,7 +14,7 @@ import { filterRequestsByPathPrefix } from '../helpers/requestId';
 import removePrefix from '../helpers/removePrefix';
 
 import TopBarContainer from '../containers/TopBarContainer';
-import Home from './Home';
+import HomeContainer from '../containers/HomeContainer';
 import Login from './Login';
 import OAuthSuccess from './OAuthSuccess';
 import OAuthFailure from './OAuthFailure';
@@ -115,17 +114,10 @@ class App extends Component {
     }
 
     _renderHome() {
-        const { entities: { repositories }, requests: { repositories: repositoriesRequest } } = this.props;
-
-        const userRepositories = isMade(repositoriesRequest)
-            ? values(repositories)
-            : null;
+        const { accessToken } = this.state;
 
         return (
-            <Home
-                repositories={userRepositories}
-                loadRepositories={this._loadRepositories}
-            />
+            <HomeContainer accessToken={accessToken} />
         )
     }
 
