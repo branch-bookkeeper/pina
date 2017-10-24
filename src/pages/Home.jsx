@@ -5,16 +5,16 @@ import { repositoryShape } from '../constants/propTypes';
 
 import RepositoriesList from '../components/RepositoriesList';
 
-const Home = ({ repositories, loadRepositories }) => (
+const propTypes = {
+    repositories: PropTypes.arrayOf(repositoryShape),
+};
+
+const Home = ({ repositories }) => (
     <RepositoriesList
         repositories={repositories}
-        loadRepositories={loadRepositories}
     />
 );
 
-Home.propTypes = {
-    repositories: PropTypes.arrayOf(repositoryShape),
-    loadRepositories: PropTypes.func,
-};
+Home.propTypes = propTypes;
 
 export default Home;
