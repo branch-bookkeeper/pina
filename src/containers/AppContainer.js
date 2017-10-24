@@ -5,6 +5,8 @@ import { withRouter } from 'react-router-dom';
 import App from '../pages/App';
 import {
     loadUser,
+    loadInstallations,
+    loadInstallationRepositories,
     loadRepositories,
     loadPullRequest,
     loadBranchQueue,
@@ -24,6 +26,8 @@ const mapStateToProps = ({
 
 const mapDispatchToProps = {
     loadUser,
+    loadInstallations,
+    loadInstallationRepositories,
     loadRepositories,
     loadPullRequest,
     loadBranchQueue,
