@@ -40,7 +40,6 @@ const propTypes = {
     loadUser: PropTypes.func,
     loadInstallations: PropTypes.func,
     loadInstallationRepositories: PropTypes.func,
-    loadRepositories: PropTypes.func,
     loadPullRequest: PropTypes.func,
     loadBranchQueue: PropTypes.func,
     addToBranchQueue: PropTypes.func,
@@ -54,7 +53,6 @@ const defaultProps = {
     loadUser: noop,
     loadInstallations: noop,
     loadInstallationRepositories: noop,
-    loadRepositories: noop,
     loadPullRequest: noop,
     loadBranchQueue: noop,
     addToBranchQueue: noop,
@@ -71,7 +69,6 @@ class App extends Component {
 
         this._loadUser = this._loadUser.bind(this);
         this._loadInstallations = this._loadInstallations.bind(this);
-        this._loadRepositories = this._loadRepositories.bind(this);
         this._renderHome = this._renderHome.bind(this);
         this._renderRepository = this._renderRepository.bind(this);
     }
@@ -190,13 +187,6 @@ class App extends Component {
         const { accessToken } = this.state;
 
         loadInstallationRepositories(accessToken, installationOwner, installationId);
-    }
-
-    _loadRepositories() {
-        const { loadRepositories } = this.props;
-        const { accessToken } = this.state;
-
-        loadRepositories(accessToken);
     }
 
     _loadPullRequest(owner, repository, pullRequestNumber) {

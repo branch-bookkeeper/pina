@@ -21,7 +21,7 @@ import withPreloading from '../hocs/withPreloading';
 import Home from '../pages/Home';
 
 const isInstallationsLoadingNeeded = ({ installationsRequest }) => !isMade(installationsRequest);
-const doLoadInstallations = ({ loadInstallations }) => loadInstallations();
+const doLoadInstallations = ({ loadInstallations, accessToken }) => loadInstallations(accessToken);
 
 const isRepositoriesLoadingNeeded = ({ installations, installationRepositoriesRequests }) =>
     compose(
