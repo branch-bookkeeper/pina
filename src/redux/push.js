@@ -108,7 +108,7 @@ const pushNotificationsInitEpic = (action$, { getState, dispatch }) =>
                 pushNotificationsUpdateSubscription
             );
 
-            OneSignal.push(() => {
+            OneSignal && OneSignal.push(() => {
                 OneSignal.init({
                     appId: ONESIGNAL_APP_ID,
                     autoRegister: false,
