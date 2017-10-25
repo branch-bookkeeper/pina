@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
-import { FormControlLabel, FormGroup } from 'material-ui/Form';
+import FormControlLabel from 'material-ui/Form/FormControlLabel';
+import FormGroup from 'material-ui/Form/FormGroup';
 import Switch from 'material-ui/Switch';
 
 import { pushShape } from '../redux';
