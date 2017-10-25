@@ -4,6 +4,8 @@ import prop from 'ramda/src/prop';
 import path from 'ramda/src/path';
 import compose from 'ramda/src/compose';
 import objOf from 'ramda/src/objOf';
+import { filter } from 'rxjs/operators/filter';
+import { map } from 'rxjs/operators/map';
 
 import fetchInstallationRepositories from '../../helpers/fetchInstallationRepositories';
 import { mergeEntities } from '../entities';
@@ -18,11 +20,12 @@ export const loadInstallationRepositories = (accessToken, installationOwner, ins
 
 // Epics
 export const storeInstallationRepositoriesEpic = action$ =>
-    action$.ofType(REQUEST_SUCCESS)
-        .filter(requestIdStartsWith('repositories/'))
-        .map(compose(
+    action$.ofType(REQUEST_SUCCESS).pipe(
+        filter(requestIdStartsWith('repositories/')),
+        map(compose(
             objOf('repositories'),
             indexBy(prop('full_name')),
             path(['payload', 'result'])
-        ))
-        .map(mergeEntities);
+        )),
+        map(mergeEntities),
+    );

@@ -3,6 +3,8 @@ import indexBy from 'ramda/src/indexBy';
 import path from 'ramda/src/path';
 import compose from 'ramda/src/compose';
 import objOf from 'ramda/src/objOf';
+import { filter } from 'rxjs/operators/filter';
+import { map } from 'rxjs/operators/map';
 
 import fetchUserInstallations from '../../helpers/fetchUserInstallations';
 import { mergeEntities } from '../entities';
@@ -17,11 +19,12 @@ export const loadInstallations = accessToken => requestStart(
 
 // Epics
 export const storeInstallationsEpic = action$ =>
-    action$.ofType(REQUEST_SUCCESS)
-        .filter(requestIdEq('installations'))
-        .map(compose(
+    action$.ofType(REQUEST_SUCCESS).pipe(
+        filter(requestIdEq('installations')),
+        map(compose(
             objOf('installations'),
             indexBy(path(['account', 'login'])),
             path(['payload', 'result'])
-        ))
-        .map(mergeEntities);
+        )),
+        map(mergeEntities),
+    );
