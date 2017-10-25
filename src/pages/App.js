@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import curry from 'ramda/src/curry';
 import compose from 'ramda/src/compose';
-import values from 'ramda/src/values';
 import pickBy from 'ramda/src/pickBy';
 
 import { Route, Switch } from 'react-router-dom';
@@ -15,7 +14,7 @@ import { filterRequestsByPathPrefix } from '../helpers/requestId';
 import removePrefix from '../helpers/removePrefix';
 
 import TopBarContainer from '../containers/TopBarContainer';
-import Home from './Home';
+import HomeContainer from '../containers/HomeContainer';
 import Login from './Login';
 import OAuthSuccess from './OAuthSuccess';
 import OAuthFailure from './OAuthFailure';
@@ -39,7 +38,8 @@ const renderPublicRoutes = () => {
 
 const propTypes = {
     loadUser: PropTypes.func,
-    loadRepositories: PropTypes.func,
+    loadInstallations: PropTypes.func,
+    loadInstallationRepositories: PropTypes.func,
     loadPullRequest: PropTypes.func,
     loadBranchQueue: PropTypes.func,
     addToBranchQueue: PropTypes.func,
@@ -51,7 +51,8 @@ const propTypes = {
 
 const defaultProps = {
     loadUser: noop,
-    loadRepositories: noop,
+    loadInstallations: noop,
+    loadInstallationRepositories: noop,
     loadPullRequest: noop,
     loadBranchQueue: noop,
     addToBranchQueue: noop,
@@ -67,7 +68,7 @@ class App extends Component {
         };
 
         this._loadUser = this._loadUser.bind(this);
-        this._loadRepositories = this._loadRepositories.bind(this);
+        this._loadInstallations = this._loadInstallations.bind(this);
         this._renderHome = this._renderHome.bind(this);
         this._renderRepository = this._renderRepository.bind(this);
     }
@@ -110,33 +111,32 @@ class App extends Component {
     }
 
     _renderHome() {
-        const { entities: { repositories }, requests: { repositories: repositoriesRequest } } = this.props;
-
-        const userRepositories = isMade(repositoriesRequest)
-            ? values(repositories)
-            : null;
+        const { accessToken } = this.state;
 
         return (
-            <Home
-                repositories={userRepositories}
-                loadRepositories={this._loadRepositories}
-            />
+            <HomeContainer accessToken={accessToken} />
         )
     }
 
     _renderRepository({ match: { params: { owner, repository: repoName }, url: baseUrl } }) {
         const {
-            entities: { repositories, queues, pullRequests, users },
-            requests: { repositories: repositoriesRequest, ...requests },
+            entities: { installations, repositories, queues, pullRequests, users },
+            requests: {
+                installations: installationsRequest,
+                [`repositories/${owner}`]: repositoriesRequest,
+                ...requests,
+            },
             user,
         } = this.props;
         const repositoryId = `${owner}/${repoName}`;
         const filterEntities = filterKeysByPrefix(repositoryId);
+        const installation = installations[owner];
         const repository = repositories[repositoryId];
         const repositoryRequest = isMade(repositoriesRequest) && !repository
             ? createWithError('Not Found')
             : repositoriesRequest;
         const repositoryRequests = {
+            installation: installationsRequest,
             repository: repositoryRequest,
             ...filterRequestsByPathPrefix(repositoryId)(requests),
         }
@@ -152,12 +152,14 @@ class App extends Component {
             <Repository
                 baseUrl={baseUrl}
                 user={users[user]}
+                installation={installation}
                 repository={repository}
                 branchQueues={repositoryQueues}
                 pullRequests={repositoryPullRequests}
                 requests={repositoryRequests}
                 loadUser={this._loadUser}
-                loadRepository={this._loadRepositories}
+                loadInstallation={this._loadInstallations}
+                loadRepository={() => this._loadInstallationRepositories(owner, installation.id)}
                 loadBranchQueue={branch => this._loadBranchQueue(owner, repoName, branch)}
                 loadPullRequest={pullRequestNumber => this._loadPullRequest(owner, repoName, pullRequestNumber)}
                 onAddToBranchQueue={onAddToBranchQueue}
@@ -173,11 +175,18 @@ class App extends Component {
         loadUser(accessToken);
     }
 
-    _loadRepositories() {
-        const { loadRepositories } = this.props;
+    _loadInstallations() {
+        const { loadInstallations } = this.props;
         const { accessToken } = this.state;
 
-        loadRepositories(accessToken);
+        loadInstallations(accessToken);
+    }
+
+    _loadInstallationRepositories(installationOwner, installationId) {
+        const { loadInstallationRepositories } = this.props;
+        const { accessToken } = this.state;
+
+        loadInstallationRepositories(accessToken, installationOwner, installationId);
     }
 
     _loadPullRequest(owner, repository, pullRequestNumber) {

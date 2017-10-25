@@ -1,5 +1,7 @@
 import compose from 'ramda/src/compose';
 import path from 'ramda/src/path';
+import prop from 'ramda/src/prop';
+import isNil from 'ramda/src/isNil';
 import { branch, renderComponent } from 'recompose';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
@@ -8,8 +10,9 @@ import { Switch, Route } from 'react-router-dom';
 import noop from '../helpers/noop';
 import { requestShape, isNotMade, isMade, isErrored } from '../helpers/request';
 import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
-import { userShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
+import { userShape, installationShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
 import withPreloading from '../hocs/withPreloading';
+import renderNothingIf from '../hocs/renderNothingIf';
 
 import QueueCancelConfirmDialog from '../components/QueueCancelConfirmDialog';
 
@@ -20,11 +23,13 @@ import NotFound from './NotFound';
 const propTypes = {
     baseUrl: PropTypes.string.isRequired,
     user: userShape,
+    installation: installationShape,
     repository: repositoryShape,
     branchQueues: PropTypes.objectOf(queueShape).isRequired,
     pullRequests: PropTypes.objectOf(pullRequestShape).isRequired,
     requests: PropTypes.objectOf(requestShape).isRequired,
     loadUser: PropTypes.func,
+    loadInstallation: PropTypes.func,
     loadRepository: PropTypes.func,
     loadBranchQueue: PropTypes.func,
     loadPullRequest: PropTypes.func,
@@ -33,6 +38,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+    loadInstallation: noop,
     loadRepository: noop,
 };
 
@@ -195,10 +201,16 @@ class Repository extends Component {
 Repository.propTypes = propTypes;
 Repository.defaultProps = defaultProps;
 
-const isLoadingNeeded = ({ requests: { repository: repositoryRequest }, user }) =>
+const isInstallationLoadingNeeded = ({ requests: { installation: installationRequest }, user }) =>
+    !isMade(installationRequest);
+
+const loadInstallation = ({ requests: { installation: installationRequest }, loadInstallation }) =>
+    loadInstallation();
+
+const isRepositoryLoadingNeeded = ({ requests: { repository: repositoryRequest }, user }) =>
     !isMade(repositoryRequest) || !user;
 
-const load = ({ requests: { repository: repositoryRequest }, loadRepository }) => {
+const loadRepository = ({ requests: { repository: repositoryRequest }, loadRepository }) => {
     !isMade(repositoryRequest) && loadRepository();
 }
 
@@ -207,5 +219,7 @@ export default compose(
         compose(isErrored, path(['requests', 'repository'])),
         renderComponent(NotFound),
     ),
-    withPreloading(isLoadingNeeded, load),
+    withPreloading(isInstallationLoadingNeeded, loadInstallation),
+    renderNothingIf(compose(isNil, prop('installation'))),
+    withPreloading(isRepositoryLoadingNeeded, loadRepository),
 )(Repository);

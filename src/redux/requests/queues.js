@@ -10,6 +10,9 @@ import concat from 'ramda/src/concat';
 import of from 'ramda/src/of';
 import unapply from 'ramda/src/unapply';
 import identity from 'ramda/src/identity';
+import { filter } from 'rxjs/operators/filter';
+import { map } from 'rxjs/operators/map';
+import { mergeMap } from 'rxjs/operators/mergeMap';
 
 import fetchBranchQueue from '../../helpers/fetchBranchQueue';
 import { default as doAddToBranchQueue } from '../../helpers/addToBranchQueue';
@@ -55,9 +58,9 @@ const resetDeleteToBranchQueueRequest = (owner, repository, branch) => requestRe
 
 // Epics
 export const storeBranchQueueEpic = action$ =>
-    action$.ofType(REQUEST_SUCCESS)
-        .filter(requestIdStartsWith(QUEUE))
-        .flatMap(converge(concat, [
+    action$.ofType(REQUEST_SUCCESS).pipe(
+        filter(requestIdStartsWith(QUEUE)),
+        mergeMap(converge(concat, [
             compose(
                 of,
                 mergeEntities,
@@ -79,12 +82,14 @@ export const storeBranchQueueEpic = action$ =>
                 pickValues(['owner', 'repository', 'branch']),
                 path(['payload', 'meta']),
             ),
-        ]));
+        ])),
+    );
 
 export const refreshBranchQueueOnActionEpic = action$ =>
-    action$.ofType(REQUEST_SUCCESS)
-        .filter(anyPass([requestIdStartsWith(QUEUE_ADD), requestIdStartsWith(QUEUE_DELETE)]))
-        .map(
+    action$.ofType(REQUEST_SUCCESS).pipe(
+        filter(anyPass([requestIdStartsWith(QUEUE_ADD), requestIdStartsWith(QUEUE_DELETE)])),
+        map(
             ({ payload: { meta: { accessToken, owner, repository, branch } } }) =>
                 loadBranchQueue(accessToken, owner, repository, branch)
-        );
+        ),
+    );

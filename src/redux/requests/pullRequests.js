@@ -3,6 +3,8 @@ import prop from 'ramda/src/prop';
 import compose from 'ramda/src/compose';
 import converge from 'ramda/src/converge';
 import objOf from 'ramda/src/objOf';
+import { filter } from 'rxjs/operators/filter';
+import { map } from 'rxjs/operators/map';
 
 import fetchPullRequest from '../../helpers/fetchPullRequest';
 import removePrefix from '../../helpers/removePrefix';
@@ -18,9 +20,9 @@ export const loadPullRequest = (accessToken, owner, repository, pullRequestNumbe
 
 // Epics
 export const storePullRequestEpic = action$ =>
-    action$.ofType(REQUEST_SUCCESS)
-        .filter(requestIdStartsWith('pullRequest/'))
-        .map(compose(
+    action$.ofType(REQUEST_SUCCESS).pipe(
+        filter(requestIdStartsWith('pullRequest/')),
+        map(compose(
             objOf('pullRequests'),
             converge(objOf, [
                 compose(
@@ -30,5 +32,6 @@ export const storePullRequestEpic = action$ =>
                 prop('result'),
             ]),
             prop('payload'),
-        ))
-        .map(mergeEntities);
+        )),
+        map(mergeEntities),
+    );

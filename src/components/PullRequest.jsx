@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { setPropTypes } from 'recompose';
-import { OpenInNew } from 'material-ui-icons';
+import OpenInNew from 'material-ui-icons/OpenInNew';
 
 import { requestShape } from '../helpers/request';
 import { pullRequestShape, repositoryShape, queueShape, userShape } from '../constants/propTypes';

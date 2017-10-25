@@ -1,6 +1,11 @@
 import compose from 'ramda/src/compose';
 import path from 'ramda/src/path';
-import { Observable } from 'rxjs';
+import { of as observableOf } from 'rxjs/observable/of';
+import { filter } from 'rxjs/operators/filter';
+import { mergeMap } from 'rxjs/operators/mergeMap';
+import { map } from 'rxjs/operators/map';
+import { delay } from 'rxjs/operators/delay';
+import { takeUntil } from 'rxjs/operators/takeUntil';
 import PropTypes from 'prop-types';
 import { combineEpics } from 'redux-observable';
 
@@ -93,12 +98,13 @@ export const pushNotificationsUnsubscribe = () => ({
 
 // Epics
 const triggerPushNotificationsInitEpic = action$ =>
-    action$.ofType(REQUEST_SUCCESS)
-        .filter(requestIdEq('user'))
-        .map(compose(
+    action$.ofType(REQUEST_SUCCESS).pipe(
+        filter(requestIdEq('user')),
+        map(compose(
             pushNotificationsInit,
             path(['payload', 'result']),
-        ));
+        )),
+    );
 
 const pushNotificationsInitEpic = (action$, { getState, dispatch }) =>
     action$.ofType(PUSH_NOTIFICATIONS_INIT)
@@ -108,7 +114,7 @@ const pushNotificationsInitEpic = (action$, { getState, dispatch }) =>
                 pushNotificationsUpdateSubscription
             );
 
-            OneSignal.push(() => {
+            OneSignal && OneSignal.push(() => {
                 OneSignal.init({
                     appId: ONESIGNAL_APP_ID,
                     autoRegister: false,
@@ -125,19 +131,20 @@ const pushNotificationsInitEpic = (action$, { getState, dispatch }) =>
         });
 
 const pushNotificationsSubscribeEpic = action$ =>
-    action$.ofType(PUSH_NOTIFICATIONS_SUBSCRIBE)
-        .flatMap(action => {
+    action$.ofType(PUSH_NOTIFICATIONS_SUBSCRIBE).pipe(
+        mergeMap(action => {
             OneSignal.push(() => {
                 OneSignal.registerForPushNotifications();
                 OneSignal.setSubscription(true);
             });
 
             // Denied is never advertised explicitly, so we revert to unsubscribed after a timeout.
-            return Observable
-                .of(pushNotificationsUpdateSubscription(false))
-                .delay(ASSUME_DENIED_TIMEOUT)
-                .takeUntil(action$.ofType(PUSH_NOTIFICATIONS_UPDATE_SUBSCRIPTION));
-        });
+            return observableOf(pushNotificationsUpdateSubscription(false)).pipe(
+                delay(ASSUME_DENIED_TIMEOUT),
+                takeUntil(action$.ofType(PUSH_NOTIFICATIONS_UPDATE_SUBSCRIPTION)),
+            );
+        })
+    );
 
 const pushNotificationsUnsubscribeEpic = action$ =>
     action$.ofType(PUSH_NOTIFICATIONS_UNSUBSCRIBE)

@@ -4,10 +4,11 @@ import { Link } from 'react-router-dom';
 
 import { repositoryShape } from '../constants/propTypes';
 
-import noop from '../helpers/noop';
-import withPreloading from '../hocs/withPreloading';
-
 import BranchName from './BranchName';
+
+const propTypes = {
+    repositories: PropTypes.arrayOf(repositoryShape),
+};
 
 const RepositoriesList = ({ repositories }) => (
     <ul>
@@ -23,16 +24,6 @@ const RepositoriesList = ({ repositories }) => (
     </ul>
 );
 
-RepositoriesList.propTypes = {
-    repositories: PropTypes.arrayOf(repositoryShape),
-    loadRepositories: PropTypes.func,
-};
+RepositoriesList.propTypes = propTypes;
 
-RepositoriesList.defaultProps = {
-    loadRepositories: noop,
-};
-
-const isLoadingNeeded = ({ repositories }) => !Boolean(repositories);
-const load = ({ loadRepositories }) => loadRepositories();
-
-export default withPreloading(isLoadingNeeded, load)(RepositoriesList);
+export default RepositoriesList;

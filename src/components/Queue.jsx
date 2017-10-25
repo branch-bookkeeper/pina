@@ -2,9 +2,10 @@ import any from 'ramda/src/any';
 import { branch, renderComponent } from 'recompose';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { CircularProgress } from 'material-ui/Progress';
+import CircularProgress from 'material-ui/Progress/CircularProgress';
 import IconButton from 'material-ui/IconButton';
-import { OpenInNew, DeleteForever } from 'material-ui-icons';
+import OpenInNew from 'material-ui-icons/OpenInNew'
+import DeleteForever from 'material-ui-icons/DeleteForever';
 
 import { repositoryShape, queueShape } from '../constants/propTypes';
 

@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { setPropTypes, defaultProps, pure } from 'recompose';
-import { OpenInNew } from 'material-ui-icons';
+import OpenInNew from 'material-ui-icons/OpenInNew';
 
 import Queue from '../components/Queue';
 import BranchName from '../components/BranchName';

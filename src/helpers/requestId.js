@@ -8,6 +8,8 @@ import apply from 'ramda/src/apply';
 import join from 'ramda/src/join';
 import split from 'ramda/src/split';
 import over from 'ramda/src/over';
+import set from 'ramda/src/set';
+import equals from 'ramda/src/equals';
 import nthArg from 'ramda/src/nthArg';
 
 import removePrefix from './removePrefix';
@@ -18,6 +20,12 @@ const requestIdHasPathPrefix = prefix => compose(
     startsWith(prefix),
     join('/'),
     prop('path'),
+    explodeRequestId,
+);
+
+const requestIdHasDomain = domain => compose(
+    equals(domain),
+    prop('domain'),
     explodeRequestId,
 );
 
@@ -37,7 +45,7 @@ const removePathPrefix = prefixLength => {
 };
 
 export const buildRequestId = (domain, action = null, path = []) =>
-    [[domain, action].filter(identity).join('.')].concat(path).join('/');
+    [[domain, action].filter(identity).join('.')].concat(path).filter(identity).join('/');
 
 export const explodeRequestId = requestId => {
     const [domainAdnAction, ...path] = requestId.split('/');
@@ -46,7 +54,19 @@ export const explodeRequestId = requestId => {
     return { domain, action, path };
 }
 
+const removeDomain = compose(
+    apply(buildRequestId),
+    pickValues(['domain', 'action', 'path']),
+    set(lensProp('domain'), null),
+    explodeRequestId,
+);
+
 export const filterRequestsByPathPrefix = pathPrefix => compose(
     mapKeys(removePathPrefix(pathPrefix.length + 1)),
     pickBy(compose(requestIdHasPathPrefix(pathPrefix), nthArg(1)))
+);
+
+export const filterRequestsByDomain = domain => compose(
+    mapKeys(removeDomain),
+    pickBy(compose(requestIdHasDomain(domain), nthArg(1)))
 );
