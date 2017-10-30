@@ -40,7 +40,7 @@ const propTypes = {
     loadUser: PropTypes.func,
     loadInstallations: PropTypes.func,
     loadInstallationRepositories: PropTypes.func,
-    loadPullRequest: PropTypes.func,
+    loadRepositoryPullRequests: PropTypes.func,
     loadBranchQueue: PropTypes.func,
     addToBranchQueue: PropTypes.func,
     deleteFromBranchQueue: PropTypes.func,
@@ -53,7 +53,7 @@ const defaultProps = {
     loadUser: noop,
     loadInstallations: noop,
     loadInstallationRepositories: noop,
-    loadPullRequest: noop,
+    loadRepositoryPullRequests: noop,
     loadBranchQueue: noop,
     addToBranchQueue: noop,
     deleteFromBranchQueue: noop,
@@ -161,7 +161,7 @@ class App extends Component {
                 loadInstallation={this._loadInstallations}
                 loadRepository={() => this._loadInstallationRepositories(owner, installation.id)}
                 loadBranchQueue={branch => this._loadBranchQueue(owner, repoName, branch)}
-                loadPullRequest={pullRequestNumber => this._loadPullRequest(owner, repoName, pullRequestNumber)}
+                loadPullRequests={() => this._loadRepositoryPullRequests(owner, repoName)}
                 onAddToBranchQueue={onAddToBranchQueue}
                 onRemoveFromBranchQueue={onRemoveFromBranchQueue}
             />
@@ -189,11 +189,11 @@ class App extends Component {
         loadInstallationRepositories(accessToken, installationOwner, installationId);
     }
 
-    _loadPullRequest(owner, repository, pullRequestNumber) {
-        const { loadPullRequest } = this.props;
+    _loadRepositoryPullRequests(owner, repository) {
+        const { loadRepositoryPullRequests } = this.props;
         const { accessToken } = this.state;
 
-        loadPullRequest(accessToken, owner, repository, pullRequestNumber);
+        loadRepositoryPullRequests(accessToken, owner, repository);
     }
 
     _loadBranchQueue(owner, repository, branch) {

@@ -32,7 +32,7 @@ const propTypes = {
     loadInstallation: PropTypes.func,
     loadRepository: PropTypes.func,
     loadBranchQueue: PropTypes.func,
-    loadPullRequest: PropTypes.func,
+    loadPullRequests: PropTypes.func,
     onAddToBranchQueue: PropTypes.func,
     onRemoveFromBranchQueue: PropTypes.func,
 };
@@ -125,17 +125,16 @@ class Repository extends Component {
             repository,
             pullRequests,
             branchQueues,
-            requests,
+            requests: { pullRequests: pullRequestsRequest, ...requests },
             loadUser,
             loadBranchQueue,
-            loadPullRequest,
+            loadPullRequests,
             onAddToBranchQueue,
         } = this.props;
         const pullRequestNumber = parseInt(pullRequestString, 10);
         const pullRequest = pullRequests[pullRequestNumber];
         const queue = branchQueues[branch];
         const queueItem = queue ? findPullRequestQueueItem(pullRequestNumber, queue) : null;
-        const pullRequestRequest = requests[`pullRequest/${pullRequestNumber}`];
         const addToBranchQueueRequest = requests[`queue.add/${branch}`];
         const removeFromBranchQueueRequest = requests[`queue.delete/${branch}`];
 
@@ -145,12 +144,12 @@ class Repository extends Component {
                 repository={repository}
                 branch={branch}
                 pullRequest={pullRequest}
-                pullRequestRequest={pullRequestRequest}
+                pullRequestRequest={pullRequestsRequest}
                 branchQueue={queue}
                 addToBranchQueueRequest={addToBranchQueueRequest}
                 removeFromBranchQueueRequest={removeFromBranchQueueRequest}
                 loadUser={loadUser}
-                loadPullRequest={() => loadPullRequest(pullRequestNumber)}
+                loadPullRequest={loadPullRequests}
                 loadBranchQueue={() => loadBranchQueue(branch)}
                 onAddToBranchQueue={() => onAddToBranchQueue(branch, pullRequestNumber)}
                 onRemoveFromBranchQueue={() => this.handleQueueItemDelete(branch, queueItem)}
