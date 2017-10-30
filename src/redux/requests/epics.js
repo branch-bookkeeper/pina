@@ -4,7 +4,7 @@ import { requestFetchEpic } from './requests';
 import { storeUserEpic } from './user';
 import { storeInstallationsEpic } from './installations';
 import { storeInstallationRepositoriesEpic } from './repositories';
-import { storePullRequestEpic } from './pullRequests';
+import { storePullRequestEpic, storeRepositoryPullRequestsEpic } from './pullRequests';
 import { storeBranchQueueEpic, refreshBranchQueueOnActionEpic } from './queues';
 
 export default combineEpics(
@@ -13,6 +13,7 @@ export default combineEpics(
     storeInstallationsEpic,
     storeInstallationRepositoriesEpic,
     storePullRequestEpic,
+    storeRepositoryPullRequestsEpic,
     storeBranchQueueEpic,
     refreshBranchQueueOnActionEpic,
 );
