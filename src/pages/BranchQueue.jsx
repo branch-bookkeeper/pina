@@ -10,7 +10,7 @@ import Grid from 'material-ui/Grid';
 import Queue from '../components/Queue';
 import BranchName from '../components/BranchName';
 
-import { queueShape, repositoryShape, pullRequestShape } from '../constants/propTypes';
+import { userShape, queueShape, repositoryShape, pullRequestShape } from '../constants/propTypes';
 import { requestShape, isMade } from '../helpers/request';
 import noop from '../helpers/noop';
 import withPreloading from '../hocs/withPreloading';
@@ -23,26 +23,28 @@ const propTypes = {
     }),
     repository: repositoryShape.isRequired,
     branch: PropTypes.string.isRequired,
+    user: userShape,
     queue: queueShape.isRequired,
     selectedPullRequest: pullRequestShape,
     pullRequests: PropTypes.objectOf(pullRequestShape).isRequired,
     pullRequestsRequest: requestShape,
     loadBranchQueue: PropTypes.func,
     loadPullRequests: PropTypes.func,
+    onAddToBranchQueue: PropTypes.func,
     onRemoveFromBranchQueue: PropTypes.func,
-    canRemoveFromBranchQueue: PropTypes.func,
-    isRemovingFromBranchQueue: PropTypes.func,
 };
 
 const BranchQueue = ({
     history,
+    user,
     queue,
     repository,
     branch,
     pullRequests,
+    addToBranchQueueRequest,
+    removeFromBranchQueueRequest,
+    onAddToBranchQueue,
     onRemoveFromBranchQueue,
-    canRemoveFromBranchQueue,
-    isRemovingFromBranchQueue,
 }) => (
     <div>
         <Link to="/">&laquo; Home</Link>
@@ -59,9 +61,8 @@ const BranchQueue = ({
                         repository={repository}
                         queue={queue}
                         pullRequests={pullRequests}
-                        onDeleteItem={onRemoveFromBranchQueue}
-                        canDeleteItem={canRemoveFromBranchQueue}
-                        isDeletingItem={isRemovingFromBranchQueue}
+                        onRemoveFromBranchQueue={onRemoveFromBranchQueue}
+                        removeFromBranchQueueRequest={removeFromBranchQueueRequest}
                     />
                 </Grid>
             </Grid>}

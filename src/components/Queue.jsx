@@ -1,91 +1,88 @@
-import any from 'ramda/src/any';
+import propEq from 'ramda/src/propEq';
 import { branch, renderComponent } from 'recompose';
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import CircularProgress from 'material-ui/Progress/CircularProgress';
-import IconButton from 'material-ui/IconButton';
-import DeleteForever from 'material-ui-icons/DeleteForever';
 import Grid from 'material-ui/Grid';
 
-import { repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
+import { requestShape, isNotMade } from '../helpers/request';
+import { userShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
 import QueueItemCard from './QueueItemCard';
+import QueueItemMenu from './QueueItemMenu';
 
 const propTypes = {
+    user: userShape.isRequired,
     queue: queueShape.isRequired,
     repository: repositoryShape.isRequired,
     pullRequests: PropTypes.objectOf(pullRequestShape),
-    canDeleteItem: PropTypes.func,
-    isDeletingItem: PropTypes.func,
-    onDeleteItem: PropTypes.func,
+    removeFromBranchQueueRequest: requestShape,
+    onRemoveFromBranchQueue: PropTypes.func,
 };
 
+const isQueueItemOwnedBy = propEq('username');
+
 const queueIsEmpty = ({ queue }) => queue.length === 0;
+
+const shouldRenderMenu = (user, repository, queueItem) => {
+    const isUserInQueue = queueItem && isQueueItemOwnedBy(user.login, queueItem);
+    const isUserAdmin = repository.permissions.admin;
+
+    return isUserAdmin || isUserInQueue;
+};
 
 const EmptyQueue = () => (
     <p>No one in this queue</p>
 )
 
-const renderDeleteButton = ({
-    queueItem,
-    isDeletingThisItem,
-    isDeletingAnotherItem,
-    onDeleteItem,
-}) => (
-    <span>
-        {!isDeletingThisItem &&
-            <IconButton
-                color={'accent'}
-                style={{ verticalAlign: 'middle' }}
-                disabled={isDeletingAnotherItem}
-                onClick={onDeleteItem}
-            >
-                <DeleteForever />
-            </IconButton>}
-        {isDeletingThisItem &&
-            <span
-                style={{
-                    display: 'inline-block',
-                    paddingLeft: '12px',
-                    verticalAlign: 'middle',
-                }}
-            >
-                <CircularProgress
-                    size={24}
-                />
-            </span>}
-    </span>
-);
+class NotEmptyQueue extends Component {
+    state = {
+        queueItemToRemove: null,
+    };
 
-const NotEmptyQueue = ({
-    repository: { full_name: repoFullName },
-    pullRequests,
-    queue,
-    canDeleteItem,
-    isDeletingItem,
-    onDeleteItem,
-}) => {
-    const isDeletingAnyItem = any(isDeletingItem, queue);
+    render() {
+        const {
+            user,
+            repository,
+            pullRequests,
+            queue,
+            removeFromBranchQueueRequest,
+        } = this.props;
+        const { queueItemToRemove } = this.state;
 
-    return (
-        <Grid container direction="column" spacing={8}>
-            {queue.map((queueItem, index) => (
-                <Grid item style={{width: '100%'}} key={queueItem.pullRequestNumber}>
-                    <QueueItemCard
-                        index={index}
-                        queueItem={queueItem}
-                        pullRequest={pullRequests[queueItem.pullRequestNumber]}
-                    >
-                        {canDeleteItem(queueItem) && renderDeleteButton({
-                            isDeletingThisItem: isDeletingItem(queueItem),
-                            isDeletingAnotherItem: isDeletingAnyItem && !isDeletingItem(queueItem),
-                            onDeleteItem: () => onDeleteItem(queueItem),
-                            queueItem,
-                        })}
-                    </QueueItemCard>
-                </Grid>
-            ))}
-        </Grid>
-    );
+        return (
+            <Grid container direction="column" spacing={8}>
+                {queue.map((queueItem, index) => (
+                    <Grid item style={{width: '100%'}} key={queueItem.pullRequestNumber}>
+                        <QueueItemCard
+                            index={index}
+                            queueItem={queueItem}
+                            pullRequest={pullRequests[queueItem.pullRequestNumber]}
+                            renderMenu={menuProps =>
+                                shouldRenderMenu(user, repository, queueItem) && (
+                                    <QueueItemMenu
+                                        onRemoveFromBranchQueue={() => this.handleRemove(queueItem)}
+                                        {...menuProps}
+                                    />
+                                )
+                            }
+                            loading={
+                                queueItemToRemove
+                                && !isNotMade(removeFromBranchQueueRequest)
+                                && queueItem.pullRequestNumber === queueItemToRemove.pullRequestNumber
+                            }
+                        />
+                    </Grid>
+                ))}
+            </Grid>
+        );
+    }
+
+    handleRemove = (queueItem) => {
+        this.setState({
+            queueItemToRemove: queueItem,
+        });
+
+        this.props.onRemoveFromBranchQueue(queueItem);
+    }
 }
 
 NotEmptyQueue.propTypes = propTypes;
