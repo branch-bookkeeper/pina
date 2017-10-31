@@ -1,19 +1,17 @@
 import propEq from 'ramda/src/propEq';
-import isEmpty from 'ramda/src/isEmpty';
+import isNil from 'ramda/src/isNil';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { setPropTypes } from 'recompose';
 
 import { requestShape, isNotMade } from '../helpers/request';
-import { pullRequestShape, repositoryShape, queueShape, userShape } from '../constants/propTypes';
-import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
+import { repositoryShape, queueItemShape, userShape } from '../constants/propTypes';
 
 const isQueueItemOwnedBy = propEq('username');
 
 const propTypes = {
-    pullRequest: pullRequestShape.isRequired,
     repository: repositoryShape.isRequired,
-    branchQueue: queueShape.isRequired,
+    queueItem: queueItemShape,
     user: userShape.isRequired,
     onAddToBranchQueue: PropTypes.func,
     onRemoveFromBranchQueue: PropTypes.func,
@@ -37,15 +35,13 @@ const PullRequestActions = (props) => {
         onAddToBranchQueue,
         onRemoveFromBranchQueue,
         user,
-        branchQueue,
-        pullRequest,
+        queueItem,
         repository,
         addToBranchQueueRequest,
         removeFromBranchQueueRequest,
     } = props;
 
-    const queueItem = findPullRequestQueueItem(pullRequest.pullRequestNumber, branchQueue);
-    const isUserInQueue = isQueueItemOwnedBy(user.login, queueItem);
+    const isUserInQueue = queueItem && isQueueItemOwnedBy(user.login, queueItem);
     const isUserAdmin = repository.permissions.admin;
     const bookingInProgress = !isNotMade(addToBranchQueueRequest);
     const cancelInProgress = !isNotMade(removeFromBranchQueueRequest);
@@ -55,20 +51,20 @@ const PullRequestActions = (props) => {
         <div>
             {isUserInQueue &&
                 <button disabled style={buttonStyle}>You are in queue to merge</button>}
-            {!isEmpty(queueItem) && !isUserInQueue &&
+            {!isNil(queueItem) && !isUserInQueue &&
                 <button disabled style={buttonStyle}><strong>{queueItem.username}</strong> is in queue to merge</button>}
             {bookingInProgress &&
                 <button style={buttonStyle} disabled>Booking...</button>}
             {cancelInProgress &&
                 <div><button style={buttonStyle} disabled>Cancelling...</button></div>}
-            {!requestInProgress && isEmpty(queueItem) &&
+            {!requestInProgress && isNil(queueItem) &&
                 <button onClick={onAddToBranchQueue} style={buttonStyle}>Book as {user.login}</button>}
             {!requestInProgress && isUserInQueue &&
                 <div>
                     <button onClick={onRemoveFromBranchQueue} style={buttonStyle}>Cancel</button>
                     <span>Click to cancel this booking</span>
                 </div>}
-            {!requestInProgress && !isEmpty(queueItem) && !isUserInQueue && isUserAdmin &&
+            {!requestInProgress && !isNil(queueItem) && !isUserInQueue && isUserAdmin &&
                 <div>
                     <button onClick={onRemoveFromBranchQueue} style={dangerButtonStyle}>Cancel</button>
                     <span>Use your administrative privileges to cancel this booking</span>
