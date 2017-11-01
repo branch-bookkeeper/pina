@@ -22,7 +22,8 @@
     "recompose": "^0.25.0",
     "redux": "^3.7.2",
     "redux-observable": "^0.16.0",
-    "rxjs": "^5.4.3"
+    "rxjs": "^5.4.3",
+    "typeface-roboto": "^0.0.43"
   },
   "devDependencies": {
     "jest-fetch-mock": "^1.2.1",
