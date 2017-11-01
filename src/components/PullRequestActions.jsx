@@ -49,10 +49,6 @@ const PullRequestActions = (props) => {
 
     return (
         <div>
-            {isUserInQueue &&
-                <button disabled style={buttonStyle}>You are in queue to merge</button>}
-            {!isNil(queueItem) && !isUserInQueue &&
-                <button disabled style={buttonStyle}><strong>{queueItem.username}</strong> is in queue to merge</button>}
             {bookingInProgress &&
                 <button style={buttonStyle} disabled>Booking...</button>}
             {cancelInProgress &&
