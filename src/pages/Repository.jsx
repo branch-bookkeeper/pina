@@ -9,14 +9,12 @@ import { Switch, Route } from 'react-router-dom';
 
 import noop from '../helpers/noop';
 import { requestShape, isNotMade, isMade, isErrored } from '../helpers/request';
-import findPullRequestQueueItem from '../helpers/findPullRequestQueueItem';
 import { userShape, installationShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
 import withPreloading from '../hocs/withPreloading';
 import renderNothingIf from '../hocs/renderNothingIf';
 
 import QueueCancelConfirmDialog from '../components/QueueCancelConfirmDialog';
 
-import PullRequestPage from './PullRequestPage';
 import BranchQueue from './BranchQueue';
 import NotFound from './NotFound';
 
@@ -58,7 +56,6 @@ class Repository extends Component {
         this.handleDeleteCancel = this.handleDeleteCancel.bind(this);
         this.handleDeleteConfirm = this.handleDeleteConfirm.bind(this);
         this._renderBranchQueuePage = this._renderBranchQueuePage.bind(this);
-        this._renderPullRequestPage = this._renderPullRequestPage.bind(this);
     }
 
     render() {
@@ -123,44 +120,6 @@ class Repository extends Component {
                 loadPullRequests={loadPullRequests}
                 onAddToBranchQueue={pullRequestNumber => onAddToBranchQueue(branch, pullRequestNumber)}
                 onRemoveFromBranchQueue={queueItem => this.handleQueueItemDelete(branch, queueItem)}
-            />
-        );
-    }
-
-    _renderPullRequestPage({ match: { params: { branch, pullRequest: pullRequestString } } }) {
-        const {
-            user,
-            repository,
-            pullRequests,
-            branchQueues,
-            requests: { pullRequests: pullRequestsRequest, ...requests },
-            loadUser,
-            loadBranchQueue,
-            loadPullRequests,
-            onAddToBranchQueue,
-        } = this.props;
-        const pullRequestNumber = parseInt(pullRequestString, 10);
-        const pullRequest = pullRequests[pullRequestNumber];
-        const queue = branchQueues[branch];
-        const queueItem = queue ? findPullRequestQueueItem(pullRequestNumber, queue) : null;
-        const addToBranchQueueRequest = requests[`queue.add/${branch}`];
-        const removeFromBranchQueueRequest = requests[`queue.delete/${branch}`];
-
-        return (
-            <PullRequestPage
-                user={user}
-                repository={repository}
-                branch={branch}
-                pullRequest={pullRequest}
-                pullRequestRequest={pullRequestsRequest}
-                branchQueue={queue}
-                addToBranchQueueRequest={addToBranchQueueRequest}
-                removeFromBranchQueueRequest={removeFromBranchQueueRequest}
-                loadUser={loadUser}
-                loadPullRequest={loadPullRequests}
-                loadBranchQueue={() => loadBranchQueue(branch)}
-                onAddToBranchQueue={() => onAddToBranchQueue(branch, pullRequestNumber)}
-                onRemoveFromBranchQueue={() => this.handleQueueItemDelete(branch, queueItem)}
             />
         );
     }
