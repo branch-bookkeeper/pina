@@ -8,6 +8,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "classnames": "^2.2.5",
     "material-ui": "^1.0.0-beta.11",
     "material-ui-icons": "^1.0.0-beta.10",
     "parse-link-header": "^1.0.1",
