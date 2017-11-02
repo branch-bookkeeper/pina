@@ -2,7 +2,8 @@ import propEq from 'ramda/src/propEq';
 import isNil from 'ramda/src/isNil';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { setPropTypes } from 'recompose';
+import { withStyles } from 'material-ui/styles';
+import Button from 'material-ui/Button';
 
 import { requestShape, isNotMade } from '../helpers/request';
 import { repositoryShape, queueItemShape, userShape } from '../constants/propTypes';
@@ -13,25 +14,28 @@ const propTypes = {
     repository: repositoryShape.isRequired,
     queueItem: queueItemShape,
     user: userShape.isRequired,
+    onCancel: PropTypes.func,
     onAddToBranchQueue: PropTypes.func,
     onRemoveFromBranchQueue: PropTypes.func,
     addToBranchQueueRequest: requestShape,
     removeFromBranchQueueRequest: requestShape,
 };
 
-const buttonStyle = {
-    fontSize: '1.5em',
-    padding: '0.5em 1em',
-    margin: '0.5em 0.5em 1em 0.5em',
-};
-
-const dangerButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: 'red',
-};
+const styles = (theme) => ({
+    root: {
+        paddingTop: theme.spacing.unit,
+        paddingBottom: theme.spacing.unit,
+        textAlign: 'center',
+    },
+    cancelButton: {
+        marginLeft: theme.spacing.unit,
+    },
+});
 
 const PullRequestActions = (props) => {
     const {
+        classes,
+        onCancel,
         onAddToBranchQueue,
         onRemoveFromBranchQueue,
         user,
@@ -48,25 +52,31 @@ const PullRequestActions = (props) => {
     const requestInProgress = bookingInProgress || cancelInProgress;
 
     return (
-        <div>
+        <div className={classes.root}>
             {bookingInProgress &&
-                <button style={buttonStyle} disabled>Booking...</button>}
+                <div>
+                    <Button color="primary" raised disabled>Adding...</Button>
+                    <Button className={classes.cancelButton} disabled>Cancel</Button>
+                </div>}
             {cancelInProgress &&
-                <div><button style={buttonStyle} disabled>Cancelling...</button></div>}
-            {!requestInProgress && isNil(queueItem) &&
-                <button onClick={onAddToBranchQueue} style={buttonStyle}>Book as {user.login}</button>}
+                <div>
+                    <Button color="primary" disabled>Removing...</Button>
+                    <Button className={classes.cancelButton} disabled>Cancel</Button>
+                </div>}
             {!requestInProgress && isUserInQueue &&
                 <div>
-                    <button onClick={onRemoveFromBranchQueue} style={buttonStyle}>Cancel</button>
-                    <span>Click to cancel this booking</span>
+                    <Button color="primary" raised onClick={onAddToBranchQueue}>Add to queue</Button>
+                    <Button className={classes.cancelButton} onClick={onCancel}>Cancel</Button>
                 </div>}
             {!requestInProgress && !isNil(queueItem) && !isUserInQueue && isUserAdmin &&
                 <div>
-                    <button onClick={onRemoveFromBranchQueue} style={dangerButtonStyle}>Cancel</button>
-                    <span>Use your administrative privileges to cancel this booking</span>
+                    <Button color="primary" onClick={onRemoveFromBranchQueue}>Remove from queue</Button>
+                    <Button className={classes.cancelButton} onClick={onCancel}>Cancel</Button>
                 </div>}
         </div>
     );
 };
 
-export default setPropTypes(propTypes)(PullRequestActions);
+PullRequestActions.propTypes = propTypes;
+
+export default withStyles(styles)(PullRequestActions);
