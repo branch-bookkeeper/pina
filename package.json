@@ -9,6 +9,7 @@
   "private": true,
   "dependencies": {
     "classnames": "^2.2.5",
+    "ease-component": "^1.0.0",
     "material-ui": "^1.0.0-beta.11",
     "material-ui-icons": "^1.0.0-beta.10",
     "parse-link-header": "^1.0.1",
@@ -24,6 +25,8 @@
     "redux": "^3.7.2",
     "redux-observable": "^0.16.0",
     "rxjs": "^5.4.3",
+    "scroll": "^2.0.1",
+    "scroll-doc": "^0.2.0",
     "typeface-roboto": "^0.0.43"
   },
   "devDependencies": {
