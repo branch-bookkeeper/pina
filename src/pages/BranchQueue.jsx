@@ -24,6 +24,7 @@ const propTypes = {
     repository: repositoryShape.isRequired,
     branch: PropTypes.string.isRequired,
     queue: queueShape.isRequired,
+    selectedPullRequest: pullRequestShape,
     pullRequests: PropTypes.objectOf(pullRequestShape).isRequired,
     pullRequestsRequest: requestShape,
     loadBranchQueue: PropTypes.func,

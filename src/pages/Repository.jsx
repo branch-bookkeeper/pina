@@ -73,13 +73,8 @@ class Repository extends Component {
                 <Switch>
                     <Route
                         exact
-                        path={`${baseUrl}/:branch`}
+                        path={`${baseUrl}/:branch/:pullRequestNumber?`}
                         render={this._renderBranchQueuePage}
-                    />
-                    <Route
-                        exact
-                        path={`${baseUrl}/:branch/:pullRequest`}
-                        render={this._renderPullRequestPage}
                     />
                     <Route component={NotFound} />
                 </Switch>
@@ -95,7 +90,7 @@ class Repository extends Component {
         );
     }
 
-    _renderBranchQueuePage({ match: { params: { branch } } }) {
+    _renderBranchQueuePage({ match: { params: { branch, pullRequestNumber } } }) {
         const {
             user,
             repository,
@@ -112,6 +107,7 @@ class Repository extends Component {
                 user={user}
                 repository={repository}
                 branch={branch}
+                selectedPullRequest={pullRequests[pullRequestNumber]}
                 pullRequests={pullRequests}
                 queue={branchQueues[branch]}
                 pullRequestsRequest={pullRequestsRequest}
