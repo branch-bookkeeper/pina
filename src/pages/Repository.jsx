@@ -99,9 +99,12 @@ class Repository extends Component {
         const {
             user,
             repository,
+            pullRequests,
             branchQueues,
+            requests: { pullRequests: pullRequestsRequest },
             loadUser,
             loadBranchQueue,
+            loadPullRequests,
         } = this.props;
 
         return (
@@ -109,9 +112,12 @@ class Repository extends Component {
                 user={user}
                 repository={repository}
                 branch={branch}
+                pullRequests={pullRequests}
                 queue={branchQueues[branch]}
+                pullRequestsRequest={pullRequestsRequest}
                 loadUser={loadUser}
                 loadBranchQueue={() => loadBranchQueue(branch)}
+                loadPullRequests={loadPullRequests}
                 onRemoveFromBranchQueue={queueItem => this.handleQueueItemDelete(branch, queueItem)}
                 canRemoveFromBranchQueue={this.canDeleteQueueItem}
                 isRemovingFromBranchQueue={this.isDeletingQueueItem}

@@ -4,16 +4,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import CircularProgress from 'material-ui/Progress/CircularProgress';
 import IconButton from 'material-ui/IconButton';
-import OpenInNew from 'material-ui-icons/OpenInNew'
 import DeleteForever from 'material-ui-icons/DeleteForever';
+import Grid from 'material-ui/Grid';
 
-import { repositoryShape, queueShape } from '../constants/propTypes';
-
-const AlignedOpenInNew = () => <OpenInNew style={{ verticalAlign: 'middle' }} />;
+import { repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
+import QueueItemCard from './QueueItemCard';
 
 const propTypes = {
     queue: queueShape.isRequired,
     repository: repositoryShape.isRequired,
+    pullRequests: PropTypes.objectOf(pullRequestShape),
     canDeleteItem: PropTypes.func,
     isDeletingItem: PropTypes.func,
     onDeleteItem: PropTypes.func,
@@ -58,6 +58,7 @@ const renderDeleteButton = ({
 
 const NotEmptyQueue = ({
     repository: { full_name: repoFullName },
+    pullRequests,
     queue,
     canDeleteItem,
     isDeletingItem,
@@ -66,33 +67,24 @@ const NotEmptyQueue = ({
     const isDeletingAnyItem = any(isDeletingItem, queue);
 
     return (
-        <ul>
-            {queue.map(queueItem => (
-                <li key={queueItem.pullRequestNumber} style={{ marginBottom: '0.25em' }}>
-                    <a href={`https://github.com/${queueItem.username}`}>
-                        <img
-                            src={`https://github.com/${queueItem.username}.png?size=100`}
-                            alt={queueItem.username}
-                            width={50}
-                            height={50}
-                            style={{ verticalAlign: 'middle' }}
-                        />
-                    </a>
-                    <a
-                        href={`https://github.com/${repoFullName}/pull/${queueItem.pullRequestNumber}`}
-                        style={{ marginLeft: '0.5em' }}
+        <Grid container direction="column" spacing={8}>
+            {queue.map((queueItem, index) => (
+                <Grid item style={{width: '100%'}} key={queueItem.pullRequestNumber}>
+                    <QueueItemCard
+                        index={index}
+                        queueItem={queueItem}
+                        pullRequest={pullRequests[queueItem.pullRequestNumber]}
                     >
-                        #{queueItem.pullRequestNumber} <AlignedOpenInNew />
-                    </a>
-                    {canDeleteItem(queueItem) && renderDeleteButton({
-                        isDeletingThisItem: isDeletingItem(queueItem),
-                        isDeletingAnotherItem: isDeletingAnyItem && !isDeletingItem(queueItem),
-                        onDeleteItem: () => onDeleteItem(queueItem),
-                        queueItem,
-                    })}
-                </li>
+                        {canDeleteItem(queueItem) && renderDeleteButton({
+                            isDeletingThisItem: isDeletingItem(queueItem),
+                            isDeletingAnotherItem: isDeletingAnyItem && !isDeletingItem(queueItem),
+                            onDeleteItem: () => onDeleteItem(queueItem),
+                            queueItem,
+                        })}
+                    </QueueItemCard>
+                </Grid>
             ))}
-        </ul>
+        </Grid>
     );
 }
 
