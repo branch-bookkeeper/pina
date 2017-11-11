@@ -14,6 +14,7 @@ import { filterRequestsByPathPrefix } from '../helpers/requestId';
 import removePrefix from '../helpers/removePrefix';
 
 import TopBarContainer from '../containers/TopBarContainer';
+import SettingsDialogContainer from '../containers/SettingsDialogContainer';
 import HomeContainer from '../containers/HomeContainer';
 import Login from './Login';
 import OAuthSuccess from './OAuthSuccess';
@@ -107,6 +108,7 @@ class App extends Component {
                         />
                     </Switch>
                 </div>
+                <SettingsDialogContainer />
             </div>
         );
     }
