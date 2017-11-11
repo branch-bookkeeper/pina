@@ -51,7 +51,7 @@ const propTypes = {
 
 const styles = theme => ({
     outOfQueueCardWrapper: {
-        borderTop: `dashed 2px ${grey[200]}`,
+        borderTop: `dashed 2px ${grey[300]}`,
         marginTop: theme.spacing.unit * 4,
         paddingTop: theme.spacing.unit * 4,
         paddingBottom: theme.spacing.unit * 2,
