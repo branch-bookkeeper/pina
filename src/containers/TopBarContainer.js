@@ -2,12 +2,11 @@ import { connect } from 'react-redux';
 
 import TopBar from '../components/TopBar';
 import {
-    pushNotificationsSubscribe,
-    pushNotificationsUnsubscribe,
-} from '../redux/push';
+    openSettingsDialog,
+} from '../redux/ui';
+import { logout } from '../redux/auth';
 
 const mapStateToProps = ({
-    push,
     user,
     entities: {
         users,
@@ -16,14 +15,13 @@ const mapStateToProps = ({
         user: userRequest,
     },
 }) => ({
-    push,
     user: user ? users[user] : null,
     userRequest,
 });
 
 const mapDispatchToProps = {
-    onPushSubscribe: pushNotificationsSubscribe,
-    onPushUnsubscribe: pushNotificationsUnsubscribe,
+    onOpenSettings: openSettingsDialog,
+    onLogout: logout,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(TopBar);
