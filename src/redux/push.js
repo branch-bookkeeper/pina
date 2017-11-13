@@ -1,5 +1,6 @@
 import compose from 'ramda/src/compose';
 import path from 'ramda/src/path';
+import always from 'ramda/src/always';
 import { of as observableOf } from 'rxjs/observable/of';
 import { filter } from 'rxjs/operators/filter';
 import { mergeMap } from 'rxjs/operators/mergeMap';
@@ -11,7 +12,8 @@ import { combineEpics } from 'redux-observable';
 
 import { ONESIGNAL_APP_ID } from '../constants/config';
 import { REQUEST_SUCCESS } from './requests';
-import { requestIdEq } from './requests/helpers';
+import { showSnackbar, openSettingsDialog } from './ui';
+import { requestIdEq, requestIdStartsWith } from './requests/helpers';
 
 const { OneSignal } = window;
 
@@ -154,10 +156,25 @@ const pushNotificationsUnsubscribeEpic = action$ =>
             });
         });
 
+const showSnackbarOnQueueAddSuccessEpic = (action$, { getState }) =>
+    action$.ofType(REQUEST_SUCCESS).pipe(
+        filter(requestIdStartsWith('queue.add/')),
+        filter(() => {
+            const { push: { isInitialized, isSubscribed } } = getState();
+
+            return isInitialized && !isSubscribed;
+        }),
+        map(always(showSnackbar(
+            'Want to be alerted when you can merge? Subscribe to push notifications in Settings',
+            'Open Settings',
+            openSettingsDialog(),
+        ))),
+    );
 
 export const epics = combineEpics(
     triggerPushNotificationsInitEpic,
     pushNotificationsInitEpic,
     pushNotificationsSubscribeEpic,
     pushNotificationsUnsubscribeEpic,
+    showSnackbarOnQueueAddSuccessEpic,
 );
