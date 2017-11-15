@@ -3,52 +3,79 @@ import PropTypes from 'prop-types';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
-import FormControlLabel from 'material-ui/Form/FormControlLabel';
-import FormGroup from 'material-ui/Form/FormGroup';
-import Switch from 'material-ui/Switch';
+import Grid from 'material-ui/Grid';
+import { withStyles } from 'material-ui/styles';
 
-import { pushShape } from '../redux';
+import { bbOrange } from '../constants/colors';
 import { userShape } from '../constants/propTypes';
 import { requestShape, isNotMade } from '../helpers/request';
+import logo from '../assets/favicon-allwhite.svg';
+
+import TopBarUserAvatar from './TopBarUserAvatar';
 
 const propTypes = {
-    onPushSubscribe: PropTypes.func,
-    onPushUnsubscribe: PropTypes.func,
-    push: pushShape.isRequired,
+    classes: PropTypes.objectOf(PropTypes.string).isRequired,
+    onOpenSettings: PropTypes.func,
+    onLogout: PropTypes.func,
     user: userShape,
     userRequest: requestShape,
     loadUser: PropTypes.func,
 };
 
+const styles = theme => ({
+    root: {
+        color: bbOrange[100],
+    },
+    title: {
+        fontSize: '1.1667rem',
+    },
+    logo: {
+        width: 32,
+        height: 32,
+    },
+    avatarWrapper: {
+        display: 'inline-block',
+        verticalAlign: 'middle',
+    },
+    avatarArrow: {
+        verticalAlign: 'middle',
+    },
+});
+
 class TopBar extends Component {
     render() {
         const {
+            classes,
             user,
-            push,
-            onPushSubscribe,
-            onPushUnsubscribe,
+            onOpenSettings,
+            onLogout,
         } = this.props;
 
         return (
-            <AppBar position="static" color="default">
+            <AppBar position="fixed" className={classes.root} color="primary" elevation={1}>
                 <Toolbar>
-                    <Typography type="title" color="inherit" style={{ flex: 1 }}>
-                        Branch Bookkeeper
-                    </Typography>
-                    <FormGroup>
-                        <FormControlLabel
-                            color="contrast"
-                            control={
-                                <Switch
-                                    color="contrast"
-                                    checked={(push.isSubscribed && !push.isUnsubscribing) || push.isSubscribing}
-                                    disabled={!user || !push.isInitialized || push.isSubscribing || push.isUnsubscribing}
-                                    onChange={(event, checked) => checked ? onPushSubscribe() : onPushUnsubscribe()}
-                                />
-                            }
-                            label="Send me push notifications"
-                        />
-                    </FormGroup>
+                    <Grid container justify="center">
+                        <Grid item xs={12} sm={10} md={9} lg={7} xl={5}>
+                            <Grid container alignItems="center">
+                                <Grid item>
+                                    <img src={logo} alt="logo" className={classes.logo} />
+                                </Grid>
+                                <Grid item style={{ flex: 1 }}>
+                                    <Typography type="title" color="inherit" className={classes.title}>
+                                        Branch Bookkeeper
+                                    </Typography>
+                                </Grid>
+                                {user &&
+                                    <Grid item>
+                                        <TopBarUserAvatar
+                                            user={user}
+                                            onOpenSettings={onOpenSettings}
+                                            onLogout={onLogout}
+                                        />
+                                    </Grid>}
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </Toolbar>
             </AppBar>
         );
@@ -63,4 +90,4 @@ class TopBar extends Component {
 
 TopBar.propTypes = propTypes;
 
-export default TopBar;
+export default withStyles(styles)(TopBar);

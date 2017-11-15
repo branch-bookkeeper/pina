@@ -5,8 +5,9 @@ import { BrowserRouter } from 'react-router-dom';
 import Provider from 'react-redux/lib/components/Provider';
 import { createStore } from 'redux';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
-import { blue, orange, red } from 'material-ui/colors';
+import { blue, red } from 'material-ui/colors';
 
+import { bbOrange } from './constants/colors';
 import { default as rootReducer } from './redux';
 import middlewares from './middlewares';
 
@@ -16,7 +17,7 @@ import './index.css';
 
 const theme = createMuiTheme({
     palette: {
-      primary: orange,
+      primary: bbOrange,
       secondary: blue,
       error: red,
     },

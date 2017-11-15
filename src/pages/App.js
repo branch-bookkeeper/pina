@@ -14,6 +14,8 @@ import { filterRequestsByPathPrefix } from '../helpers/requestId';
 import removePrefix from '../helpers/removePrefix';
 
 import TopBarContainer from '../containers/TopBarContainer';
+import SettingsDialogContainer from '../containers/SettingsDialogContainer';
+import SnackbarContainer from '../containers/SnackbarContainer';
 import HomeContainer from '../containers/HomeContainer';
 import Login from './Login';
 import OAuthSuccess from './OAuthSuccess';
@@ -94,18 +96,21 @@ class App extends Component {
         return (
             <div>
                 <TopBarContainer loadUser={() => loadUser(accessToken)} />
-                <div style={{ height: 20 }} />
-                <Switch>
-                    <Route
-                        path="/:owner/:repository"
-                        render={this._renderRepository}
-                    />
-                    <Route
-                        exact
-                        path="/"
-                        render={this._renderHome}
-                    />
-                </Switch>
+                <div style={{ padding: '80px 20px 20px 20px' }}>
+                    <Switch>
+                        <Route
+                            path="/:owner/:repository"
+                            render={this._renderRepository}
+                        />
+                        <Route
+                            exact
+                            path="/"
+                            render={this._renderHome}
+                        />
+                    </Switch>
+                </div>
+                <SettingsDialogContainer />
+                <SnackbarContainer />
             </div>
         );
     }
