@@ -96,7 +96,7 @@ class App extends Component {
         return (
             <div>
                 <TopBarContainer loadUser={() => loadUser(accessToken)} />
-                <div style={{ padding: '80px 20px 20px 20px' }}>
+                <div>
                     <Switch>
                         <Route
                             path="/:owner/:repository"

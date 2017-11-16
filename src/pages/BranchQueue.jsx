@@ -6,26 +6,23 @@ import ease from 'ease-component';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { setPropTypes, defaultProps, pure } from 'recompose';
 import { withStyles } from 'material-ui/styles';
 import { grey } from 'material-ui/colors';
-import OpenInNew from 'material-ui-icons/OpenInNew';
 import Grid from 'material-ui/Grid';
 import Collapse from 'material-ui/transitions/Collapse';
 import Button from 'material-ui/Button';
 
+import BranchQueueHeader from '../components/BranchQueueHeader';
+import PageContent from '../components/PageContent';
 import Queue from '../components/Queue';
 import QueueItemCard from '../components/QueueItemCard';
-import BranchName from '../components/BranchName';
 
 import { userShape, queueShape, repositoryShape, pullRequestShape } from '../constants/propTypes';
 import { requestShape, isNotMade, isMade } from '../helpers/request';
 import scrollToComponent from '../helpers/scrollToComponent';
 import noop from '../helpers/noop';
 import withPreloading from '../hocs/withPreloading';
-
-const AlignedOpenInNew = () => <OpenInNew style={{ verticalAlign: 'middle' }} />;
 
 const propTypes = {
     history: PropTypes.shape({
@@ -138,26 +135,18 @@ class BranchQueue extends Component {
 
         return (
             <div>
-                <Link to="/">&laquo; Home</Link>
-                <h1><BranchName branch={branch} /></h1>
-                <h2>
-                    <a href={repository.html_url}>
-                        {repository.full_name} <AlignedOpenInNew />
-                    </a>
-                </h2>
+                <BranchQueueHeader repository={repository} branch={branch} />
                 {queue &&
-                    <Grid container justify="center">
-                        <Grid item xs={12} sm={9} md={8} lg={6} xl={4}>
-                            <Queue
-                                user={user}
-                                repository={repository}
-                                queue={queue}
-                                pullRequests={pullRequests}
-                                onRemoveFromBranchQueue={onRemoveFromBranchQueue}
-                                removeFromBranchQueueRequest={removeFromBranchQueueRequest}
-                            />
-                        </Grid>
-                    </Grid>}
+                    <PageContent>
+                        <Queue
+                            user={user}
+                            repository={repository}
+                            queue={queue}
+                            pullRequests={pullRequests}
+                            onRemoveFromBranchQueue={onRemoveFromBranchQueue}
+                            removeFromBranchQueueRequest={removeFromBranchQueueRequest}
+                        />
+                    </PageContent>}
                 {this.renderOutOfQueueCard()}
             </div>
         );
