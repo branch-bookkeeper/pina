@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -26,8 +27,16 @@ const styles = theme => ({
     root: {
         color: bbOrange[100],
     },
+    titleLink: {
+        color: 'inherit',
+        textDecoration: 'none',
+        '&:hover, &:active': {
+            color: bbOrange[50],
+        },
+    },
     title: {
         fontSize: '1.1667rem',
+        display: 'inline-block'
     },
     logo: {
         width: 32,
@@ -58,12 +67,16 @@ class TopBar extends Component {
                         <Grid item xs={12} sm={10} md={9} lg={7} xl={5}>
                             <Grid container alignItems="center">
                                 <Grid item>
-                                    <img src={logo} alt="logo" className={classes.logo} />
+                                    <Link to="/">
+                                        <img src={logo} alt="logo" className={classes.logo} />
+                                    </Link>
                                 </Grid>
                                 <Grid item style={{ flex: 1 }}>
-                                    <Typography type="title" color="inherit" className={classes.title}>
-                                        Branch Bookkeeper
-                                    </Typography>
+                                    <Link to="/" className={classes.titleLink}>
+                                        <Typography type="title" color="inherit" className={classes.title}>
+                                            Branch Bookkeeper
+                                        </Typography>
+                                    </Link>
                                 </Grid>
                                 {user &&
                                     <Grid item>
