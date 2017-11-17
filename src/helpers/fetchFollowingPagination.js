@@ -10,11 +10,13 @@ import isNil from 'ramda/src/isNil';
 import parseLinkHeader from 'parse-link-header';
 
 import allP from './allP';
+import failWhenNotOk from './failWhenNotOk';
 
 const parseResponseLinkHeader = response => defaultTo({}, parseLinkHeader(response.headers.get('Link')));
 
 const fetchFollowingPagination = (iterator, initialValue, url, options) => {
     return fetch(url, options)
+        .then(failWhenNotOk)
         .then(converge(pair, [
             parseResponseLinkHeader,
             partial(iterator, [initialValue]),
