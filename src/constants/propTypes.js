@@ -40,4 +40,5 @@ export const repositoryShape = PropTypes.shape({
         push: PropTypes.bool.isRequired,
         pull: PropTypes.bool.isRequired,
     }).isRequired,
+    private: PropTypes.bool.isRequired,
 });
