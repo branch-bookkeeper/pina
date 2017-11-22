@@ -1,18 +1,29 @@
-import React from 'react';
+import React, { Component } from 'react';
+
 import { KEY_LOGIN_REDIRECT_URL } from '../constants/localStorageKeys';
-import { GITHUB_CLIENT_ID } from '../constants/config';
 
-const Login = ({ location: { pathname, search, hash } }) => {
-    localStorage.setItem(KEY_LOGIN_REDIRECT_URL, [pathname, search, hash].join(''));
+import LoginScreen from '../components/LoginScreen';
 
-    return (
-        <div>
-            <h1>Branch Bookkeeper</h1>
-            <a href={`https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`}>
-                Login with GitHub
-            </a>
-        </div>
-    );
-};
+class Login extends Component {
+    state = {
+        loading: false,
+    };
+
+    render() {
+        const { location: { pathname, search, hash } } = this.props;
+        const { loading } = this.state;
+
+        localStorage.setItem(KEY_LOGIN_REDIRECT_URL, [pathname, search, hash].join(''));
+
+        return (
+            <LoginScreen
+                onLogin={this.startLoading}
+                loading={loading}
+            />
+        );
+    }
+
+    startLoading = () => this.setState({ loading: true });
+}
 
 export default Login;
