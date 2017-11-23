@@ -4,12 +4,12 @@ import prop from 'ramda/src/prop';
 import path from 'ramda/src/path';
 import compose from 'ramda/src/compose';
 import objOf from 'ramda/src/objOf';
-import { filter } from 'rxjs/operators/filter';
-import { map } from 'rxjs/operators/map';
+import ifElse from 'ramda/src/ifElse';
+import always from 'ramda/src/always';
 
 import fetchInstallationRepositories from '../../helpers/fetchInstallationRepositories';
 import { mergeEntities } from '../entities';
-import { requestStart, REQUEST_SUCCESS } from './requests';
+import { requestStart } from './requests';
 import { requestIdStartsWith } from './helpers';
 
 // Actions
@@ -18,14 +18,16 @@ export const loadInstallationRepositories = (accessToken, installationOwner, ins
     partial(fetchInstallationRepositories, [accessToken, installationId]),
 );
 
-// Epics
-export const storeInstallationRepositoriesEpic = action$ =>
-    action$.ofType(REQUEST_SUCCESS).pipe(
-        filter(requestIdStartsWith('repositories/')),
-        map(compose(
+// Store functions
+export const storeInstallationRepositories = ifElse(
+    requestIdStartsWith('repositories/'),
+    compose(
+        mergeEntities,
+        compose(
             objOf('repositories'),
             indexBy(prop('full_name')),
             path(['payload', 'result'])
-        )),
-        map(mergeEntities),
-    );
+        ),
+    ),
+    always(undefined),
+);

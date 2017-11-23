@@ -1,10 +1,10 @@
 import partial from 'ramda/src/partial';
-import { filter } from 'rxjs/operators/filter';
-import { map } from 'rxjs/operators/map';
+import ifElse from 'ramda/src/ifElse';
+import always from 'ramda/src/always';
 
 import fetchUser from '../../helpers/fetchUser';
 import { mergeEntities } from '../entities';
-import { requestStart, REQUEST_SUCCESS } from './requests';
+import { requestStart } from './requests';
 import { requestIdEq } from './helpers';
 
 // Actions
@@ -13,9 +13,9 @@ export const loadUser = accessToken => requestStart(
     partial(fetchUser, [accessToken]),
 );
 
-// Epics
-export const storeUserEpic = action$ =>
-    action$.ofType(REQUEST_SUCCESS).pipe(
-        filter(requestIdEq('user')),
-        map(({ payload: { result: user } }) => mergeEntities({ users: { [user.login]: user } })),
-    );
+// Store functions
+export const storeUser = ifElse(
+    requestIdEq('user'),
+    ({ payload: { result: user } }) => mergeEntities({ users: { [user.login]: user } }),
+    always(undefined),
+);

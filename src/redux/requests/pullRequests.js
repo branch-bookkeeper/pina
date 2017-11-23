@@ -6,14 +6,14 @@ import objOf from 'ramda/src/objOf';
 import indexBy from 'ramda/src/indexBy';
 import map from 'ramda/src/map';
 import merge from 'ramda/src/merge';
-import { filter as filter$ } from 'rxjs/operators/filter';
-import { map as map$ } from 'rxjs/operators/map';
+import ifElse from 'ramda/src/ifElse';
+import always from 'ramda/src/always';
 
 import fetchPullRequest from '../../helpers/fetchPullRequest';
 import fetchRepositoryPullRequests from '../../helpers/fetchRepositoryPullRequests';
 import removePrefix from '../../helpers/removePrefix';
 import { mergeEntities } from '../entities';
-import { requestStart, REQUEST_SUCCESS } from './requests';
+import { requestStart } from './requests';
 import { requestIdStartsWith } from './helpers';
 
 // Actions
@@ -28,11 +28,12 @@ export const loadRepositoryPullRequests = (accessToken, owner, repository) => re
     { owner, repository },
 );
 
-// Epics
-export const storePullRequestEpic = action$ =>
-    action$.ofType(REQUEST_SUCCESS).pipe(
-        filter$(requestIdStartsWith('pullRequest/')),
-        map$(compose(
+// Store functions
+export const storePullRequest = ifElse(
+    requestIdStartsWith('pullRequest/'),
+    compose(
+        mergeEntities,
+        compose(
             objOf('pullRequests'),
             converge(objOf, [
                 compose(
@@ -42,18 +43,21 @@ export const storePullRequestEpic = action$ =>
                 prop('result'),
             ]),
             prop('payload'),
-        )),
-        map$(mergeEntities),
-    );
+        ),
+    ),
+    always(undefined)
+);
 
-export const storeRepositoryPullRequestsEpic = action$ =>
-    action$.ofType(REQUEST_SUCCESS).pipe(
-        filter$(requestIdStartsWith('pullRequests/')),
-        map$(compose(
+export const storeRepositoryPullRequests = ifElse(
+    requestIdStartsWith('pullRequests/'),
+    compose(
+        mergeEntities,
+        compose(
             objOf('pullRequests'),
             indexBy(({ owner, repository, pullRequestNumber }) => `${owner}/${repository}/${pullRequestNumber}`),
             ({ result: pullRequests, meta: { owner, repository } }) => map(merge({ owner, repository }), pullRequests),
             prop('payload'),
-        )),
-        map$(mergeEntities),
-    );
+        ),
+    ),
+    always(undefined),
+);
