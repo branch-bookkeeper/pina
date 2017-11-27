@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { CircularProgress } from 'material-ui/Progress';
+
+import PageHeader from '../components/PageHeader';
+import PageTitle from '../components/PageTitle';
 
 export default (isLoadingNeeded, load) => InnerComponent => {
     class ComponentWithPreloading extends Component {
@@ -10,7 +14,13 @@ export default (isLoadingNeeded, load) => InnerComponent => {
 
         render() {
             return isLoadingNeeded(this.props)
-                ? <div>Loading...</div>
+                ? (
+                    <PageHeader>
+                        <PageTitle>
+                            <CircularProgress />
+                        </PageTitle>
+                    </PageHeader>
+                )
                 : <InnerComponent {...this.props} />;
         }
     }

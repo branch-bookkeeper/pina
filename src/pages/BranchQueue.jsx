@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 import { setPropTypes, defaultProps, pure } from 'recompose';
 import { withStyles } from 'material-ui/styles';
 import { grey } from 'material-ui/colors';
-import Grid from 'material-ui/Grid';
 import Collapse from 'material-ui/transitions/Collapse';
 import Button from 'material-ui/Button';
 
@@ -167,43 +166,41 @@ class BranchQueue extends Component {
 
         return (
             <Collapse in={showOutOfQueueCard} unmountOnExit>
-                <Grid container justify="center">
-                    <Grid item xs={12} sm={9} md={8} lg={6} xl={4}>
-                        <div className={classes.outOfQueueCardWrapper}>
-                            {selectedPullRequest &&
-                                <QueueItemCard
-                                    innerRef={this.setOutOfQueueCardRef}
-                                    elevation={6}
-                                    queueItem={{
-                                        pullRequestNumber: selectedPullRequest.pullRequestNumber,
-                                        username: user.login,
-                                        createdAt: '',
-                                    }}
-                                    pullRequest={selectedPullRequest}
-                                    showPullRequestLink={false}
-                                    loading={bookingInProgress}
-                                >
-                                    <div className={classes.pullRequestActions}>
-                                        <Button
-                                            color="primary"
-                                            raised
-                                            disabled={bookingInProgress}
-                                            onClick={() => onAddToBranchQueue(selectedPullRequest.pullRequestNumber)}
-                                        >
-                                            Add to queue
-                                        </Button>
-                                        <Button
-                                            className={classes.cancelButton}
-                                            disabled={bookingInProgress}
-                                            onClick={() => history.push(`/${repository.full_name}/${branch}`)}
-                                        >
-                                            Cancel
-                                        </Button>
-                                    </div>
-                                </QueueItemCard>}
-                        </div>
-                    </Grid>
-                </Grid>
+                <PageContent>
+                    <div className={classes.outOfQueueCardWrapper}>
+                        {selectedPullRequest &&
+                            <QueueItemCard
+                                innerRef={this.setOutOfQueueCardRef}
+                                elevation={6}
+                                queueItem={{
+                                    pullRequestNumber: selectedPullRequest.pullRequestNumber,
+                                    username: user.login,
+                                    createdAt: '',
+                                }}
+                                pullRequest={selectedPullRequest}
+                                showPullRequestLink={false}
+                                loading={bookingInProgress}
+                            >
+                                <div className={classes.pullRequestActions}>
+                                    <Button
+                                        color="primary"
+                                        raised
+                                        disabled={bookingInProgress}
+                                        onClick={() => onAddToBranchQueue(selectedPullRequest.pullRequestNumber)}
+                                    >
+                                        Add to queue
+                                    </Button>
+                                    <Button
+                                        className={classes.cancelButton}
+                                        disabled={bookingInProgress}
+                                        onClick={() => history.push(`/${repository.full_name}/${branch}`)}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </QueueItemCard>}
+                    </div>
+                </PageContent>
             </Collapse>
         );
     }

@@ -10,9 +10,10 @@ import concat from 'ramda/src/concat';
 import of from 'ramda/src/of';
 import unapply from 'ramda/src/unapply';
 import identity from 'ramda/src/identity';
+import ifElse from 'ramda/src/ifElse';
+import always from 'ramda/src/always';
 import { filter } from 'rxjs/operators/filter';
 import { map } from 'rxjs/operators/map';
-import { mergeMap } from 'rxjs/operators/mergeMap';
 
 import fetchBranchQueue from '../../helpers/fetchBranchQueue';
 import { default as doAddToBranchQueue } from '../../helpers/addToBranchQueue';
@@ -57,34 +58,6 @@ const resetDeleteToBranchQueueRequest = (owner, repository, branch) => requestRe
 );
 
 // Epics
-export const storeBranchQueueEpic = action$ =>
-    action$.ofType(REQUEST_SUCCESS).pipe(
-        filter(requestIdStartsWith(QUEUE)),
-        mergeMap(converge(concat, [
-            compose(
-                of,
-                mergeEntities,
-                objOf('queues'),
-                converge(objOf, [
-                    compose(
-                        removePrefix(QUEUE.length),
-                        prop('requestId')
-                    ),
-                    prop('result'),
-                ]),
-                prop('payload'),
-            ),
-            compose(
-                converge(arrayOf, [
-                    apply(resetAddToBranchQueueRequest),
-                    apply(resetDeleteToBranchQueueRequest),
-                ]),
-                pickValues(['owner', 'repository', 'branch']),
-                path(['payload', 'meta']),
-            ),
-        ])),
-    );
-
 export const refreshBranchQueueOnActionEpic = action$ =>
     action$.ofType(REQUEST_SUCCESS).pipe(
         filter(anyPass([requestIdStartsWith(QUEUE_ADD), requestIdStartsWith(QUEUE_DELETE)])),
@@ -93,3 +66,32 @@ export const refreshBranchQueueOnActionEpic = action$ =>
                 loadBranchQueue(accessToken, owner, repository, branch)
         ),
     );
+
+// Store functions
+export const storeBranchQueue = ifElse(
+    requestIdStartsWith(QUEUE),
+    converge(concat, [
+        compose(
+            of,
+            mergeEntities,
+            objOf('queues'),
+            converge(objOf, [
+                compose(
+                    removePrefix(QUEUE.length),
+                    prop('requestId')
+                ),
+                prop('result'),
+            ]),
+            prop('payload'),
+        ),
+        compose(
+            converge(arrayOf, [
+                apply(resetAddToBranchQueueRequest),
+                apply(resetDeleteToBranchQueueRequest),
+            ]),
+            pickValues(['owner', 'repository', 'branch']),
+            path(['payload', 'meta']),
+        ),
+    ]),
+    always(undefined),
+);
