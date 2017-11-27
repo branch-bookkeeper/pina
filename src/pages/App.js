@@ -9,7 +9,6 @@ import { GITHUB_ACCESS_TOKEN } from '../constants/localStorageKeys';
 import { entitiesShape, requestsShape } from '../redux';
 import noop from '../helpers/noop';
 import mapKeys from '../helpers/mapKeys';
-import { isMade, createWithError } from '../helpers/request';
 import { filterRequestsByPathPrefix } from '../helpers/requestId';
 import removePrefix from '../helpers/removePrefix';
 
@@ -40,8 +39,8 @@ const renderPublicRoutes = () => {
 
 const propTypes = {
     loadUser: PropTypes.func,
-    loadInstallations: PropTypes.func,
-    loadInstallationRepositories: PropTypes.func,
+    loadRepository: PropTypes.func,
+    loadRepositories: PropTypes.func,
     loadRepositoryPullRequests: PropTypes.func,
     loadBranchQueue: PropTypes.func,
     addToBranchQueue: PropTypes.func,
@@ -53,8 +52,8 @@ const propTypes = {
 
 const defaultProps = {
     loadUser: noop,
-    loadInstallations: noop,
-    loadInstallationRepositories: noop,
+    loadRepository: noop,
+    loadRepositories: noop,
     loadRepositoryPullRequests: noop,
     loadBranchQueue: noop,
     addToBranchQueue: noop,
@@ -70,7 +69,8 @@ class App extends Component {
         };
 
         this._loadUser = this._loadUser.bind(this);
-        this._loadInstallations = this._loadInstallations.bind(this);
+        this._loadRepository = this._loadRepository.bind(this);
+        this._loadRepositories = this._loadRepositories.bind(this);
         this._renderHome = this._renderHome.bind(this);
         this._renderRepository = this._renderRepository.bind(this);
     }
@@ -124,24 +124,18 @@ class App extends Component {
     }
 
     _renderRepository({ match: { params: { owner, repository: repoName }, url: baseUrl } }) {
+        const repositoryId = `${owner}/${repoName}`;
         const {
-            entities: { installations, repositories, queues, pullRequests, users },
+            entities: { repositories, queues, pullRequests, users },
             requests: {
-                installations: installationsRequest,
-                [`repositories/${owner}`]: repositoriesRequest,
+                [`repositories/${repositoryId}`]: repositoryRequest,
                 ...requests,
             },
             user,
         } = this.props;
-        const repositoryId = `${owner}/${repoName}`;
         const filterEntities = filterKeysByPrefix(repositoryId);
-        const installation = installations[owner];
         const repository = repositories[repositoryId];
-        const repositoryRequest = isMade(repositoriesRequest) && !repository
-            ? createWithError('Not Found')
-            : repositoriesRequest;
         const repositoryRequests = {
-            installation: installationsRequest,
             repository: repositoryRequest,
             ...filterRequestsByPathPrefix(repositoryId)(requests),
         }
@@ -157,14 +151,12 @@ class App extends Component {
             <Repository
                 baseUrl={baseUrl}
                 user={users[user]}
-                installation={installation}
                 repository={repository}
                 branchQueues={repositoryQueues}
                 pullRequests={repositoryPullRequests}
                 requests={repositoryRequests}
                 loadUser={this._loadUser}
-                loadInstallation={this._loadInstallations}
-                loadRepository={() => this._loadInstallationRepositories(owner, installation.id)}
+                loadRepository={() => this._loadRepository(repositoryId)}
                 loadBranchQueue={branch => this._loadBranchQueue(owner, repoName, branch)}
                 loadPullRequests={() => this._loadRepositoryPullRequests(owner, repoName)}
                 onAddToBranchQueue={onAddToBranchQueue}
@@ -187,11 +179,18 @@ class App extends Component {
         loadInstallations(accessToken);
     }
 
-    _loadInstallationRepositories(installationOwner, installationId) {
-        const { loadInstallationRepositories } = this.props;
+    _loadRepository(repository) {
+        const { loadRepository } = this.props;
         const { accessToken } = this.state;
 
-        loadInstallationRepositories(accessToken, installationOwner, installationId);
+        loadRepository(accessToken, repository);
+    }
+
+    _loadRepositories() {
+        const { loadRepositories } = this.props;
+        const { accessToken } = this.state;
+
+        loadRepositories(accessToken);
     }
 
     _loadRepositoryPullRequests(owner, repository) {

@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 
 import {
     userShape,
-    installationShape,
     repositoryShape,
     pullRequestShape,
     queueShape
@@ -17,7 +16,6 @@ export const ENTITIES_MERGE = 'ENTITIES_MERGE';
 
 export const stateShape = PropTypes.shape({
     users: PropTypes.objectOf(userShape).isRequired,
-    installations: PropTypes.objectOf(installationShape).isRequired,
     repositories: PropTypes.objectOf(repositoryShape).isRequired,
     pullRequests: PropTypes.objectOf(pullRequestShape).isRequired,
     queues: PropTypes.objectOf(queueShape).isRequired,
@@ -25,7 +23,6 @@ export const stateShape = PropTypes.shape({
 
 const initialState = {
     users: {},
-    installations: {},
     repositories: {},
     pullRequests: {},
     queues: {},
