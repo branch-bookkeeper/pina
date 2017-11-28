@@ -6,7 +6,6 @@ import { withStyles } from 'material-ui/styles';
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
-import Avatar from 'material-ui/Avatar';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import Button from 'material-ui/Button';
@@ -14,7 +13,8 @@ import { CircularProgress } from 'material-ui/Progress';
 
 import { queueItemShape, pullRequestShape } from '../constants/propTypes';
 
-import MarkGitHub from '../components/icons/MarkGitHub';
+import MarkGitHub from './icons/MarkGitHub';
+import UserAvatar from './UserAvatar';
 
 const propTypes = {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
@@ -50,10 +50,6 @@ const styles = theme => ({
     },
     positionInQueue: {
         lineHeight: '60px',
-    },
-    bigAvatar: {
-        width: 60,
-        height: 60,
     },
     hidden: {
         visibility: 'hidden',
@@ -132,11 +128,7 @@ class QueueItemCard extends Component {
                             </Typography>
                         </Grid>}
                     <Grid item>
-                        <Avatar
-                            alt={username}
-                            src={`https://github.com/${username}.png?size=180`}
-                            className={classes.bigAvatar}
-                        />
+                        <UserAvatar username={username} size={60} />
                     </Grid>
                     <Grid item className={classes.titleGridItem}>
                         <Typography
