@@ -23,9 +23,11 @@ const styles = theme => ({
     },
     repositoryTitle: {
         display: 'inline-block',
+        color: theme.typography.headline.color,
         fontWeight: 'bold',
         borderBottom: 'dashed 1px',
         borderBottomColor: grey[400],
+        textDecoration: 'none',
         '&:hover': {
             borderBottomStyle: 'solid',
             borderBottomColor: theme.typography.headline.color,
@@ -57,22 +59,14 @@ const BranchQueueHeader = ({ classes, repository, branch }) => (
             <Grid item>
                 <MarkGitHub className={classes.repositoryServiceIcon} />
             </Grid>
-            <Grid item>
+            <Grid item style={{ flex: 1 }}>
                 <PageTitle className={classes.ownerTitle}>
                     {repository.owner.login}
-                </PageTitle>
-            </Grid>
-            <Grid item>
-                <PageTitle className={classes.ownerTitle}>
-                    /
-                </PageTitle>
-            </Grid>
-            <Grid item style={{ flex: 1}}>
-                <a href={repository.html_url}>
-                    <PageTitle className={classes.repositoryTitle}>
+                    {' / '}
+                    <a href={repository.html_url} className={classes.repositoryTitle}>
                         {repository.name}
-                    </PageTitle>
-                </a>
+                    </a>
+                </PageTitle>
             </Grid>
             <Grid item>
                 <a href={`${repository.html_url}/tree/${branch}`} className={classes.branchLink}>
