@@ -13,7 +13,6 @@ export default curry((accessToken, repository) => {
     return fetchUserInstallations(accessToken)
         .then((installations) => {
             const byName = indexBy(path(['account', 'login']), installations);
-            console.log({ installations, byName });
             if (!byName[installationName]) {
                 throw new Error('Not Found');
             }
