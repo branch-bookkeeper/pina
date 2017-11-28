@@ -5,6 +5,7 @@ import { grey } from 'material-ui/colors';
 import Grid from 'material-ui/Grid';
 
 import MarkGitHub from '../components/icons/MarkGitHub';
+import Lock from '../components/icons/Lock';
 import PageHeader from '../components/PageHeader';
 import PageTitle from '../components/PageTitle';
 import BranchChip from '../components/BranchChip';
@@ -37,8 +38,13 @@ const styles = theme => ({
         width: '24px',
         height: '24px',
         color: theme.typography.display1.color,
-        // Fix vertical alignment.
-        paddingTop: '6px',
+    },
+    lockIcon: {
+        verticalAlign: 'middle',
+        color: theme.typography.display1.color,
+        width: 16,
+        height: 16,
+        marginLeft: theme.spacing.unit,
     },
     branchLink: {
         textDecoration: 'none',
@@ -66,6 +72,7 @@ const BranchQueueHeader = ({ classes, repository, branch }) => (
                     <a href={repository.html_url} className={classes.repositoryTitle}>
                         {repository.name}
                     </a>
+                    {repository.private && <Lock className={classes.lockIcon} />}
                 </PageTitle>
             </Grid>
             <Grid item>
