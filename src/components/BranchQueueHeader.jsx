@@ -4,11 +4,11 @@ import { withStyles } from 'material-ui/styles';
 import { grey } from 'material-ui/colors';
 import Grid from 'material-ui/Grid';
 
-import MarkGitHub from '../components/icons/MarkGitHub';
 import Lock from '../components/icons/Lock';
 import PageHeader from '../components/PageHeader';
 import PageTitle from '../components/PageTitle';
 import BranchChip from '../components/BranchChip';
+import UserAvatar from '../components/UserAvatar';
 
 import { repositoryShape } from '../constants/propTypes';
 
@@ -34,11 +34,6 @@ const styles = theme => ({
             borderBottomColor: theme.typography.headline.color,
         },
     },
-    repositoryServiceIcon: {
-        width: '24px',
-        height: '24px',
-        color: theme.typography.display1.color,
-    },
     lockIcon: {
         verticalAlign: 'middle',
         color: theme.typography.display1.color,
@@ -63,7 +58,7 @@ const BranchQueueHeader = ({ classes, repository, branch }) => (
     <PageHeader>
         <Grid container style={{ flex: 1 }} spacing={8} alignItems="center">
             <Grid item>
-                <MarkGitHub className={classes.repositoryServiceIcon} />
+                <UserAvatar username={repository.owner.login} size={48} />
             </Grid>
             <Grid item style={{ flex: 1 }}>
                 <PageTitle className={classes.ownerTitle}>
