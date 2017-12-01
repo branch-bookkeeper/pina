@@ -1,27 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import Grid from 'material-ui/Grid';
 
 import { repositoryShape } from '../constants/propTypes';
 
-import BranchName from './BranchName';
+import RepositoryCard from './RepositoryCard';
 
 const propTypes = {
     repositories: PropTypes.arrayOf(repositoryShape),
 };
 
 const RepositoriesList = ({ repositories }) => (
-    <ul>
+    <Grid container direction="column" spacing={8}>
         {repositories.map(repository => (
-            <li key={repository.full_name}>
-                <h3>
-                    <Link to={`${repository.full_name}/${repository.default_branch}`}>
-                        {repository.full_name} <BranchName branch={repository.default_branch} />
-                    </Link>
-                </h3>
-            </li>
+            <Grid item key={repository.full_name}>
+                <RepositoryCard repository={repository} />
+            </Grid>
         ))}
-    </ul>
+    </Grid>
 );
 
 RepositoriesList.propTypes = propTypes;

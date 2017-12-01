@@ -4,10 +4,11 @@ import { withStyles } from 'material-ui/styles';
 import { grey } from 'material-ui/colors';
 import Grid from 'material-ui/Grid';
 
-import MarkGitHub from '../components/icons/MarkGitHub';
+import Lock from '../components/icons/Lock';
 import PageHeader from '../components/PageHeader';
 import PageTitle from '../components/PageTitle';
 import BranchChip from '../components/BranchChip';
+import UserAvatar from '../components/UserAvatar';
 
 import { repositoryShape } from '../constants/propTypes';
 
@@ -23,20 +24,22 @@ const styles = theme => ({
     },
     repositoryTitle: {
         display: 'inline-block',
+        color: theme.typography.headline.color,
         fontWeight: 'bold',
         borderBottom: 'dashed 1px',
         borderBottomColor: grey[400],
+        textDecoration: 'none',
         '&:hover': {
             borderBottomStyle: 'solid',
             borderBottomColor: theme.typography.headline.color,
         },
     },
-    repositoryServiceIcon: {
-        width: '24px',
-        height: '24px',
+    lockIcon: {
+        verticalAlign: 'middle',
         color: theme.typography.display1.color,
-        // Fix vertical alignment.
-        paddingTop: '6px',
+        width: 16,
+        height: 16,
+        marginLeft: theme.spacing.unit,
     },
     branchLink: {
         textDecoration: 'none',
@@ -55,24 +58,17 @@ const BranchQueueHeader = ({ classes, repository, branch }) => (
     <PageHeader>
         <Grid container style={{ flex: 1 }} spacing={8} alignItems="center">
             <Grid item>
-                <MarkGitHub className={classes.repositoryServiceIcon} />
+                <UserAvatar username={repository.owner.login} size={48} />
             </Grid>
-            <Grid item>
+            <Grid item style={{ flex: 1 }}>
                 <PageTitle className={classes.ownerTitle}>
                     {repository.owner.login}
-                </PageTitle>
-            </Grid>
-            <Grid item>
-                <PageTitle className={classes.ownerTitle}>
-                    /
-                </PageTitle>
-            </Grid>
-            <Grid item style={{ flex: 1}}>
-                <a href={repository.html_url}>
-                    <PageTitle className={classes.repositoryTitle}>
+                    {' / '}
+                    <a href={repository.html_url} className={classes.repositoryTitle}>
                         {repository.name}
-                    </PageTitle>
-                </a>
+                    </a>
+                    {repository.private && <Lock className={classes.lockIcon} />}
+                </PageTitle>
             </Grid>
             <Grid item>
                 <a href={`${repository.html_url}/tree/${branch}`} className={classes.branchLink}>

@@ -1,7 +1,6 @@
 import isNil from 'ramda/src/isNil';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Avatar from 'material-ui/Avatar';
 import { withStyles } from 'material-ui/styles';
 import ArrowDropDown from 'material-ui-icons/ArrowDropDown';
 
@@ -9,6 +8,7 @@ import { bbOrange } from '../constants/colors';
 import { userShape } from '../constants/propTypes';
 
 import UserMenu from './UserMenu';
+import UserAvatar from './UserAvatar';
 
 const propTypes = {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
@@ -33,10 +33,6 @@ const styles = theme => ({
         '& summary::-webkit-details-marker': {
             display: 'none',
         },
-    },
-    avatar: {
-        width: 32,
-        height: 32,
     },
     avatarWrapper: {
         display: 'inline-block',
@@ -72,11 +68,7 @@ class TopBarUserAvatar extends Component {
                 >
                     <summary>
                         <span className={classes.avatarWrapper}>
-                            <Avatar
-                                className={classes.avatar}
-                                alt={user.login}
-                                src={user.avatar_url}
-                            />
+                            <UserAvatar username={user.login} size={32} />
                         </span>
                         <ArrowDropDown className={classes.avatarArrow} />
                     </summary>
