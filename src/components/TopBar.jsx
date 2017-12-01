@@ -10,8 +10,8 @@ import { withStyles } from 'material-ui/styles';
 import { bbOrange } from '../constants/colors';
 import { userShape } from '../constants/propTypes';
 import { requestShape, isNotMade } from '../helpers/request';
-import logo from '../assets/favicon-allwhite.svg';
 
+import Favicon from './icons/Favicon';
 import TopBarUserAvatar from './TopBarUserAvatar';
 
 const propTypes = {
@@ -41,6 +41,7 @@ const styles = theme => ({
     logo: {
         width: 32,
         height: 32,
+        color: 'white',
     },
     avatarWrapper: {
         display: 'inline-block',
@@ -68,7 +69,7 @@ class TopBar extends Component {
                             <Grid container alignItems="center">
                                 <Grid item>
                                     <Link to="/">
-                                        <img src={logo} alt="logo" className={classes.logo} />
+                                        <Favicon className={classes.logo} />
                                     </Link>
                                 </Grid>
                                 <Grid item style={{ flex: 1 }}>
