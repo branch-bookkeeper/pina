@@ -11,13 +11,13 @@ const styles = theme => ({
 });
 
 const PageHeader = ({ classes, children }) => (
-    <div className={classes.root}>
+    <header className={classes.root}>
         <Grid container justify="center">
             <Grid item xs={12} sm={9} md={8} lg={6} xl={4}>
                 {children}
             </Grid>
         </Grid>
-    </div>
+    </header>
 );
 
 export default withStyles(styles)(PageHeader);
