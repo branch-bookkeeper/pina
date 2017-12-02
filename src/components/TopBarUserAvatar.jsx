@@ -18,20 +18,19 @@ const propTypes = {
 };
 
 const styles = theme => ({
-    root: {
-        '& a, & a:visited': {
-            color: bbOrange[100],
-        },
-        '& a:hover, & a:active': {
-            color: 'white',
-        },
-    },
     link: {
         display: 'block',
         listStyle: 'none',
         cursor: 'pointer',
+        color: bbOrange[100],
+        transition: theme.transitions.create(['color'], {
+            duration: theme.transitions.duration.standard,
+        }),
         '& summary::-webkit-details-marker': {
             display: 'none',
+        },
+        '&:hover': {
+            color: 'white',
         },
     },
     avatarWrapper: {
@@ -60,7 +59,7 @@ class TopBarUserAvatar extends Component {
         const { menuAnchorEl } = this.state;
 
         return (
-            <div className={classes.root}>
+            <div>
                 <details
                     className={classes.link}
                     open={!isNil(menuAnchorEl)}
