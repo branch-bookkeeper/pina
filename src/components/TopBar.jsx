@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
 import { withStyles } from 'material-ui/styles';
 
@@ -11,7 +10,7 @@ import { bbOrange } from '../constants/colors';
 import { userShape } from '../constants/propTypes';
 import { requestShape, isNotMade } from '../helpers/request';
 
-import Favicon from './icons/Favicon';
+import LogoTextMonochrome from './icons/LogoTextMonochrome';
 import TopBarUserAvatar from './TopBarUserAvatar';
 
 const propTypes = {
@@ -25,18 +24,21 @@ const propTypes = {
 
 const styles = theme => ({
     root: {
-        color: bbOrange[100],
+        color: bbOrange[50],
     },
     titleLink: {
         color: 'inherit',
         textDecoration: 'none',
+        transition: theme.transitions.create(['color'], {
+            duration: theme.transitions.duration.standard,
+        }),
         '&:hover, &:active': {
-            color: bbOrange[50],
+            color: 'white',
         },
     },
     title: {
-        fontSize: '1.1667rem',
-        display: 'inline-block'
+        width: 130,
+        height: 32,
     },
     logo: {
         width: 32,
@@ -67,16 +69,9 @@ class TopBar extends Component {
                     <Grid container justify="center">
                         <Grid item xs={12} sm={10} md={9} lg={7} xl={5}>
                             <Grid container alignItems="center">
-                                <Grid item>
-                                    <Link to="/">
-                                        <Favicon className={classes.logo} />
-                                    </Link>
-                                </Grid>
                                 <Grid item style={{ flex: 1 }}>
                                     <Link to="/" className={classes.titleLink}>
-                                        <Typography type="title" color="inherit" className={classes.title}>
-                                            Branch Bookkeeper
-                                        </Typography>
+                                        <LogoTextMonochrome className={classes.title} />
                                     </Link>
                                 </Grid>
                                 {user &&
