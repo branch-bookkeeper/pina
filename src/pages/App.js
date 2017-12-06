@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import curry from 'ramda/src/curry';
 import compose from 'ramda/src/compose';
 import pickBy from 'ramda/src/pickBy';
+import { withStyles } from 'material-ui/styles';
 
 import { Route, Switch } from 'react-router-dom';
 import { GITHUB_ACCESS_TOKEN } from '../constants/localStorageKeys';
@@ -13,6 +14,7 @@ import { filterRequestsByPathPrefix } from '../helpers/requestId';
 import removePrefix from '../helpers/removePrefix';
 
 import TopBarContainer from '../containers/TopBarContainer';
+import PageFooter from '../components/PageFooter';
 import SettingsDialogContainer from '../containers/SettingsDialogContainer';
 import SnackbarContainer from '../containers/SnackbarContainer';
 import HomeContainer from '../containers/HomeContainer';
@@ -38,6 +40,7 @@ const renderPublicRoutes = () => {
 }
 
 const propTypes = {
+    classes: PropTypes.objectOf(PropTypes.string).isRequired,
     loadUser: PropTypes.func,
     loadRepository: PropTypes.func,
     loadRepositories: PropTypes.func,
@@ -59,6 +62,17 @@ const defaultProps = {
     addToBranchQueue: noop,
     deleteFromBranchQueue: noop,
 };
+
+const styles = theme => ({
+    pageWrapper: {
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+    },
+    pageContent: {
+        flex: 1,
+    },
+});
 
 class App extends Component {
     constructor(props) {
@@ -90,27 +104,30 @@ class App extends Component {
     }
 
     _renderPrivateRoutes() {
-        const { loadUser } = this.props;
+        const { loadUser, classes } = this.props;
         const { accessToken } = this.state;
 
         return (
-            <div>
-                <TopBarContainer loadUser={() => loadUser(accessToken)} />
-                <div>
-                    <Switch>
-                        <Route
-                            path="/:owner/:repository"
-                            render={this._renderRepository}
-                        />
-                        <Route
-                            exact
-                            path="/"
-                            render={this._renderHome}
-                        />
-                    </Switch>
+            <div className={classes.pageWrapper}>
+                <div className={classes.pageContent}>
+                    <TopBarContainer loadUser={() => loadUser(accessToken)} />
+                    <div>
+                        <Switch>
+                            <Route
+                                path="/:owner/:repository"
+                                render={this._renderRepository}
+                            />
+                            <Route
+                                exact
+                                path="/"
+                                render={this._renderHome}
+                            />
+                        </Switch>
+                    </div>
+                    <SettingsDialogContainer />
+                    <SnackbarContainer />
                 </div>
-                <SettingsDialogContainer />
-                <SnackbarContainer />
+                <PageFooter />
             </div>
         );
     }
@@ -225,4 +242,4 @@ class App extends Component {
 App.propTypes = propTypes;
 App.defaultProps = defaultProps;
 
-export default App;
+export default withStyles(styles)(App);
