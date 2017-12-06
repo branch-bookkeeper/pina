@@ -1,19 +1,28 @@
 import qs from 'qs';
-import React from 'react';
-import { GITHUB_CLIENT_ID } from '../constants/config';
+import React, { Component } from 'react';
 
-const OAuthFailure = ({ location: { search } }) => {
-    const { error } = qs.parse(search.substr(1));
+import LoginScreen from '../components/LoginScreen';
 
-    return (
-        <div>
-            <h1>Branch Bookkeeper</h1>
-            <p><strong>Login failed:</strong> {error}</p>
-            <a href={`https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}`}>
-                Click here to retry
-            </a>
-        </div>
-    );
-};
+class OAuthFailure extends Component {
+    state = {
+        loading: false,
+    };
+
+    render() {
+        const { location: { search } } = this.props;
+        const { loading } = this.state;
+        const { error } = qs.parse(search.substr(1));
+
+        return (
+            <LoginScreen
+                errorMessage={error}
+                onLogin={this.startLoading}
+                loading={loading}
+            />
+        );
+    }
+
+    startLoading = () => this.setState({ loading: true });
+}
 
 export default OAuthFailure;
