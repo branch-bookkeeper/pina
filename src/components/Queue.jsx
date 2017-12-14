@@ -8,6 +8,7 @@ import { requestShape, isNotMade } from '../helpers/request';
 import { userShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
 import QueueItemCard from './QueueItemCard';
 import QueueItemMenu from './QueueItemMenu';
+import EmptyQueue from './EmptyQueue';
 
 const propTypes = {
     user: userShape.isRequired,
@@ -28,10 +29,6 @@ const shouldRenderMenu = (user, repository, queueItem) => {
 
     return isUserAdmin || isUserInQueue;
 };
-
-const EmptyQueue = () => (
-    <p>No one in this queue</p>
-)
 
 class NotEmptyQueue extends Component {
     state = {

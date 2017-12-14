@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import compose from 'ramda/src/compose';
 import map from 'ramda/src/map';
 import prop from 'ramda/src/prop';
@@ -51,6 +52,10 @@ const styles = theme => ({
         marginTop: theme.spacing.unit * 4,
         paddingTop: theme.spacing.unit * 4,
         paddingBottom: theme.spacing.unit * 2,
+    },
+    outOfQueueCardWrapperEmpty: {
+        borderTop: 'none',
+        marginTop: 0,
     },
     pullRequestActions: {
         paddingTop: theme.spacing.unit,
@@ -158,16 +163,20 @@ class BranchQueue extends Component {
             user,
             repository,
             branch,
+            queue,
             addToBranchQueueRequest,
             onAddToBranchQueue,
         } = this.props;
         const { showOutOfQueueCard, selectedPullRequest } = this.state;
         const bookingInProgress = !isNotMade(addToBranchQueueRequest);
+        const wrapperClasses = classNames(classes.outOfQueueCardWrapper, {
+            [classes.outOfQueueCardWrapperEmpty]: queue.length === 0,
+        });
 
         return (
             <Collapse in={showOutOfQueueCard} unmountOnExit>
                 <PageContent>
-                    <div className={classes.outOfQueueCardWrapper}>
+                    <div className={wrapperClasses}>
                         {selectedPullRequest &&
                             <QueueItemCard
                                 innerRef={this.setOutOfQueueCardRef}
