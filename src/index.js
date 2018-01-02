@@ -9,8 +9,10 @@ import { blue, red } from 'material-ui/colors';
 
 import { bbOrange } from './constants/colors';
 import { default as rootReducer } from './redux';
+import { setLocation } from './redux/location';
 import middlewares from './middlewares';
 
+import HistoryTracker from './components/HistoryTracker';
 import AppContainer from './containers/AppContainer';
 
 import './index.css';
@@ -24,12 +26,15 @@ const theme = createMuiTheme({
 });
 
 const store = createStore(rootReducer, middlewares);
+const dispatchSetLocation = location => store.dispatch(setLocation(location));
 
 ReactDOM.render(
     <Provider store={store} >
         <MuiThemeProvider theme={theme}>
             <BrowserRouter>
-                <AppContainer />
+                <HistoryTracker onChange={dispatchSetLocation}>
+                    <AppContainer />
+                </HistoryTracker>
             </BrowserRouter>
         </MuiThemeProvider>
     </Provider>,

@@ -6,6 +6,8 @@ import createStorageMiddleware from './createStorageMiddleware';
 import { epics as requestsEpics } from '../redux/requests';
 import { epics as pushEpics } from '../redux/push';
 import { epics as authEpics } from '../redux/auth';
+import { epics as googleAnalyticsEpics } from '../redux/googleAnalytics';
+import { epics as rollbarEpics } from '../redux/rollbar';
 import { storageFunctions } from '../redux/requests';
 
 const devMiddlewares = process.env.NODE_ENV === 'development'
@@ -19,6 +21,8 @@ export default apply(applyMiddleware, [
             requestsEpics,
             pushEpics,
             authEpics,
+            googleAnalyticsEpics,
+            rollbarEpics,
         ),
     ),
     ...devMiddlewares,
