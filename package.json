@@ -23,7 +23,7 @@
     "react-scripts": "1.0.12",
     "recompose": "^0.25.0",
     "redux": "^3.7.2",
-    "redux-observable": "^0.16.0",
+    "redux-observable": "^0.18.0",
     "rxjs": "^5.4.3",
     "scroll": "^2.0.1",
     "scroll-doc": "^0.2.0"
