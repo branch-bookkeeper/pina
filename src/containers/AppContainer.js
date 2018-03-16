@@ -12,6 +12,10 @@ import {
     addToBranchQueue,
     deleteFromBranchQueue,
 } from '../redux/requests';
+import {
+    startQueueUpdates,
+    stopQueueUpdates,
+} from '../redux/queueUpdate';
 
 const mapStateToProps = ({
     user,
@@ -31,6 +35,8 @@ const mapDispatchToProps = {
     loadBranchQueue,
     addToBranchQueue,
     deleteFromBranchQueue,
+    startQueueUpdates,
+    stopQueueUpdates,
 };
 
 export default compose(

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import curry from 'ramda/src/curry';
 import compose from 'ramda/src/compose';
 import pickBy from 'ramda/src/pickBy';
+import partial from 'ramda/src/partial';
 import { withStyles } from 'material-ui/styles';
 
 import { Route, Switch } from 'react-router-dom';
@@ -49,6 +50,8 @@ const propTypes = {
     loadBranchQueue: PropTypes.func,
     addToBranchQueue: PropTypes.func,
     deleteFromBranchQueue: PropTypes.func,
+    startQueueUpdates: PropTypes.func,
+    stopQueueUpdates: PropTypes.func,
     user: PropTypes.string,
     entities: entitiesShape,
     requests: requestsShape,
@@ -62,6 +65,8 @@ const defaultProps = {
     loadBranchQueue: noop,
     addToBranchQueue: noop,
     deleteFromBranchQueue: noop,
+    startQueueUpdates: noop,
+    stopQueueUpdates: noop,
 };
 
 const styles = theme => ({
@@ -151,7 +156,10 @@ class App extends Component {
                 ...requests,
             },
             user,
+            startQueueUpdates,
+            stopQueueUpdates,
         } = this.props;
+        const { accessToken } = this.state;
         const filterEntities = filterKeysByPrefix(repositoryId);
         const repository = repositories[repositoryId];
         const repositoryRequests = {
@@ -178,6 +186,8 @@ class App extends Component {
                 loadRepository={() => this._loadRepository(repositoryId)}
                 loadBranchQueue={branch => this._loadBranchQueue(owner, repoName, branch)}
                 loadPullRequests={() => this._loadRepositoryPullRequests(owner, repoName)}
+                startQueueUpdates={partial(startQueueUpdates, [accessToken, owner, repoName])}
+                stopQueueUpdates={partial(stopQueueUpdates, [accessToken, owner, repoName])}
                 onAddToBranchQueue={onAddToBranchQueue}
                 onRemoveFromBranchQueue={onRemoveFromBranchQueue}
             />
