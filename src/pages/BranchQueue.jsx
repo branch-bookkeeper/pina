@@ -42,6 +42,8 @@ const propTypes = {
     pullRequestsRequest: requestShape,
     loadBranchQueue: PropTypes.func,
     loadPullRequests: PropTypes.func,
+    startQueueUpdates: PropTypes.func,
+    stopQueueUpdates: PropTypes.func,
     onAddToBranchQueue: PropTypes.func,
     onRemoveFromBranchQueue: PropTypes.func,
 };
@@ -89,6 +91,14 @@ class BranchQueue extends Component {
                 && !pullRequestIsInQueue(selectedPullRequest, queue),
             selectedPullRequest,
         };
+    }
+
+    componentDidMount() {
+        this.props.startQueueUpdates();
+    }
+
+    componentWillUnmount() {
+        this.props.stopQueueUpdates();
     }
 
     componentDidUpdate(prevProps, prevState) {

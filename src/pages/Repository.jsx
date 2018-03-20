@@ -26,6 +26,8 @@ const propTypes = {
     loadRepository: PropTypes.func,
     loadBranchQueue: PropTypes.func,
     loadPullRequests: PropTypes.func,
+    startQueueUpdates: PropTypes.func,
+    stopQueueUpdates: PropTypes.func,
     onAddToBranchQueue: PropTypes.func,
     onRemoveFromBranchQueue: PropTypes.func,
 };
@@ -33,6 +35,8 @@ const propTypes = {
 const defaultProps = {
     loadInstallation: noop,
     loadRepository: noop,
+    startQueueUpdates: noop,
+    stopQueueUpdates: noop,
 };
 
 class Repository extends Component {
@@ -96,6 +100,8 @@ class Repository extends Component {
             loadUser,
             loadBranchQueue,
             loadPullRequests,
+            startQueueUpdates,
+            stopQueueUpdates,
             onAddToBranchQueue,
         } = this.props;
 
@@ -113,6 +119,8 @@ class Repository extends Component {
                 loadUser={loadUser}
                 loadBranchQueue={() => loadBranchQueue(branch)}
                 loadPullRequests={loadPullRequests}
+                startQueueUpdates={() => startQueueUpdates(branch)}
+                stopQueueUpdates={() => stopQueueUpdates(branch)}
                 onAddToBranchQueue={pullRequestNumber => onAddToBranchQueue(branch, pullRequestNumber)}
                 onRemoveFromBranchQueue={queueItem => this.handleQueueItemDelete(branch, queueItem)}
             />

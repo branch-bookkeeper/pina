@@ -8,6 +8,7 @@ import { epics as pushEpics } from '../redux/push';
 import { epics as authEpics } from '../redux/auth';
 import { epics as googleAnalyticsEpics } from '../redux/googleAnalytics';
 import { epics as rollbarEpics } from '../redux/rollbar';
+import { epics as queueUpdateEpics } from '../redux/queueUpdate';
 import { storageFunctions } from '../redux/requests';
 
 const devMiddlewares = process.env.NODE_ENV === 'development'
@@ -23,6 +24,7 @@ export default apply(applyMiddleware, [
             authEpics,
             googleAnalyticsEpics,
             rollbarEpics,
+            queueUpdateEpics,
         ),
     ),
     ...devMiddlewares,
