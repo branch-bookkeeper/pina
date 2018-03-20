@@ -136,6 +136,7 @@ class BranchQueue extends Component {
             removeFromBranchQueueRequest,
             onRemoveFromBranchQueue,
         } = this.props;
+        const { showOutOfQueueCard } = this.state;
 
         return (
             <div>
@@ -149,6 +150,7 @@ class BranchQueue extends Component {
                             pullRequests={pullRequests}
                             onRemoveFromBranchQueue={onRemoveFromBranchQueue}
                             removeFromBranchQueueRequest={removeFromBranchQueueRequest}
+                            showLinkToAddItems={!showOutOfQueueCard}
                         />
                     </PageContent>}
                 {this.renderOutOfQueueCard()}

@@ -12,6 +12,7 @@ const propTypes = {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
     repository: repositoryShape.isRequired,
     user: userShape.isRequired,
+    showLinkToAddItems: PropTypes.bool,
 };
 
 const styles = theme => ({
@@ -37,12 +38,12 @@ const getPullRequestsUrlInvolvingUser = (repository, user) => {
     return `${repository.html_url}/pulls?${qs.stringify(query)}`
 };
 
-const EmptyQueue = ({ classes, repository, user }) => (
+const EmptyQueue = ({ classes, repository, user, showLinkToAddItems }) => (
     <div className={classes.root}>
         <Typography className={classes.message}>
             There are no PRs in this queue.
             {' '}
-            <a href={getPullRequestsUrlInvolvingUser(repository, user)}>Add yours</a>
+            {showLinkToAddItems && <a href={getPullRequestsUrlInvolvingUser(repository, user)}>Add yours</a>}
         </Typography>
     </div>
 )

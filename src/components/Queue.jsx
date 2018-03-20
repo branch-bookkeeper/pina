@@ -17,6 +17,7 @@ const propTypes = {
     pullRequests: PropTypes.objectOf(pullRequestShape),
     removeFromBranchQueueRequest: requestShape,
     onRemoveFromBranchQueue: PropTypes.func,
+    showLinkToAddItems: PropTypes.bool,
 };
 
 const isQueueItemOwnedBy = propEq('username');
