@@ -22,6 +22,7 @@ import Login from './Login';
 import OAuthSuccess from './OAuthSuccess';
 import OAuthFailure from './OAuthFailure';
 import Repository from './Repository';
+import NotFound from './NotFound';
 
 const keyHasPrefix = curry((prefix, value, key) => key.substr(0, prefix.length) === prefix);
 const filterKeysByPrefix = prefix => compose(
@@ -122,6 +123,7 @@ class App extends Component {
                                 path="/"
                                 render={this._renderHome}
                             />
+                            <Route component={NotFound} />
                         </Switch>
                     </div>
                     <SettingsDialogContainer />
