@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import curry from 'ramda/src/curry';
-import compose from 'ramda/src/compose';
-import pickBy from 'ramda/src/pickBy';
 import partial from 'ramda/src/partial';
 import { withStyles } from 'material-ui/styles';
 
@@ -10,9 +7,8 @@ import { Route, Switch } from 'react-router-dom';
 import { GITHUB_ACCESS_TOKEN } from '../constants/localStorageKeys';
 import { entitiesShape, requestsShape } from '../redux';
 import noop from '../helpers/noop';
-import mapKeys from '../helpers/mapKeys';
 import { filterRequestsByPathPrefix } from '../helpers/requestId';
-import removePrefix from '../helpers/removePrefix';
+import filterKeysByPrefix from '../helpers/filterKeysByPrefix';
 
 import TopBarContainer from '../containers/TopBarContainer';
 import PageFooter from '../components/PageFooter';
@@ -24,12 +20,6 @@ import OAuthSuccess from './OAuthSuccess';
 import OAuthFailure from './OAuthFailure';
 import Repository from './Repository';
 import NotFound from './NotFound';
-
-const keyHasPrefix = curry((prefix, value, key) => key.substr(0, prefix.length) === prefix);
-const filterKeysByPrefix = prefix => compose(
-    mapKeys(removePrefix(prefix.length + 1)),
-    pickBy(keyHasPrefix(prefix))
-);
 
 const renderPublicRoutes = () => {
     return (
