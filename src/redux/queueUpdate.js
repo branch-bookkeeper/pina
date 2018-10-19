@@ -1,5 +1,3 @@
-import objOf from 'ramda/src/objOf';
-import compose from 'ramda/src/compose';
 import any from 'ramda/src/any';
 import { Observable } from 'rxjs/Observable';
 import { of as observableOf } from 'rxjs/observable/of';
