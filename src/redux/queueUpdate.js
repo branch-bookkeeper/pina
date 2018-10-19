@@ -1,5 +1,4 @@
-import objOf from 'ramda/src/objOf';
-import compose from 'ramda/src/compose';
+import any from 'ramda/src/any';
 import { Observable } from 'rxjs/Observable';
 import { of as observableOf } from 'rxjs/observable/of';
 import { fromPromise as observableFromPromise } from 'rxjs/observable/fromPromise';
@@ -14,6 +13,8 @@ import Pusher from 'pusher-js';
 
 import { PUSHER_APP_KEY } from '../constants/config';
 import { mergeEntities } from './entities';
+import { loadRepositoryPullRequests } from './requests';
+import { getRepositoryPullRequests } from '../redux';
 import fetchQueueUpdateChannel from '../helpers/fetchQueueUpdateChannel';
 
 // Constants
@@ -42,7 +43,7 @@ export const stopQueueUpdates = (accessToken, owner, repository, branch) => ({
 });
 
 // Epics
-const subscribeToQueueUpdates = action$ =>
+const subscribeToQueueUpdates = (action$, { getState }) =>
     action$.pipe(
         ofType$(START_QUEUE_UPDATES),
         mergeMap$(({ payload }) =>
@@ -66,8 +67,12 @@ const subscribeToQueueUpdates = action$ =>
 
                             channel.bind('queue.update', (nextQueue) => {
                                 obs.next({
-                                    [`${owner}/${repository}/${branch}`]: nextQueue,
-                                });
+                                    accessToken,
+                                    owner,
+                                    repository,
+                                    branch,
+                                    nextQueue,
+                               });
                             });
 
                             return () => {
@@ -87,10 +92,16 @@ const subscribeToQueueUpdates = action$ =>
                 })
             )
         ),
-        map$(compose(
-            mergeEntities,
-            objOf('queues'),
-        )),
+        mergeMap$(({ accessToken, owner, repository, branch, nextQueue }) => {
+            const state = getState();
+            const pullRequests = getRepositoryPullRequests(owner, repository, state);
+            const shouldReloadPullRequests = any(queueItem => !pullRequests[queueItem.pullRequestNumber], nextQueue);
+
+            return [
+                mergeEntities({ queues: { [`${owner}/${repository}/${branch}`]: nextQueue } }),
+                ...shouldReloadPullRequests ? [loadRepositoryPullRequests(accessToken, owner, repository)] : [],
+            ];
+        }),
     );
 
 export const epics = subscribeToQueueUpdates;

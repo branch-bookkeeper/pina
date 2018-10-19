@@ -26,7 +26,7 @@ const defaultProps = {
     onLogin: () => {},
 };
 
-const styles = theme => console.log(theme) || ({
+const styles = theme => ({
     root: {
         height: '100%',
         display: 'flex',

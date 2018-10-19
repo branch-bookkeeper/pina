@@ -4,6 +4,7 @@ import map from 'ramda/src/map';
 import evolve from 'ramda/src/evolve';
 import PropTypes from 'prop-types';
 
+import filterKeysByPrefix from '../helpers/filterKeysByPrefix';
 import {
     userShape,
     repositoryShape,
@@ -46,6 +47,10 @@ export default (state = initialState, action) => {
 
     return state;
 };
+
+// Selectors
+export const getRepositoryPullRequests = (owner, repository, state) =>
+    filterKeysByPrefix(`${owner}/${repository}`)(state.pullRequests);
 
 // Actions
 export const mergeEntities = entities => ({
