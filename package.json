@@ -8,11 +8,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^3.4.0",
     "@material-ui/core": "^3.9.0",
     "@material-ui/icons": "^3.0.2",
     "classnames": "^2.2.5",
     "ease-component": "^1.0.0",
     "parse-link-header": "^1.0.1",
+    "purs-loader": "^3.3.0",
     "pusher-js": "^4.2.2",
     "qs": "^6.5.1",
     "ramda": "^0.25.0",
@@ -34,10 +36,9 @@
     "redux-logger": "^3.0.6"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test --env=jsdom"
   },
   "eslintConfig": {
     "extends": "react-app"
