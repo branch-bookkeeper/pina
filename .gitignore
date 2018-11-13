@@ -2,12 +2,18 @@
 
 # dependencies
 /node_modules
+.psc-package
+.pulp-cache
 
 # testing
 /coverage
 
 # production
 /build
+
+# purescript dev
+/output
+.psc-ide-port
 
 # misc
 .DS_Store
