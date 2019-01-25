@@ -1,5 +1,5 @@
 import React from 'react';
-import SvgIcon from 'material-ui/SvgIcon';
+import SvgIcon from '@material-ui/core/SvgIcon';
 
 const Lock = props => (
     <SvgIcon viewBox="-2 0 16 16" {...props}>

@@ -1,13 +1,13 @@
 import classNames from 'classnames';
 import React from 'react';
 import PropTypes from 'prop-types';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
-import Grid from 'material-ui/Grid';
-import Button from 'material-ui/Button';
-import Divider from 'material-ui/Divider';
-import { CircularProgress } from 'material-ui/Progress';
-import { withStyles } from 'material-ui/styles';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { withStyles } from '@material-ui/core/styles';
 
 import { GITHUB_CLIENT_ID } from '../constants/config';
 
@@ -111,7 +111,7 @@ const LoginScreen = ({ classes, errorMessage, loading, onLogin }) => (
                 </Grid>
                 <Divider />
                 {errorMessage &&
-                    <Typography className={classes.error} type="body1" component="p" color="error">
+                    <Typography variant="body2" className={classes.error} component="p" color="error">
                         {errorMessage}<br />
                         Click the login button to try again.
                     </Typography>}

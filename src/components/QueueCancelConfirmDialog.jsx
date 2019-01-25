@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from 'material-ui/Button';
-import Dialog, {
-    DialogActions,
-    DialogTitle,
-} from 'material-ui/Dialog';
-import Slide from 'material-ui/transitions/Slide';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import Slide from '@material-ui/core/Slide';
 
 import { queueItemShape, userShape } from '../constants/propTypes';
 
@@ -24,7 +23,7 @@ const QueueCancelConfirmDialog = ({
     onCancel,
     onConfirm,
 }) => (
-    <Dialog open={open} transition={Slide} onRequestClose={onCancel}>
+    <Dialog open={open} TransitionComponent={Slide} onClose={onCancel}>
         {currentUser.login === queueItemToRemove.username
             ? <DialogTitle>Remove yourself from the queue?</DialogTitle>
             : <DialogTitle>Remove {queueItemToRemove.username} from the queue?</DialogTitle>}

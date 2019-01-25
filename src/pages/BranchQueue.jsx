@@ -8,10 +8,10 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { setPropTypes, defaultProps, pure } from 'recompose';
-import { withStyles } from 'material-ui/styles';
-import { grey } from 'material-ui/colors';
-import Collapse from 'material-ui/transitions/Collapse';
-import Button from 'material-ui/Button';
+import { withStyles } from '@material-ui/core/styles';
+import { grey } from '@material-ui/core/colors';
+import Collapse from '@material-ui/core/Collapse';
+import Button from '@material-ui/core/Button';
 
 import BranchQueueHeader from '../components/BranchQueueHeader';
 import PageContent from '../components/PageContent';
@@ -205,13 +205,14 @@ class BranchQueue extends Component {
                                 <div className={classes.pullRequestActions}>
                                     <Button
                                         color="primary"
-                                        raised
+                                        variant="contained"
                                         disabled={bookingInProgress}
                                         onClick={() => onAddToBranchQueue(selectedPullRequest.pullRequestNumber)}
                                     >
                                         Add to queue
                                     </Button>
                                     <Button
+                                        variant="outlined"
                                         className={classes.cancelButton}
                                         disabled={bookingInProgress}
                                         onClick={() => history.push(`/${repository.full_name}/${branch}`)}

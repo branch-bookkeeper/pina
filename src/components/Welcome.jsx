@@ -1,9 +1,9 @@
 import React from 'react';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
-import Grid from 'material-ui/Grid';
-import { withStyles } from 'material-ui/styles';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import { withStyles } from '@material-ui/core/styles';
 
 import Awesome from './icons/Awesome';
 import PageContent from './PageContent';
@@ -43,17 +43,17 @@ const Welcome = ({ classes }) => (
                         <Awesome className={classes.illustration} />
                     </Grid>
                     <Grid item style={{ flex: 1 }}>
-                        <Typography type="headline" component="h2" gutterBottom>
+                        <Typography variant="h5" component="h2" gutterBottom>
                             You are one step away from merge heaven
                         </Typography>
-                        <Typography type="body1" component="p" gutterBottom>
+                        <Typography variant="body2" component="p" gutterBottom>
                             Install Branch Bookkeeper in your personal repositories or organization
                             and <strong>never stare at a pull request page again</strong>.
                         </Typography>
                     </Grid>
                 </Grid>
                 <div className={classes.buttonContainer}>
-                    <Button color="primary" raised component="a" href="https://get.branch-bookkeeper.com">
+                    <Button color="primary" variant="contained" component="a" href="https://get.branch-bookkeeper.com">
                         Install Branch Bookkeeper
                     </Button>
                 </div>

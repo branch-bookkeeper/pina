@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import partial from 'ramda/src/partial';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 import { Route, Switch } from 'react-router-dom';
 import { GITHUB_ACCESS_TOKEN } from '../constants/localStorageKeys';
@@ -143,7 +143,7 @@ class App extends Component {
             entities: { repositories, queues, pullRequests, users },
             requests: {
                 [`repositories/${repositoryId}`]: repositoryRequest,
-                ...requests,
+                ...requests
             },
             user,
             startQueueUpdates,

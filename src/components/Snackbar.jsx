@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import Button from 'material-ui/Button';
-import { default as BaseSnackbar } from 'material-ui/Snackbar';
+import Button from '@material-ui/core/Button';
+import { default as BaseSnackbar } from '@material-ui/core/Snackbar';
 
 class Snackbar extends Component {
     render() {
         const {
             open,
             message,
-            onRequestClose,
+            onClose,
             onButtonClick,
             buttonLabel,
         } = this.props;
@@ -20,11 +20,11 @@ class Snackbar extends Component {
                 }}
                 open={open}
                 autoHideDuration={10000}
-                onRequestClose={onRequestClose}
+                onClose={onClose}
                 message={message}
                 action={[
                     ...buttonLabel && onButtonClick ? [
-                        <Button key="action" color="primary" dense onClick={this.handleButtonClick}>
+                        <Button key="action" color="primary" onClick={this.handleButtonClick}>
                             {buttonLabel}
                         </Button>
                     ] : [],
@@ -34,9 +34,9 @@ class Snackbar extends Component {
     }
 
     handleButtonClick = () => {
-        const { onButtonClick, onRequestClose } = this.props;
+        const { onButtonClick, onClose } = this.props;
 
-        onRequestClose();
+        onClose();
         onButtonClick();
     }
 }

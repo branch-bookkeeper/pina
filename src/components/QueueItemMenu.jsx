@@ -1,24 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Menu, { MenuItem } from 'material-ui/Menu';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const propTypes = {
     onRemoveFromBranchQueue: PropTypes.func,
     open: PropTypes.bool,
     anchorEl: PropTypes.object,
-    onRequestClose: PropTypes.func,
+    onClose: PropTypes.func,
 };
 
 const QueueItemMenu = ({
     onRemoveFromBranchQueue,
     open,
     anchorEl,
-    onRequestClose,
+    onClose,
 }) => (
-    <Menu open={open} anchorEl={anchorEl} onRequestClose={onRequestClose}>
+    <Menu open={open} anchorEl={anchorEl} onClose={onClose}>
         <MenuItem
             onClick={() => {
-                onRequestClose();
+                onClose();
                 onRemoveFromBranchQueue();
             }}
         >

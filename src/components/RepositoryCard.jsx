@@ -1,16 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Grid from 'material-ui/Grid';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
-import { grey } from 'material-ui/colors';
+import { withStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import { grey } from '@material-ui/core/colors';
 
 import { repositoryShape } from '../constants/propTypes';
 
 import UserAvatar from './UserAvatar';
 import Lock from './icons/Lock';
+import { textColor, textGreyColor } from '../constants/colors';
 
 const propTypes = {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
@@ -31,15 +32,15 @@ const styles = theme => ({
         }
     },
     ownerTitle: {
-        color: theme.typography.display1.color,
+        color: textGreyColor,
         fontWeight: 'normal',
     },
     repositoryTitle: {
-        color: theme.typography.headline.color,
+        color: textColor,
     },
     lockIcon: {
         verticalAlign: 'middle',
-        color: theme.typography.display1.color,
+        color: textGreyColor,
         width: 12,
         height: 12,
         marginLeft: theme.spacing.unit,
@@ -54,7 +55,7 @@ const RepositoryCard = ({ classes, repository }) => (
                     <UserAvatar username={repository.owner.login} />
                 </Grid>
                 <Grid item style={{ flex: 1}}>
-                    <Typography type="title" className={classes.ownerTitle}>
+                    <Typography variant="h6" className={classes.ownerTitle}>
                         {repository.owner.login}
                         {' / '}
                         <span className={classes.repositoryTitle}>

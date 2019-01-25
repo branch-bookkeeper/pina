@@ -2,8 +2,8 @@ import propEq from 'ramda/src/propEq';
 import isNil from 'ramda/src/isNil';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
 
 import { requestShape, isNotMade } from '../helpers/request';
 import { repositoryShape, queueItemShape, userShape } from '../constants/propTypes';
@@ -55,23 +55,23 @@ const PullRequestActions = (props) => {
         <div className={classes.root}>
             {bookingInProgress &&
                 <div>
-                    <Button color="primary" raised disabled>Adding...</Button>
-                    <Button className={classes.cancelButton} disabled>Cancel</Button>
+                    <Button color="primary" variant="contained" disabled>Adding...</Button>
+                    <Button variant="outline" className={classes.cancelButton} disabled>Cancel</Button>
                 </div>}
             {cancelInProgress &&
                 <div>
                     <Button color="primary" disabled>Removing...</Button>
-                    <Button className={classes.cancelButton} disabled>Cancel</Button>
+                    <Button variant="outline" className={classes.cancelButton} disabled>Cancel</Button>
                 </div>}
             {!requestInProgress && isUserInQueue &&
                 <div>
-                    <Button color="primary" raised onClick={onAddToBranchQueue}>Add to queue</Button>
-                    <Button className={classes.cancelButton} onClick={onCancel}>Cancel</Button>
+                    <Button color="primary" variant="contained" onClick={onAddToBranchQueue}>Add to queue</Button>
+                    <Button variant="outline" className={classes.cancelButton} onClick={onCancel}>Cancel</Button>
                 </div>}
             {!requestInProgress && !isNil(queueItem) && !isUserInQueue && isUserAdmin &&
                 <div>
                     <Button color="primary" onClick={onRemoveFromBranchQueue}>Remove from queue</Button>
-                    <Button className={classes.cancelButton} onClick={onCancel}>Cancel</Button>
+                    <Button variant="outline" className={classes.cancelButton} onClick={onCancel}>Cancel</Button>
                 </div>}
         </div>
     );

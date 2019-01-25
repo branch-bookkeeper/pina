@@ -1,5 +1,5 @@
 import React from 'react';
-import SvgIcon from 'material-ui/SvgIcon';
+import SvgIcon from '@material-ui/core/SvgIcon';
 
 const MarkGithub = props => (
     <SvgIcon viewBox="0 0 16 16" {...props}>

@@ -1,9 +1,9 @@
 import qs from 'qs';
 import React from 'react';
 import PropTypes from 'prop-types';
-import Typography from 'material-ui/Typography';
-import { withStyles } from 'material-ui/styles';
-import { grey } from 'material-ui/colors';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import { grey } from '@material-ui/core/colors';
 
 import { bbOrange } from '../constants/colors';
 import { repositoryShape, userShape } from '../constants/propTypes';
@@ -40,7 +40,7 @@ const getPullRequestsUrlInvolvingUser = (repository, user) => {
 
 const EmptyQueue = ({ classes, repository, user, showLinkToAddItems }) => (
     <div className={classes.root}>
-        <Typography className={classes.message}>
+        <Typography  variant="body2" className={classes.message}>
             There are no PRs in this queue.
             {' '}
             {showLinkToAddItems && <a href={getPullRequestsUrlInvolvingUser(repository, user)}>Add yours</a>}

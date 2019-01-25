@@ -2,7 +2,7 @@ import propEq from 'ramda/src/propEq';
 import { branch, renderComponent } from 'recompose';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Grid from 'material-ui/Grid';
+import Grid from '@material-ui/core/Grid';
 
 import { requestShape, isNotMade } from '../helpers/request';
 import { userShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';

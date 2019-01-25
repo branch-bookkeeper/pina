@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Dialog, { DialogTitle, DialogContent, DialogContentText, DialogActions } from 'material-ui/Dialog';
-import FormControlLabel from 'material-ui/Form/FormControlLabel';
-import FormGroup from 'material-ui/Form/FormGroup';
-import Switch from 'material-ui/Switch';
-import Button from 'material-ui/Button';
-import blue from 'material-ui/colors/blue';
+import { withStyles } from '@material-ui/core/styles';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
+import Switch from '@material-ui/core/Switch';
+import Button from '@material-ui/core/Button';
+import blue from '@material-ui/core/colors/blue';
 
 import { pushShape } from '../redux';
 import { userShape } from '../constants/propTypes';
@@ -16,7 +20,7 @@ const propTypes = {
     push: pushShape,
     classes: PropTypes.object.isRequired,
     open: PropTypes.bool,
-    onRequestClose: PropTypes.func,
+    onClose: PropTypes.func,
     onPushSubscribe: PropTypes.func,
     onPushUnsubscribe: PropTypes.func,
 };
@@ -30,10 +34,10 @@ const styles = {
 
 class SettingsDialog extends Component {
     render() {
-        const { user, push, open, onRequestClose, onPushSubscribe, onPushUnsubscribe } = this.props;
+        const { user, push, open, onClose, onPushSubscribe, onPushUnsubscribe } = this.props;
 
         return (
-            <Dialog open={open} onRequestClose={onRequestClose}>
+            <Dialog open={open} onClose={onClose}>
                 <DialogTitle>Settings</DialogTitle>
                 <DialogContent>
                     <FormGroup>
@@ -56,7 +60,7 @@ class SettingsDialog extends Component {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onRequestClose}>
+                    <Button onClick={onClose}>
                         Close
                     </Button>
                 </DialogActions>

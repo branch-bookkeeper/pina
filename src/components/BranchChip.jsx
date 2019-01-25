@@ -1,9 +1,9 @@
 import defaultTo from 'ramda/src/defaultTo';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Avatar from 'material-ui/Avatar';
-import Chip from 'material-ui/Chip';
+import { withStyles } from '@material-ui/core/styles';
+import Avatar from '@material-ui/core/Avatar';
+import Chip from '@material-ui/core/Chip';
 
 import GitBranch from '../components/icons/GitBranch';
 

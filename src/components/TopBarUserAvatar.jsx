@@ -1,8 +1,8 @@
 import isNil from 'ramda/src/isNil';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import ArrowDropDown from 'material-ui-icons/ArrowDropDown';
+import { withStyles } from '@material-ui/core/styles';
+import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 
 import { bbOrange } from '../constants/colors';
 import { userShape } from '../constants/propTypes';
@@ -74,7 +74,7 @@ class TopBarUserAvatar extends Component {
                     <UserMenu
                         anchorEl={menuAnchorEl}
                         open={!isNil(menuAnchorEl)}
-                        onRequestClose={this.handleCloseRequest}
+                        onClose={this.handleCloseRequest}
                         onOpenSettings={onOpenSettings}
                         onLogout={onLogout}
                     />
@@ -86,9 +86,11 @@ class TopBarUserAvatar extends Component {
     handleAvatarClick = (ev) => {
         ev.preventDefault();
 
-        this.setState({
-            menuAnchorEl: ev.currentTarget,
-        });
+        if (this.state.menuAnchorEl === null) {
+            this.setState({
+                menuAnchorEl: ev.currentTarget,
+            });
+        }
     };
 
     handleCloseRequest = () => {

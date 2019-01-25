@@ -2,19 +2,20 @@ import isNil from 'ramda/src/isNil';
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
-import Grid from 'material-ui/Grid';
-import IconButton from 'material-ui/IconButton';
-import MoreVertIcon from 'material-ui-icons/MoreVert';
-import Button from 'material-ui/Button';
-import { CircularProgress } from 'material-ui/Progress';
+import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { queueItemShape, pullRequestShape } from '../constants/propTypes';
 
 import MarkGitHub from './icons/MarkGitHub';
 import UserAvatar from './UserAvatar';
+import { textGreyColor } from '../constants/colors';
 
 const propTypes = {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
@@ -50,6 +51,7 @@ const styles = theme => ({
     },
     positionInQueue: {
         lineHeight: '60px',
+        color: textGreyColor,
     },
     hidden: {
         visibility: 'hidden',
@@ -96,7 +98,7 @@ class QueueItemCard extends Component {
         const menu = renderMenu({
             open: Boolean(menuAnchorEl),
             anchorEl: menuAnchorEl,
-            onRequestClose: this.handleRequestClose,
+            onClose: this.handleRequestClose,
         });
 
         return (
@@ -117,13 +119,14 @@ class QueueItemCard extends Component {
                     direction="row"
                     alignItems="flex-start"
                     wrap="nowrap"
+                    spacing={16}
                     className={classNames('outerGridContainer', {
                         [classes.disabled]: loading,
                     })}
                 >
                     {!isNil(index) &&
                         <Grid item>
-                            <Typography type="display2" className={classes.positionInQueue}>
+                            <Typography variant="h3" className={classes.positionInQueue}>
                                 {index + 1}
                             </Typography>
                         </Grid>}
@@ -131,21 +134,18 @@ class QueueItemCard extends Component {
                         <UserAvatar username={username} size={60} />
                     </Grid>
                     <Grid item className={classes.titleGridItem}>
-                        <Typography
-                            type="headline"
-                            component="h3"
-                        >
+                        <Typography variant="h5" component="h3">
                             {pullRequest.title}
                         </Typography>
                         <Grid container alignItems="center">
                             <Grid item style={{ flexGrow: 1 }}>
-                                <Typography type="body1" component="p">
+                                <Typography variant="body2" component="p">
                                     #{pullRequest.pullRequestNumber}
                                 </Typography>
                             </Grid>
                             {showPullRequestLink &&
                                 <Grid item>
-                                    <Button dense component="a" href={pullRequest.humanUrl}>
+                                    <Button component="a" href={pullRequest.humanUrl} size="small">
                                         <MarkGitHub style={{ marginRight: 8, width: 20, height: 20 }} />
                                         Open in GitHub
                                     </Button>

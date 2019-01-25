@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Grid from 'material-ui/Grid';
-import Divider from 'material-ui/Divider';
-import { withStyles } from 'material-ui/styles';
-import { grey } from 'material-ui/colors';
+import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
+import { withStyles } from '@material-ui/core/styles';
+import { grey } from '@material-ui/core/colors';
 
 import LogoMonochrome from './icons/LogoMonochrome';
 import Logo from './icons/Logo';

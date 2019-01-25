@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Menu, { MenuItem } from 'material-ui/Menu';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const propTypes = {
     onOpenSettings: PropTypes.func,
@@ -8,7 +9,7 @@ const propTypes = {
     open: PropTypes.bool,
     anchorEl: PropTypes.object,
     anchorOrigin: PropTypes.object,
-    onRequestClose: PropTypes.func,
+    onClose: PropTypes.func,
 };
 
 const UserMenu = ({
@@ -17,12 +18,12 @@ const UserMenu = ({
     open,
     anchorEl,
     anchorOrigin,
-    onRequestClose,
+    onClose,
 }) => (
-    <Menu open={open} anchorEl={anchorEl} anchorOrigin={anchorOrigin} onRequestClose={onRequestClose}>
+    <Menu open={open} anchorEl={anchorEl} anchorOrigin={anchorOrigin} onClose={onClose}>
         <MenuItem
             onClick={() => {
-                onRequestClose();
+                onClose();
                 onOpenSettings();
             }}
         >
@@ -30,7 +31,7 @@ const UserMenu = ({
         </MenuItem>
         <MenuItem
             onClick={() => {
-                onRequestClose();
+                onClose();
                 onLogout();
             }}
         >

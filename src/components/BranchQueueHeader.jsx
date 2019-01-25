@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import { grey } from 'material-ui/colors';
-import Grid from 'material-ui/Grid';
+import { withStyles } from '@material-ui/core/styles';
+import { grey } from '@material-ui/core/colors';
+import Grid from '@material-ui/core/Grid';
 
 import Lock from '../components/icons/Lock';
 import PageHeader from '../components/PageHeader';
@@ -11,6 +11,7 @@ import BranchChip from '../components/BranchChip';
 import UserAvatar from '../components/UserAvatar';
 
 import { repositoryShape } from '../constants/propTypes';
+import { textGreyColor, textColor } from '../constants/colors';
 
 const propTypes = {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
@@ -20,23 +21,23 @@ const propTypes = {
 
 const styles = theme => ({
     ownerTitle: {
-        color: theme.typography.display1.color,
+        color: textGreyColor,
     },
     repositoryTitle: {
         display: 'inline-block',
-        color: theme.typography.headline.color,
+        color: textColor,
         fontWeight: 'bold',
         borderBottom: 'dashed 1px',
         borderBottomColor: grey[400],
         textDecoration: 'none',
         '&:hover': {
             borderBottomStyle: 'solid',
-            borderBottomColor: theme.typography.headline.color,
+            borderBottomColor: textColor,
         },
     },
     lockIcon: {
         verticalAlign: 'middle',
-        color: theme.typography.display1.color,
+        color: textGreyColor,
         width: 16,
         height: 16,
         marginLeft: theme.spacing.unit,
@@ -49,7 +50,7 @@ const styles = theme => ({
             duration: theme.transitions.duration.shorter,
         }),
         '&:hover': {
-            color: theme.typography.headline.color,
+            color: textColor,
         },
     },
 });
