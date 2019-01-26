@@ -1,5 +1,6 @@
-const { addBeforeLoader, loaderByName } = require('@craco/craco');
+const { addBeforeLoader, loaderByName, whenProd } = require('@craco/craco');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
     webpack: {
@@ -26,6 +27,16 @@ module.exports = {
             // see: https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/config/webpack.config.dev.js#L112-L119
             config.resolve.plugins = config.resolve.plugins
                 .filter(plugin => !(plugin instanceof ModuleScopePlugin));
+
+            whenProd(() => {
+                config.plugins = [
+                    ...(config.plugins || []),
+                    new BundleAnalyzerPlugin({
+                        analyzerMode: 'static',
+                        reportFilename: 'report.html',
+                    }),
+                ];
+            });
 
             return config;
         }
