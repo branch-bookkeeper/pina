@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
-import { requestShape, isNotMade } from '../helpers/request';
+import { requestShape, isNotMade } from '../lib/request';
 import { repositoryShape, queueItemShape, userShape } from '../constants/propTypes';
 
 const isQueueItemOwnedBy = propEq('username');

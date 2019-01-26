@@ -15,11 +15,11 @@ import always from 'ramda/src/always';
 import { filter } from 'rxjs/operators/filter';
 import { map } from 'rxjs/operators/map';
 
-import fetchBranchQueue from '../../helpers/fetchBranchQueue';
-import { default as doAddToBranchQueue } from '../../helpers/addToBranchQueue';
-import { default as doDeleteFromBranchQueue } from '../../helpers/deleteFromBranchQueue';
-import pickValues from '../../helpers/pickValues';
-import removePrefix from '../../helpers/removePrefix';
+import fetchBranchQueue from '../../lib/fetchBranchQueue';
+import { default as doAddToBranchQueue } from '../../lib/addToBranchQueue';
+import { default as doDeleteFromBranchQueue } from '../../lib/deleteFromBranchQueue';
+import pickValues from '../../lib/pickValues';
+import removePrefix from '../../lib/removePrefix';
 import { mergeEntities } from '../entities';
 import { requestStart, requestReset, REQUEST_SUCCESS } from './requests';
 import { requestIdStartsWith } from './helpers';

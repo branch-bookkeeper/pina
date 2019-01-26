@@ -19,9 +19,9 @@ import Queue from '../components/Queue';
 import QueueItemCard from '../components/QueueItemCard';
 
 import { userShape, queueShape, repositoryShape, pullRequestShape } from '../constants/propTypes';
-import { requestShape, isNotMade, isMade } from '../helpers/request';
-import scrollToComponent from '../helpers/scrollToComponent';
-import noop from '../helpers/noop';
+import { requestShape, isNotMade, isMade } from '../lib/request';
+import scrollToComponent from '../lib/scrollToComponent';
+import noop from '../lib/noop';
 import withPreloading from '../hocs/withPreloading';
 
 const propTypes = {

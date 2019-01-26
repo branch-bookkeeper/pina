@@ -7,7 +7,7 @@ import {
     createWithError,
     createNotMade,
     requestShape
-} from '../../helpers/request';
+} from '../../lib/request';
 
 export const stateShape = PropTypes.objectOf(requestShape);
 

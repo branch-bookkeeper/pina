@@ -2,7 +2,7 @@ import partial from 'ramda/src/partial';
 import ifElse from 'ramda/src/ifElse';
 import always from 'ramda/src/always';
 
-import fetchUser from '../../helpers/fetchUser';
+import fetchUser from '../../lib/fetchUser';
 import { mergeEntities } from '../entities';
 import { requestStart } from './requests';
 import { requestIdEq } from './helpers';

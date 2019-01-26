@@ -5,8 +5,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route } from 'react-router-dom';
 
-import noop from '../helpers/noop';
-import { requestShape, isNotMade, isMade, isErrored } from '../helpers/request';
+import noop from '../lib/noop';
+import { requestShape, isNotMade, isMade, isErrored } from '../lib/request';
 import { userShape, repositoryShape, queueShape, pullRequestShape } from '../constants/propTypes';
 import withPreloading from '../hocs/withPreloading';
 

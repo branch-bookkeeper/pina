@@ -9,9 +9,9 @@ import merge from 'ramda/src/merge';
 import ifElse from 'ramda/src/ifElse';
 import always from 'ramda/src/always';
 
-import fetchPullRequest from '../../helpers/fetchPullRequest';
-import fetchRepositoryPullRequests from '../../helpers/fetchRepositoryPullRequests';
-import removePrefix from '../../helpers/removePrefix';
+import fetchPullRequest from '../../lib/fetchPullRequest';
+import fetchRepositoryPullRequests from '../../lib/fetchRepositoryPullRequests';
+import removePrefix from '../../lib/removePrefix';
 import { mergeEntities } from '../entities';
 import { requestStart } from './requests';
 import { requestIdStartsWith } from './helpers';

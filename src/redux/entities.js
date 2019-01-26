@@ -4,7 +4,7 @@ import map from 'ramda/src/map';
 import evolve from 'ramda/src/evolve';
 import PropTypes from 'prop-types';
 
-import filterKeysByPrefix from '../helpers/filterKeysByPrefix';
+import filterKeysByPrefix from '../lib/filterKeysByPrefix';
 import {
     userShape,
     repositoryShape,

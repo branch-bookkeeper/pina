@@ -8,7 +8,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import { bbOrange } from '../constants/colors';
 import { userShape } from '../constants/propTypes';
-import { requestShape, isNotMade } from '../helpers/request';
+import { requestShape, isNotMade } from '../lib/request';
 
 import LogoTextMonochrome from './icons/LogoTextMonochrome';
 import TopBarUserAvatar from './TopBarUserAvatar';

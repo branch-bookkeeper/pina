@@ -10,8 +10,8 @@ import is from 'ramda/src/is';
 import identity from 'ramda/src/identity';
 import of from 'ramda/src/of';
 
-import fetchRepositories from '../../helpers/fetchRepositories';
-import fetchRepository from '../../helpers/fetchRepository';
+import fetchRepositories from '../../lib/fetchRepositories';
+import fetchRepository from '../../lib/fetchRepository';
 import { mergeEntities } from '../entities';
 import { requestStart } from './requests';
 import { requestIdStartsWith } from './helpers';

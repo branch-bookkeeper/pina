@@ -3,7 +3,7 @@ import { filter as filter$ } from 'rxjs/operators/filter';
 import { combineEpics } from 'redux-observable';
 
 import { GOOGLE_ANALYTICS_ID } from '../constants/config';
-import installGoogleAnalytics from '../helpers/installGoogleAnalytics';
+import installGoogleAnalytics from '../lib/installGoogleAnalytics';
 
 import { SET_LOCATION } from './location';
 import { REQUEST_SUCCESS } from './requests';
