@@ -22,7 +22,7 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    onRequestClose: () => dispatch(hideSnackbar()),
+    onClose: () => dispatch(hideSnackbar()),
     dispatch,
 });
 

@@ -5,7 +5,7 @@ import sortBy from 'ramda/src/sortBy';
 import { connect } from 'react-redux';
 import { branch, renderComponent } from 'recompose';
 
-import { isMade } from '../helpers/request';
+import { isMade } from '../lib/request';
 import { loadRepositories } from '../redux/requests';
 
 import withPreloading from '../hocs/withPreloading';

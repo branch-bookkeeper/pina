@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CircularProgress } from 'material-ui/Progress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import PageHeader from '../components/PageHeader';
 import PageTitle from '../components/PageTitle';

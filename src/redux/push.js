@@ -1,14 +1,17 @@
 import compose from 'ramda/src/compose';
 import path from 'ramda/src/path';
 import always from 'ramda/src/always';
+import F from 'ramda/src/F';
+import { Observable } from 'rxjs/Observable';
 import { of as observableOf } from 'rxjs/observable/of';
 import { filter } from 'rxjs/operators/filter';
 import { mergeMap } from 'rxjs/operators/mergeMap';
 import { map } from 'rxjs/operators/map';
+import { tap } from 'rxjs/operators/tap';
 import { delay } from 'rxjs/operators/delay';
 import { takeUntil } from 'rxjs/operators/takeUntil';
 import PropTypes from 'prop-types';
-import { combineEpics } from 'redux-observable';
+import { combineEpics, ofType } from 'redux-observable';
 
 import { ONESIGNAL_APP_ID } from '../constants/config';
 import { REQUEST_SUCCESS } from './requests';
@@ -99,77 +102,82 @@ export const pushNotificationsUnsubscribe = () => ({
 });
 
 // Epics
-const triggerPushNotificationsInitEpic = action$ =>
-    action$.ofType(REQUEST_SUCCESS).pipe(
-        filter(requestIdEq('user')),
-        map(compose(
-            pushNotificationsInit,
-            path(['payload', 'result']),
-        )),
-    );
+const triggerPushNotificationsInitEpic = action$ => action$.pipe(
+    ofType(REQUEST_SUCCESS),
+    filter(requestIdEq('user')),
+    map(compose(
+        pushNotificationsInit,
+        path(['payload', 'result']),
+    )),
+);
 
-const pushNotificationsInitEpic = (action$, { getState, dispatch }) =>
-    action$.ofType(PUSH_NOTIFICATIONS_INIT)
-        .forEach(({ payload: { user } }) => {
-            const handleSubscriptionUpdate = compose(
-                dispatch,
-                pushNotificationsUpdateSubscription
-            );
+const pushNotificationsInitEpic = action$ => action$.pipe(
+    ofType(PUSH_NOTIFICATIONS_INIT),
+    mergeMap(({ payload: { user } }) => Observable.create((observer) => {
+        const handleSubscriptionUpdate = compose(
+            observer.next.bind(observer),
+            pushNotificationsUpdateSubscription
+        );
 
-            OneSignal && OneSignal.push(() => {
-                OneSignal.init({
-                    appId: ONESIGNAL_APP_ID,
-                    autoRegister: false,
-                });
-                OneSignal.on('subscriptionChange', handleSubscriptionUpdate);
-                OneSignal.on('notificationPermissionChange', permissionChange => {
-                    handleSubscriptionUpdate(permissionChange.to === 'granted');
-                });
-
-                OneSignal.getNotificationPermission(permission => handleSubscriptionUpdate(permission === 'granted'));
-                OneSignal.isPushNotificationsEnabled(handleSubscriptionUpdate);
-                OneSignal.sendTag('username', user.login);
+        OneSignal && OneSignal.push(() => {
+            OneSignal.init({
+                appId: ONESIGNAL_APP_ID,
+                autoRegister: false,
             });
+            OneSignal.on('subscriptionChange', handleSubscriptionUpdate);
+            OneSignal.on('notificationPermissionChange', permissionChange => {
+                handleSubscriptionUpdate(permissionChange.to === 'granted');
+            });
+
+            OneSignal.getNotificationPermission(permission => handleSubscriptionUpdate(permission === 'granted'));
+            OneSignal.isPushNotificationsEnabled(handleSubscriptionUpdate);
+            OneSignal.sendTag('username', user.login);
         });
 
-const pushNotificationsSubscribeEpic = action$ =>
-    action$.ofType(PUSH_NOTIFICATIONS_SUBSCRIBE).pipe(
-        mergeMap(action => {
-            OneSignal.push(() => {
-                OneSignal.registerForPushNotifications();
-                OneSignal.setSubscription(true);
-            });
+        return () => {};
+    })),
+);
 
-            // Denied is never advertised explicitly, so we revert to unsubscribed after a timeout.
-            return observableOf(pushNotificationsUpdateSubscription(false)).pipe(
-                delay(ASSUME_DENIED_TIMEOUT),
-                takeUntil(action$.ofType(PUSH_NOTIFICATIONS_UPDATE_SUBSCRIPTION)),
-            );
-        })
-    );
-
-const pushNotificationsUnsubscribeEpic = action$ =>
-    action$.ofType(PUSH_NOTIFICATIONS_UNSUBSCRIBE)
-        .forEach(() => {
-            OneSignal.push(() => {
-                OneSignal.setSubscription(false);
-            });
+const pushNotificationsSubscribeEpic = action$ => action$.pipe(
+    ofType(PUSH_NOTIFICATIONS_SUBSCRIBE),
+    mergeMap(action => {
+        OneSignal.push(() => {
+            OneSignal.registerForPushNotifications();
+            OneSignal.setSubscription(true);
         });
 
-const showSnackbarOnQueueAddSuccessEpic = (action$, { getState }) =>
-    action$.ofType(REQUEST_SUCCESS).pipe(
-        filter(requestIdStartsWith('queue.add/')),
-        filter(() => {
-            const { push: { isInitialized, isSubscribed } } = getState();
+        // Denied is never advertised explicitly, so we revert to unsubscribed after a timeout.
+        return observableOf(pushNotificationsUpdateSubscription(false)).pipe(
+            delay(ASSUME_DENIED_TIMEOUT),
+            takeUntil(action$.ofType(PUSH_NOTIFICATIONS_UPDATE_SUBSCRIPTION)),
+        );
+    }),
+);
 
-            return isInitialized && !isSubscribed;
-        }),
-        map(always(showSnackbar(
-            'Want to be alerted when you can merge? Subscribe to push notifications in Settings',
-            'Open Settings',
-            openSettingsDialog(),
-        ))),
-    );
+const pushNotificationsUnsubscribeEpic = action$ => action$.pipe(
+    ofType(PUSH_NOTIFICATIONS_UNSUBSCRIBE),
+    tap(() => {
+        OneSignal.push(() => {
+            OneSignal.setSubscription(false);
+        });
+    }),
+    filter(F),
+);
+
+const showSnackbarOnQueueAddSuccessEpic = (action$, { getState }) => action$.pipe(
+    ofType(REQUEST_SUCCESS),
+    filter(requestIdStartsWith('queue.add/')),
+    filter(() => {
+        const { push: { isInitialized, isSubscribed } } = getState();
+
+        return isInitialized && !isSubscribed;
+    }),
+    map(always(showSnackbar(
+        'Want to be alerted when you can merge? Subscribe to push notifications in Settings',
+        'Open Settings',
+        openSettingsDialog(),
+    ))),
+);
 
 export const epics = combineEpics(
     triggerPushNotificationsInitEpic,

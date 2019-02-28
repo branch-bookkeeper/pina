@@ -27,7 +27,7 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = {
-    onRequestClose: closeSettingsDialog,
+    onClose: closeSettingsDialog,
     onPushSubscribe: pushNotificationsSubscribe,
     onPushUnsubscribe: pushNotificationsUnsubscribe,
 };

@@ -8,7 +8,7 @@ import { filter as rxFilter } from 'rxjs/operators/filter';
 import { combineEpics } from 'redux-observable';
 
 import { REQUEST_ERROR } from './requests';
-import { default as executeLogout } from '../helpers/logout';
+import { default as executeLogout } from '../lib/logout';
 
 // Constants
 export const LOGOUT = 'LOGOUT';

@@ -15,7 +15,7 @@ import { PUSHER_APP_KEY } from '../constants/config';
 import { mergeEntities } from './entities';
 import { loadRepositoryPullRequests } from './requests';
 import { getRepositoryPullRequests } from '../redux';
-import fetchQueueUpdateChannel from '../helpers/fetchQueueUpdateChannel';
+import fetchQueueUpdateChannel from '../lib/fetchQueueUpdateChannel';
 
 // Constants
 export const START_QUEUE_UPDATES = 'START_QUEUE_UPDATES';

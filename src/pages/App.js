@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import partial from 'ramda/src/partial';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 import { Route, Switch } from 'react-router-dom';
 import { GITHUB_ACCESS_TOKEN } from '../constants/localStorageKeys';
 import { entitiesShape, requestsShape } from '../redux';
-import noop from '../helpers/noop';
-import { filterRequestsByPathPrefix } from '../helpers/requestId';
-import filterKeysByPrefix from '../helpers/filterKeysByPrefix';
+import noop from '../lib/noop';
+import { filterRequestsByPathPrefix } from '../lib/requestId';
+import filterKeysByPrefix from '../lib/filterKeysByPrefix';
 
 import TopBarContainer from '../containers/TopBarContainer';
 import PageFooter from '../components/PageFooter';
@@ -143,7 +143,7 @@ class App extends Component {
             entities: { repositories, queues, pullRequests, users },
             requests: {
                 [`repositories/${repositoryId}`]: repositoryRequest,
-                ...requests,
+                ...requests
             },
             user,
             startQueueUpdates,
