@@ -17,6 +17,8 @@ import AppContainer from './containers/AppContainer';
 
 import './index.css';
 
+import { helloWorld } from './PureTest.purs';
+
 const theme = createMuiTheme({
     palette: {
       primary: bbOrange,
@@ -30,6 +32,8 @@ const theme = createMuiTheme({
 
 const store = createStore(rootReducer, middlewares);
 const dispatchSetLocation = location => store.dispatch(setLocation(location));
+
+console.log(helloWorld('Hey!'));
 
 ReactDOM.render(
     <React.Fragment>
