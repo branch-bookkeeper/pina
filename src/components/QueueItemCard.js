@@ -14,6 +14,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { queueItemShape, pullRequestShape } from '../constants/propTypes';
 
 import MarkGitHub from './icons/MarkGitHub';
+import ArrowTooltip from './ArrowTooltip';
 import UserAvatar from './UserAvatar';
 import { textGreyColor } from '../constants/colors';
 
@@ -131,7 +132,9 @@ class QueueItemCard extends Component {
                             </Typography>
                         </Grid>}
                     <Grid item>
-                        <UserAvatar username={username} size={60} />
+                        <ArrowTooltip title={username} enterDelay={500}>
+                            <UserAvatar username={username} size={60} />
+                        </ArrowTooltip>
                     </Grid>
                     <Grid item className={classes.titleGridItem}>
                         <Typography variant="h5" component="h3">
