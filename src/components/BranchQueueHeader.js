@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { grey } from '@material-ui/core/colors';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import replace from 'ramda/src/replace';
 
 import Lock from '../components/icons/Lock';
 import PageHeader from '../components/PageHeader';
@@ -12,6 +14,8 @@ import UserAvatar from '../components/UserAvatar';
 
 import { repositoryShape } from '../constants/propTypes';
 import { textGreyColor, textColor } from '../constants/colors';
+import PageBanner from './PageBanner';
+import GitBranch from './icons/GitBranch';
 
 const propTypes = {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
@@ -56,7 +60,23 @@ const styles = theme => ({
 });
 
 const BranchQueueHeader = ({ classes, repository, branch }) => (
-    <PageHeader>
+    <PageHeader
+        bottomContent={branch !== repository.default_branch ? (
+            <PageBanner
+                icon={<GitBranch />}
+                callToAction={`Go to ${repository.default_branch}'s queue`}
+                callToActionHref={replace(`/${branch}`, `/${repository.default_branch}`, window.location.href)}
+                dismissable
+            >
+                <Typography>
+                    You are seeing the queue for branch
+                    {' '}
+                    <strong>{branch}</strong>,
+                    which is not the default one for this repository
+                </Typography>
+            </PageBanner>
+        ) : null}
+    >
         <Grid container style={{ flex: 1 }} spacing={8} alignItems="center">
             <Grid item>
                 <UserAvatar username={repository.owner.login} size={48} />
