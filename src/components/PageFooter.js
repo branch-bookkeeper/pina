@@ -8,6 +8,7 @@ import { grey } from '@material-ui/core/colors';
 
 import LogoMonochrome from './icons/LogoMonochrome';
 import Logo from './icons/Logo';
+import PageInnerContent from './PageInnerContent';
 
 const styles = theme => ({
     root: {
@@ -45,21 +46,19 @@ const styles = theme => ({
 
 const PageFooter = ({ classes, children }) => (
     <footer className={classes.root}>
-        <Grid container justify="center">
-            <Grid item xs={12} sm={9} md={8} lg={6} xl={4}>
-                <Divider className={classes.divider} />
-                <Grid container className={classes.container} alignItems="center">
-                    <Grid item style={{ flex: 1}} />
-                    <Grid item>
-                        <Link to="/" className={classes.link}>
-                            <Logo className={classNames(classes.logo, classes.logoColor)} />
-                            <LogoMonochrome className={classes.logo} />
-                        </Link>
-                    </Grid>
-                    <Grid item style={{ flex: 1 }} />
+        <PageInnerContent>
+            <Divider className={classes.divider} />
+            <Grid container className={classes.container} alignItems="center">
+                <Grid item style={{ flex: 1}} />
+                <Grid item>
+                    <Link to="/" className={classes.link}>
+                        <Logo className={classNames(classes.logo, classes.logoColor)} />
+                        <LogoMonochrome className={classes.logo} />
+                    </Link>
                 </Grid>
+                <Grid item style={{ flex: 1 }} />
             </Grid>
-        </Grid>
+        </PageInnerContent>
     </footer>
 );
 
