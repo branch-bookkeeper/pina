@@ -104,18 +104,12 @@ class BranchQueue extends Component {
     componentDidUpdate(prevProps, prevState) {
         const { showOutOfQueueCard: prevShowOutOfQueueCard } = prevState;
         const { showOutOfQueueCard } = this.state;
-        const { queue, user, theme, repository, branch, selectedPullRequest, history } = this.props;
+        const { theme } = this.props;
 
         !prevShowOutOfQueueCard
             && showOutOfQueueCard
             && this.outOfQueueCard
             && setTimeout(() => scrollToCard(theme, this.outOfQueueCard), theme.transitions.duration.standard);
-
-        queue
-            && user
-            && selectedPullRequest
-            && pullRequestIsInQueue(selectedPullRequest, queue)
-            && history.replace(`/${repository.full_name}/${branch}`);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -189,7 +183,7 @@ class BranchQueue extends Component {
             <Collapse in={showOutOfQueueCard} unmountOnExit>
                 <PageContent>
                     <div className={wrapperClasses}>
-                        {selectedPullRequest &&
+                        {selectedPullRequest && selectedPullRequest.branch === branch && (
                             <QueueItemCard
                                 innerRef={this.setOutOfQueueCardRef}
                                 elevation={6}
@@ -220,7 +214,8 @@ class BranchQueue extends Component {
                                         Cancel
                                     </Button>
                                 </div>
-                            </QueueItemCard>}
+                            </QueueItemCard>
+                        )}
                     </div>
                 </PageContent>
             </Collapse>
