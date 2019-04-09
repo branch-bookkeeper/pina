@@ -25,6 +25,7 @@ export const createMiddlewares = ({ history }) => applyMiddleware(
             googleAnalyticsEpics,
             rollbarEpics,
             queueUpdateEpics,
+            locationEpics,
         ),
         {
             dependencies: {
