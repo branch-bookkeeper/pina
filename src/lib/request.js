@@ -47,15 +47,16 @@ export const isNotMade = request =>
 
 export const isInProgress = request =>
     request
-    && request.status
     && request.status === STATUS_IN_PROGRESS;
 
 export const isMade = request =>
     request
-    && request.status
     && (request.status === STATUS_SUCCESS || request.status === STATUS_ERROR);
+
+export const isSuccessful = request =>
+    request
+    && request.status === STATUS_SUCCESS;
 
 export const isErrored = request =>
     request
-    && request.status
     && (request.status === STATUS_ERROR);
