@@ -22,7 +22,6 @@ const propTypes = {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
     elevation: PropTypes.number,
     index: PropTypes.number,
-    isRippleDisabled: PropTypes.bool,
     queueItem: queueItemShape.isRequired,
     pullRequest: pullRequestShape,
     showPullRequestLink: PropTypes.bool,
