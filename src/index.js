@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import { Router } from 'react-router-dom';
 import Provider from 'react-redux/lib/components/Provider';
 import { createStore } from 'redux';
 import { CssBaseline } from '@material-ui/core';
@@ -10,7 +11,7 @@ import { blue, red } from '@material-ui/core/colors';
 import { bbOrange } from './constants/colors';
 import { default as rootReducer } from './redux';
 import { setLocation } from './redux/location';
-import middlewares from './middlewares';
+import { createMiddlewares } from './middlewares';
 
 import HistoryTracker from './components/HistoryTracker';
 import AppContainer from './containers/AppContainer';
@@ -28,7 +29,9 @@ const theme = createMuiTheme({
     },
 });
 
-const store = createStore(rootReducer, middlewares);
+
+const history = createBrowserHistory();
+const store = createStore(rootReducer, createMiddlewares({ history }));
 const dispatchSetLocation = location => store.dispatch(setLocation(location));
 
 ReactDOM.render(
@@ -36,11 +39,11 @@ ReactDOM.render(
         <CssBaseline />
         <Provider store={store}>
             <MuiThemeProvider theme={theme}>
-                <BrowserRouter>
+                <Router history={history}>
                     <HistoryTracker onChange={dispatchSetLocation}>
                         <AppContainer />
                     </HistoryTracker>
-                </BrowserRouter>
+                </Router>
             </MuiThemeProvider>
         </Provider>
     </React.Fragment>,
