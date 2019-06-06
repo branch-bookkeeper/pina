@@ -1,8 +1,12 @@
-import { fromPromise as observableFromPromise } from 'rxjs/observable/fromPromise';
-import { of as observableOf } from 'rxjs/observable/of';
-import { catchError } from 'rxjs/operators/catchError';
-import { map } from 'rxjs/operators/map';
-import { mergeMap } from 'rxjs/operators/mergeMap';
+import {
+    from as observableFrom,
+    of as observableOf,
+} from 'rxjs';
+import {
+    catchError,
+    map,
+    mergeMap,
+} from 'rxjs/operators';
 import curry from 'ramda/src/curry';
 import compose from 'ramda/src/compose';
 
@@ -50,7 +54,7 @@ const requestError = curry((requestId, meta, error) => ({
 // Epics
 export const requestFetchEpic = action$ => action$.ofType(REQUEST_START).pipe(
     mergeMap(({ payload: { requestId, fetch, meta } }) =>
-        observableFromPromise(fetch()).pipe(
+        observableFrom(fetch()).pipe(
             map(requestSuccess(requestId, meta)),
             catchError(compose(observableOf, requestError(requestId, meta))),
         )

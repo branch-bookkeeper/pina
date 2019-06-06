@@ -11,7 +11,7 @@ const propTypes = {
 };
 
 const RepositoriesList = ({ repositories }) => (
-    <Grid container direction="column" spacing={8}>
+    <Grid container direction="column" spacing={1}>
         {repositories.map(repository => (
             <Grid item key={repository.full_name}>
                 <RepositoryCard repository={repository} />

@@ -2,7 +2,7 @@ import propEq from 'ramda/src/propEq';
 import isNil from 'ramda/src/isNil';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/styles';
 import Button from '@material-ui/core/Button';
 
 import { requestShape, isNotMade } from '../lib/request';
@@ -23,12 +23,12 @@ const propTypes = {
 
 const styles = (theme) => ({
     root: {
-        paddingTop: theme.spacing.unit,
-        paddingBottom: theme.spacing.unit,
+        paddingTop: theme.spacing(1),
+        paddingBottom: theme.spacing(1),
         textAlign: 'center',
     },
     cancelButton: {
-        marginLeft: theme.spacing.unit,
+        marginLeft: theme.spacing(1),
     },
 });
 

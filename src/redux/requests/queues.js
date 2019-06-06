@@ -12,8 +12,10 @@ import unapply from 'ramda/src/unapply';
 import identity from 'ramda/src/identity';
 import ifElse from 'ramda/src/ifElse';
 import always from 'ramda/src/always';
-import { filter } from 'rxjs/operators/filter';
-import { map } from 'rxjs/operators/map';
+import {
+    filter,
+    map,
+} from 'rxjs/operators';
 
 import fetchBranchQueue from '../../lib/fetchBranchQueue';
 import { default as doAddToBranchQueue } from '../../lib/addToBranchQueue';

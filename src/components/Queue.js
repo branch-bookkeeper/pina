@@ -47,7 +47,7 @@ class NotEmptyQueue extends Component {
         const { queueItemToRemove } = this.state;
 
         return (
-            <Grid container direction="column" spacing={8}>
+            <Grid container direction="column" spacing={1}>
                 {queue.map((queueItem, index) => (
                     <Grid item style={{width: '100%'}} key={queueItem.pullRequestNumber}>
                         <QueueItemCard

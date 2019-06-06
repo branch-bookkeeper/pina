@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Tooltip from '@material-ui/core/Tooltip';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/styles';
 
 const propTypes = {
     classes: PropTypes.objectOf(PropTypes.string).isRequired,
@@ -56,7 +56,7 @@ const arrowGenerator = (color) => ({
 
 const styles = theme => ({
     button: {
-        margin: theme.spacing.unit,
+        margin: theme.spacing(),
     },
     arrowPopper: arrowGenerator(theme.palette.grey[700]),
     arrow: {

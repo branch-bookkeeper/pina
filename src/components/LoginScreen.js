@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/styles';
 
 import { GITHUB_CLIENT_ID } from '../constants/config';
 
@@ -39,9 +39,9 @@ const styles = theme => ({
     },
     paper: {
         position: 'relative',
-        padding: `${theme.spacing.unit * 4}px ${theme.spacing.unit * 4}px`,
+        padding: `${theme.spacing(4)}px ${theme.spacing(4)}px`,
         [theme.breakpoints.down('sm')]: {
-            padding: `${theme.spacing.unit*4} 0 0 0`,
+            padding: `${theme.spacing(4)} 0 0 0`,
             boxShadow: 'none',
         },
     },
@@ -67,19 +67,19 @@ const styles = theme => ({
         },
     },
     error: {
-        marginTop: theme.spacing.unit * 3,
+        marginTop: theme.spacing(3),
         textAlign: 'center',
     },
     button: {
         width: '100%',
-        marginTop: theme.spacing.unit * 3,
-        padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 2}px`,
+        marginTop: theme.spacing(3),
+        padding: `${theme.spacing(2)}px ${theme.spacing(2)}px`,
         [theme.breakpoints.down('sm')]: {
-            marginTop: theme.spacing.unit * 2,
+            marginTop: theme.spacing(2),
         },
     },
     githubIcon: {
-        marginRight: theme.spacing.unit,
+        marginRight: theme.spacing(1),
     },
     disabled: {
         pointerEvents: 'none',

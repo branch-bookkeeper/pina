@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/styles';
 import { grey } from '@material-ui/core/colors';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -44,7 +44,7 @@ const styles = theme => ({
         color: textGreyColor,
         width: 16,
         height: 16,
-        marginLeft: theme.spacing.unit,
+        marginLeft: theme.spacing(1),
     },
     branchLink: {
         textDecoration: 'none',
@@ -77,7 +77,7 @@ const BranchQueueHeader = ({ classes, repository, branch }) => (
             </PageBanner>
         ) : null}
     >
-        <Grid container style={{ flex: 1 }} spacing={8} alignItems="center">
+        <Grid container style={{ flex: 1 }} spacing={1} alignItems="center">
             <Grid item>
                 <UserAvatar username={repository.owner.login} size={48} />
             </Grid>

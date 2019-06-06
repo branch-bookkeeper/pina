@@ -1,7 +1,7 @@
 import isNil from 'ramda/src/isNil';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/styles';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 
 import { bbOrange } from '../constants/colors';

@@ -1,5 +1,7 @@
-import { mergeMap as mergeMap$ } from 'rxjs/operators/mergeMap';
-import { filter as filter$ } from 'rxjs/operators/filter';
+import {
+    mergeMap as mergeMap$,
+    filter as filter$,
+} from 'rxjs/operators';
 
 import { REQUEST_SUCCESS } from './requests';
 import { requestIdEq } from './requests/helpers';

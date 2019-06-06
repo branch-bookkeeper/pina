@@ -2,7 +2,7 @@ import qs from 'qs';
 import React from 'react';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/styles';
 import { grey } from '@material-ui/core/colors';
 
 import { bbOrange } from '../constants/colors';
@@ -18,7 +18,7 @@ const propTypes = {
 const styles = theme => ({
     root: {
         border: `dashed 2px ${grey[300]}`,
-        padding: theme.spacing.unit * 6,
+        padding: theme.spacing(6),
     },
     message: {
         color: grey[500],
