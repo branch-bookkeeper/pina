@@ -54,6 +54,9 @@ const styles = theme => ({
         lineHeight: '60px',
         color: textGreyColor,
     },
+    pullRequestTitle: {
+        wordBreak: 'break-word',
+    },
     hidden: {
         visibility: 'hidden',
     },
@@ -137,7 +140,7 @@ class QueueItemCard extends Component {
                         </ArrowTooltip>
                     </Grid>
                     <Grid item className={classes.titleGridItem}>
-                        <Typography variant="h5" component="h3">
+                        <Typography variant="h5" component="h3" className={classes.pullRequestTitle}>
                             {pullRequest.title}
                         </Typography>
                         <Grid container alignItems="center">
