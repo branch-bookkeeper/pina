@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -48,8 +49,11 @@ const useStyles = makeStyles(theme => ({
         minWidth: 0,
         position: 'relative',
     },
+    smallTitleWrapper: {
+        marginTop: theme.spacing(2),
+    },
     positionInQueue: {
-        lineHeight: '60px',
+        lineHeight: ({ matchesSmUp }) => matchesSmUp ? '60px' : '48px',
         color: textGreyColor,
     },
     pullRequestTitle: {
@@ -87,7 +91,8 @@ const QueueItemCard = ({
     renderMenu,
 }) => {
     const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-    const classes = useStyles();
+    const matchesSmUp = useMediaQuery('@media (min-width:480px)');
+    const classes = useStyles({ matchesSmUp });
 
     const handleMoreClick = event => {
         event.stopPropagation();
@@ -103,6 +108,28 @@ const QueueItemCard = ({
         anchorEl: menuAnchorEl,
         onClose: handleRequestClose,
     });
+
+    const title = (
+        <>
+            <Typography variant="h5" component="h3" className={classes.pullRequestTitle}>
+                {pullRequest.title}
+            </Typography>
+            <Grid container alignItems="center">
+                <Grid item style={{ flexGrow: 1 }}>
+                    <Typography variant="body2" component="p">
+                        #{pullRequest.pullRequestNumber}
+                    </Typography>
+                </Grid>
+                {showPullRequestLink &&
+                    <Grid item>
+                        <Button component="a" href={pullRequest.humanUrl} size="small">
+                            <MarkGitHub style={{ marginRight: 8, width: 20, height: 20 }} />
+                            Open in GitHub
+                        </Button>
+                    </Grid>}
+            </Grid>
+        </>
+    );
 
     return (
         <Paper
@@ -128,28 +155,17 @@ const QueueItemCard = ({
                     </Grid>}
                 <Grid item>
                     <ArrowTooltip title={username} enterDelay={500}>
-                        <UserAvatar username={username} size={60} />
+                        <UserAvatar username={username} size={matchesSmUp ? 60 : 48} />
                     </ArrowTooltip>
                 </Grid>
-                <Grid item className={classes.titleGridItem}>
-                    <Typography variant="h5" component="h3" className={classes.pullRequestTitle}>
-                        {pullRequest.title}
-                    </Typography>
-                    <Grid container alignItems="center">
-                        <Grid item style={{ flexGrow: 1 }}>
-                            <Typography variant="body2" component="p">
-                                #{pullRequest.pullRequestNumber}
-                            </Typography>
-                        </Grid>
-                        {showPullRequestLink &&
-                            <Grid item>
-                                <Button component="a" href={pullRequest.humanUrl} size="small">
-                                    <MarkGitHub style={{ marginRight: 8, width: 20, height: 20 }} />
-                                    Open in GitHub
-                                </Button>
-                            </Grid>}
+                {matchesSmUp && (
+                    <Grid item className={classes.titleGridItem}>
+                        {title}
                     </Grid>
-                </Grid>
+                )}
+                {!matchesSmUp && (
+                    <Grid item style={{ flex: 1 }} />
+                )}
                 <Grid item>
                     <IconButton
                         onClick={handleMoreClick}
@@ -162,6 +178,11 @@ const QueueItemCard = ({
                     {menu}
                 </Grid>
             </Grid>
+            {!matchesSmUp && (
+                <div className={classes.smallTitleWrapper}>
+                    {title}
+                </div>
+            )}
             {children}
         </Paper>
     );
