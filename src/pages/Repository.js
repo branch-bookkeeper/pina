@@ -1,5 +1,7 @@
-import compose from 'ramda/src/compose';
-import path from 'ramda/src/path';
+import {
+    compose,
+    path,
+ } from 'ramda';
 import { branch, renderComponent } from 'recompose';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';

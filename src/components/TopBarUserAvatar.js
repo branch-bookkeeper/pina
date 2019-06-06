@@ -1,4 +1,4 @@
-import isNil from 'ramda/src/isNil';
+import { isNil } from 'ramda';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';

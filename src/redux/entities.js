@@ -1,7 +1,9 @@
-import __ from 'ramda/src/__';
-import merge from 'ramda/src/merge';
-import map from 'ramda/src/map';
-import evolve from 'ramda/src/evolve';
+import {
+    __,
+    mergeRight,
+    map,
+    evolve,
+ } from 'ramda';
 import PropTypes from 'prop-types';
 
 import filterKeysByPrefix from '../lib/filterKeysByPrefix';
@@ -37,7 +39,7 @@ export default (state = initialState, action) => {
         case ENTITIES_MERGE: {
             const { entities: newEntities } = payload;
 
-            const transformations = map(entities => merge(__, entities), newEntities);
+            const transformations = map(entities => mergeRight(__, entities), newEntities);
             state = evolve(transformations, state);
             break;
         }

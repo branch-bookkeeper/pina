@@ -1,7 +1,9 @@
-import compose from 'ramda/src/compose';
-import path from 'ramda/src/path';
-import always from 'ramda/src/always';
-import F from 'ramda/src/F';
+import {
+    path,
+    compose,
+    always,
+    F,
+} from 'ramda';
 import { Observable, of as observableOf } from 'rxjs';
 import {
     filter,

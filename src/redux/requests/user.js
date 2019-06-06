@@ -1,6 +1,8 @@
-import partial from 'ramda/src/partial';
-import ifElse from 'ramda/src/ifElse';
-import always from 'ramda/src/always';
+import {
+    partial,
+    ifElse,
+    always,
+ } from 'ramda';
 
 import fetchUser from '../../lib/fetchUser';
 import { mergeEntities } from '../entities';

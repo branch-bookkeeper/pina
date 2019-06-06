@@ -1,4 +1,4 @@
-import prop from 'ramda/src/prop';
+import { prop } from 'ramda';
 import fetchFollowingPagination from './fetchFollowingPagination';
 import generateGithubApiUrl from './generateGithubApiUrl';
 

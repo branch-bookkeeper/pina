@@ -1,4 +1,4 @@
-import compose from 'ramda/src/compose';
+import { compose } from 'ramda';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 

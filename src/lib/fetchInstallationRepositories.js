@@ -1,8 +1,10 @@
-import prop from 'ramda/src/prop';
-import curry from 'ramda/src/curry';
-import compose from 'ramda/src/compose';
-import all from 'ramda/src/all';
-import filter from 'ramda/src/filter';
+import {
+    prop,
+    curry,
+    compose,
+    all,
+    filter,
+} from 'ramda';
 import generateGithubApiUrl from './generateGithubApiUrl';
 import pickValues from './pickValues';
 import fetchFollowingPagination from './fetchFollowingPagination';

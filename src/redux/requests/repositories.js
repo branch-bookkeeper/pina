@@ -1,14 +1,16 @@
-import partial from 'ramda/src/partial';
-import indexBy from 'ramda/src/indexBy';
-import prop from 'ramda/src/prop';
-import path from 'ramda/src/path';
-import compose from 'ramda/src/compose';
-import objOf from 'ramda/src/objOf';
-import ifElse from 'ramda/src/ifElse';
-import always from 'ramda/src/always';
-import is from 'ramda/src/is';
-import identity from 'ramda/src/identity';
-import of from 'ramda/src/of';
+import {
+    partial,
+    indexBy,
+    prop,
+    path,
+    compose,
+    objOf,
+    ifElse,
+    always,
+    is,
+    identity,
+    of,
+} from 'ramda';
 
 import fetchRepositories from '../../lib/fetchRepositories';
 import fetchRepository from '../../lib/fetchRepository';

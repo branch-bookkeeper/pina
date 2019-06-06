@@ -1,5 +1,7 @@
-import propEq from 'ramda/src/propEq';
-import isNil from 'ramda/src/isNil';
+import {
+    propEq,
+    isNil,
+ } from 'ramda';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';

@@ -1,4 +1,4 @@
-import any from 'ramda/src/any';
+import { any } from 'ramda';
 import {
     Observable,
     of as observableOf,

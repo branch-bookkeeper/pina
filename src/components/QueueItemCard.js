@@ -1,4 +1,4 @@
-import isNil from 'ramda/src/isNil';
+import { isNil } from 'ramda';
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';

@@ -1,4 +1,4 @@
-import defaultTo from 'ramda/src/defaultTo';
+import { defaultTo } from 'ramda';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/styles';

@@ -1,7 +1,9 @@
-import compose from 'ramda/src/compose';
-import values from 'ramda/src/values';
-import prop from 'ramda/src/prop';
-import sortBy from 'ramda/src/sortBy';
+import {
+    compose,
+    prop,
+    sortBy,
+    values,
+ } from 'ramda';
 import { connect } from 'react-redux';
 import { branch, renderComponent } from 'recompose';
 

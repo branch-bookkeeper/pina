@@ -1,9 +1,11 @@
-import identity from 'ramda/src/identity';
-import ifElse from 'ramda/src/ifElse';
-import converge from 'ramda/src/converge';
-import compose from 'ramda/src/compose';
-import prop from 'ramda/src/prop';
-import objOf from 'ramda/src/objOf';
+import {
+    identity,
+    ifElse,
+    converge,
+    compose,
+    prop,
+    objOf,
+} from 'ramda';
 
 const doThrow = e => { throw e };
 

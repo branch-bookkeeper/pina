@@ -1,3 +1,3 @@
-import always from 'ramda/src/always';
+import { always } from 'ramda';
 
 export default always(undefined);

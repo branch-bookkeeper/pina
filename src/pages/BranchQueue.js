@@ -1,8 +1,10 @@
 import classNames from 'classnames';
-import compose from 'ramda/src/compose';
-import map from 'ramda/src/map';
-import prop from 'ramda/src/prop';
-import contains from 'ramda/src/contains';
+import {
+    compose,
+    map,
+    prop,
+    contains,
+ } from 'ramda';
 import ease from 'ease-component';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';

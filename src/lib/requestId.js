@@ -1,16 +1,18 @@
-import identity from 'ramda/src/identity';
-import pickBy from 'ramda/src/pickBy';
-import compose from 'ramda/src/compose';
-import prop from 'ramda/src/prop';
-import startsWith from 'ramda/src/startsWith';
-import lensProp from 'ramda/src/lensProp';
-import apply from 'ramda/src/apply';
-import join from 'ramda/src/join';
-import split from 'ramda/src/split';
-import over from 'ramda/src/over';
-import set from 'ramda/src/set';
-import equals from 'ramda/src/equals';
-import nthArg from 'ramda/src/nthArg';
+import {
+    identity,
+    pickBy,
+    compose,
+    prop,
+    startsWith,
+    lensProp,
+    apply,
+    join,
+    split,
+    over,
+    set,
+    equals,
+    nthArg,
+} from 'ramda';
 
 import removePrefix from './removePrefix';
 import pickValues from './pickValues';

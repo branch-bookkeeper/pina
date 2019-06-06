@@ -7,8 +7,10 @@ import {
     map,
     mergeMap,
 } from 'rxjs/operators';
-import curry from 'ramda/src/curry';
-import compose from 'ramda/src/compose';
+import {
+    curry,
+    compose,
+} from 'ramda';
 
 // Constants
 export const REQUEST_START = 'REQUEST_START';

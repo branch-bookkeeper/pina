@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/styles';
 import { grey } from '@material-ui/core/colors';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import replace from 'ramda/src/replace';
+import { replace } from 'ramda';
 
 import Lock from '../components/icons/Lock';
 import PageHeader from '../components/PageHeader';

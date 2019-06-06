@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import partial from 'ramda/src/partial';
+import { partial } from 'ramda';
 import { withStyles } from '@material-ui/styles';
 
 import { Route, Switch } from 'react-router-dom';

@@ -1,4 +1,4 @@
-import propEq from 'ramda/src/propEq';
+import { propEq } from 'ramda';
 import { branch, renderComponent } from 'recompose';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';

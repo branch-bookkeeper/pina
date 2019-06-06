@@ -1,7 +1,9 @@
-import contains from 'ramda/src/contains';
-import pluck from 'ramda/src/pluck';
-import identity from 'ramda/src/identity';
-import F from 'ramda/src/F';
+import {
+    contains,
+    pluck,
+    identity,
+    F,
+} from 'ramda';
 import { combineEpics } from 'redux-observable';
 import {
     map,
