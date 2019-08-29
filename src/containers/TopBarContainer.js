@@ -6,6 +6,8 @@ import {
 } from '../redux/ui';
 import { logout } from '../redux/auth';
 
+console.log(TopBar);
+
 const mapStateToProps = ({
     user,
     entities: {

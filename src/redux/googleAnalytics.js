@@ -1,5 +1,7 @@
-import { mergeMap as mergeMap$ } from 'rxjs/operators/mergeMap';
-import { filter as filter$ } from 'rxjs/operators/filter';
+import {
+    mergeMap as mergeMap$,
+    filter as filter$,
+} from 'rxjs/operators';
 import { combineEpics } from 'redux-observable';
 
 import { GOOGLE_ANALYTICS_ID } from '../constants/config';
@@ -26,10 +28,10 @@ const init = (user) => {
 };
 
 // Epics
-const trackLocationEpic = (action$, { getState }) =>
+const trackLocationEpic = (action$, state$) =>
     action$.ofType(SET_LOCATION).pipe(
         mergeMap$(({ payload: { location: { pathname } } }) => {
-            const { user, entities: { users } } = getState();
+            const { user, entities: { users } } = state$.value;
 
             trackPageView(pathname, users[user]);
 

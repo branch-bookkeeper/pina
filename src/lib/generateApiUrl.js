@@ -1,6 +1,8 @@
 import qs from 'qs';
-import curry from 'ramda/src/curry';
-import isEmpty from 'ramda/src/isEmpty';
+import {
+    curry,
+    isEmpty,
+ } from 'ramda';
 
 export default curry((apiBaseUrl, chunks, queryParams = {}) => {
     const url = [apiBaseUrl, ...chunks].join('/');

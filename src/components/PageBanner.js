@@ -10,9 +10,9 @@ import Collapse from "@material-ui/core/Collapse";
 
 const styles = theme => ({
     paper: {
-      padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit}px ${
-          theme.spacing.unit
-      }px ${theme.spacing.unit * 2}px`
+      padding: `${theme.spacing(2)}px ${theme.spacing(1)}px ${
+          theme.spacing(1)
+      }px ${theme.spacing(2)}px`
   },
   avatar: {
       backgroundColor: theme.palette.primary.main
@@ -54,7 +54,7 @@ const PageBanner = ({
             <Grid container justify="center">
                 <Grid item xs={12} sm={7} md={5} lg={4} xl={3}>
                     <Paper elevation={0} className={classes.paper}>
-                        <Grid container spacing={16} alignItems="center" wrap="nowrap">
+                        <Grid container spacing={2} alignItems="center" wrap="nowrap">
                             <Grid item>
                                 <Avatar className={classes.avatar}>
                                     {icon}
@@ -64,7 +64,7 @@ const PageBanner = ({
                                 {children}
                             </Grid>
                         </Grid>
-                        <Grid container justify="flex-end" spacing={8}>
+                        <Grid container justify="flex-end" spacing={1}>
                             {callToAction && (
                                 <Grid item>
                                     <Button

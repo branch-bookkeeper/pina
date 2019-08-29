@@ -1,14 +1,16 @@
 import classNames from 'classnames';
-import compose from 'ramda/src/compose';
-import map from 'ramda/src/map';
-import prop from 'ramda/src/prop';
-import contains from 'ramda/src/contains';
+import {
+    compose,
+    map,
+    prop,
+    contains,
+ } from 'ramda';
 import ease from 'ease-component';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import { setPropTypes, defaultProps, pure } from 'recompose';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/styles';
 import { grey } from '@material-ui/core/colors';
 import Collapse from '@material-ui/core/Collapse';
 import Button from '@material-ui/core/Button';
@@ -51,21 +53,21 @@ const propTypes = {
 const styles = theme => ({
     outOfQueueCardWrapper: {
         borderTop: `dashed 2px ${grey[300]}`,
-        marginTop: theme.spacing.unit * 4,
-        paddingTop: theme.spacing.unit * 4,
-        paddingBottom: theme.spacing.unit * 2,
+        marginTop: theme.spacing(4),
+        paddingTop: theme.spacing(4),
+        paddingBottom: theme.spacing(2),
     },
     outOfQueueCardWrapperEmpty: {
         borderTop: 'none',
         marginTop: 0,
     },
     pullRequestActions: {
-        paddingTop: theme.spacing.unit,
-        paddingBottom: theme.spacing.unit,
+        paddingTop: theme.spacing(1),
+        paddingBottom: theme.spacing(1),
         textAlign: 'center',
     },
     cancelButton: {
-        marginLeft: theme.spacing.unit,
+        marginLeft: theme.spacing(1),
     },
 });
 

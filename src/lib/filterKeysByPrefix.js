@@ -1,6 +1,8 @@
-import curry from 'ramda/src/curry';
-import compose from 'ramda/src/compose';
-import pickBy from 'ramda/src/pickBy';
+import {
+    curry,
+    compose,
+    pickBy,
+ } from 'ramda';
 
 import mapKeys from './mapKeys';
 import removePrefix from './removePrefix';

@@ -20,7 +20,7 @@ const defaultProps = {
     onTouchEnd: null,
 };
 
-const UserAvatar = ({
+const UserAvatar = React.forwardRef(({
     username,
     className,
     size,
@@ -28,7 +28,7 @@ const UserAvatar = ({
     onMouseLeave,
     onTouchStart,
     onTouchEnd,
-}) => (
+}, ref) => (
     <Avatar
         src={`https://github.com/${username}.png?size=${size*4}`}
         alt={username}
@@ -38,8 +38,9 @@ const UserAvatar = ({
         onMouseLeave={onMouseLeave}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
+        ref={ref}
     />
-);
+));
 
 UserAvatar.propTypes = propTypes;
 UserAvatar.defaultProps = defaultProps;

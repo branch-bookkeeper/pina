@@ -1,4 +1,4 @@
-import propEq from 'ramda/src/propEq';
+import { propEq } from 'ramda';
 import { branch, renderComponent } from 'recompose';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
@@ -47,7 +47,7 @@ class NotEmptyQueue extends Component {
         const { queueItemToRemove } = this.state;
 
         return (
-            <Grid container direction="column" spacing={8}>
+            <Grid container direction="column" spacing={1}>
                 {queue.map((queueItem, index) => (
                     <Grid item style={{width: '100%'}} key={queueItem.pullRequestNumber}>
                         <QueueItemCard

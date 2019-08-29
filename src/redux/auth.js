@@ -1,10 +1,11 @@
-import identity from 'ramda/src/identity';
-import always from 'ramda/src/always';
-import path from 'ramda/src/path';
-import prop from 'ramda/src/prop';
-import propEq from 'ramda/src/propEq';
-import { map as rxMap } from 'rxjs/operators/map';
-import { filter as rxFilter } from 'rxjs/operators/filter';
+import {
+    identity,
+    always,
+    path,
+    prop,
+    propEq,
+} from 'ramda';
+import { map as rxMap, filter as rxFilter } from 'rxjs/operators';
 import { combineEpics } from 'redux-observable';
 
 import { REQUEST_ERROR } from './requests';

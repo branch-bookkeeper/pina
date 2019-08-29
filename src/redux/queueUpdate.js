@@ -1,13 +1,17 @@
-import any from 'ramda/src/any';
-import { Observable } from 'rxjs/Observable';
-import { of as observableOf } from 'rxjs/observable/of';
-import { fromPromise as observableFromPromise } from 'rxjs/observable/fromPromise';
-import { empty as observableEmpty } from 'rxjs/observable/empty';
-import { map as map$ } from 'rxjs/operators/map';
-import { mergeMap as mergeMap$ } from 'rxjs/operators/mergeMap';
-import { takeUntil as takeUntil$ } from 'rxjs/operators/takeUntil';
-import { retry as retry$ } from 'rxjs/operators/retry';
-import { catchError as catchError$ } from 'rxjs/operators/catchError';
+import { any } from 'ramda';
+import {
+    Observable,
+    of as observableOf,
+    from as observableFrom,
+    empty as observableEmpty,
+} from 'rxjs';
+import {
+    map as map$,
+    mergeMap as mergeMap$,
+    takeUntil as takeUntil$,
+    retry as retry$,
+    catchError as catchError$,
+} from 'rxjs/operators';
 import { ofType as ofType$ } from 'redux-observable';
 import Pusher from 'pusher-js';
 
@@ -43,13 +47,13 @@ export const stopQueueUpdates = (accessToken, owner, repository, branch) => ({
 });
 
 // Epics
-const subscribeToQueueUpdates = (action$, { getState }) =>
+const subscribeToQueueUpdates = (action$, state$) =>
     action$.pipe(
         ofType$(START_QUEUE_UPDATES),
         mergeMap$(({ payload }) =>
             observableOf(payload).pipe(
                 mergeMap$(({ accessToken, owner, repository, branch }) => {
-                    return observableFromPromise(fetchQueueUpdateChannel(accessToken, owner, repository, branch)).pipe(
+                    return observableFrom(fetchQueueUpdateChannel(accessToken, owner, repository, branch)).pipe(
                         map$(channel => ({ ...channel, queueId: `${owner}/${repository}/${branch}` })),
                         mergeMap$(({ id: channelId, queueId }) => Observable.create(obs => {
                             const socket = new Pusher(PUSHER_APP_KEY, {
@@ -93,7 +97,7 @@ const subscribeToQueueUpdates = (action$, { getState }) =>
             )
         ),
         mergeMap$(({ accessToken, owner, repository, branch, nextQueue }) => {
-            const state = getState();
+            const state = state$.value;
             const pullRequests = getRepositoryPullRequests(owner, repository, state);
             const shouldReloadPullRequests = any(queueItem => !pullRequests[queueItem.pullRequestNumber], nextQueue);
 

@@ -3,7 +3,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/styles';
 
 import Awesome from './icons/Awesome';
 import PageContent from './PageContent';
@@ -16,7 +16,7 @@ const styles = theme => ({
         },
     },
     paper: {
-        padding: theme.spacing.unit * 4,
+        padding: theme.spacing(4),
     },
     container: {
         [theme.breakpoints.down('sm')]: {
@@ -29,7 +29,7 @@ const styles = theme => ({
         height: 128,
     },
     buttonContainer: {
-        marginTop: theme.spacing.unit * 2,
+        marginTop: theme.spacing(2),
         textAlign: 'center',
     },
 });
@@ -38,7 +38,7 @@ const Welcome = ({ classes }) => (
     <div className={classes.root}>
         <PageContent>
             <Paper className={classes.paper}>
-                <Grid container spacing={24} className={classes.container}>
+                <Grid container spacing={3} className={classes.container}>
                     <Grid item>
                         <Awesome className={classes.illustration} />
                     </Grid>

@@ -1,11 +1,15 @@
-import contains from 'ramda/src/contains';
-import pluck from 'ramda/src/pluck';
-import identity from 'ramda/src/identity';
-import F from 'ramda/src/F';
+import {
+    contains,
+    pluck,
+    identity,
+    F,
+} from 'ramda';
 import { combineEpics } from 'redux-observable';
-import { map } from 'rxjs/operators/map';
-import { filter } from 'rxjs/operators/filter';
-import { tap } from 'rxjs/operators/tap';
+import {
+    map,
+    filter,
+    tap,
+} from 'rxjs/operators';
 
 import { isSuccessful } from '../lib/request';
 
@@ -24,7 +28,7 @@ export const setLocation = location => ({
 const pullRequestIsInQueue = (pullRequest, queue) =>
     contains(pullRequest.pullRequestNumber, pluck('pullRequestNumber', queue));
 
-const redirectToBranchQueueEpic = (action$, { getState }, { history }) =>
+const redirectToBranchQueueEpic = (action$, state$, { history }) =>
     action$.pipe(
         map(() => history.location.pathname.match(/^\/([^/]+)\/([^/]+)\/([^/]+)\/(\d+)$/)),
         filter(identity),
@@ -44,7 +48,7 @@ const redirectToBranchQueueEpic = (action$, { getState }, { history }) =>
                     [`pullRequests/${owner}/${repo}`]: pullRequestsRequest,
                     [`queue/${owner}/${repo}/${branch}`]: queueRequest,
                 },
-            } = getState();
+            } = state$.value;
 
             return isSuccessful(queueRequest) && isSuccessful(pullRequestsRequest);
         }),
@@ -58,7 +62,7 @@ const redirectToBranchQueueEpic = (action$, { getState }, { history }) =>
                         [`${owner}/${repo}/${pullRequestNumber}`]: pullRequest,
                     },
                 },
-            } = getState();
+            } = state$.value;
 
             return !pullRequest
                 || pullRequest.branch !== branch

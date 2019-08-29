@@ -1,8 +1,10 @@
-import curry from 'ramda/src/curry';
-import split from 'ramda/src/split';
-import indexBy from 'ramda/src/indexBy';
-import path from 'ramda/src/path';
-import prop from 'ramda/src/prop';
+import {
+    curry,
+    split,
+    indexBy,
+    path,
+    prop,
+ } from 'ramda';
 
 import fetchUserInstallations from './fetchUserInstallations';
 import fetchInstallationRepositories from './fetchInstallationRepositories';

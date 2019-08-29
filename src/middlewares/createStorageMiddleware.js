@@ -1,10 +1,12 @@
-import compose from 'ramda/src/compose';
-import filter from 'ramda/src/filter';
-import flatten from 'ramda/src/flatten';
-import complement from 'ramda/src/complement';
-import map from 'ramda/src/map';
-import isNil from 'ramda/src/isNil';
-import applyTo from 'ramda/src/applyTo';
+import {
+    compose,
+    filter,
+    flatten,
+    complement,
+    map,
+    isNil,
+    applyTo,
+} from 'ramda';
 
 import { REQUEST_SUCCESS } from "../redux/requests";
 

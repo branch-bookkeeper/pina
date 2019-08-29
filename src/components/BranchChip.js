@@ -1,7 +1,7 @@
-import defaultTo from 'ramda/src/defaultTo';
+import { defaultTo } from 'ramda';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 
@@ -23,8 +23,8 @@ const styles = theme => ({
     avatar: {
         backgroundColor: 'transparent',
         color: 'inherit',
-        marginLeft: theme.spacing.unit/2,
-        marginRight: -theme.spacing.unit*2,
+        marginLeft: theme.spacing(0.5),
+        marginRight: -theme.spacing(2),
     },
 });
 

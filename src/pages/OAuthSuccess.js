@@ -1,8 +1,10 @@
 import qs from 'qs';
-import defaultTo from 'ramda/src/defaultTo';
-import compose from 'ramda/src/compose';
-import filter from 'ramda/src/filter';
-import head from 'ramda/src/head';
+import {
+    defaultTo,
+    compose,
+    filter,
+    head,
+ } from 'ramda';
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 

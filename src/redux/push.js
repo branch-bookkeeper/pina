@@ -1,15 +1,18 @@
-import compose from 'ramda/src/compose';
-import path from 'ramda/src/path';
-import always from 'ramda/src/always';
-import F from 'ramda/src/F';
-import { Observable } from 'rxjs/Observable';
-import { of as observableOf } from 'rxjs/observable/of';
-import { filter } from 'rxjs/operators/filter';
-import { mergeMap } from 'rxjs/operators/mergeMap';
-import { map } from 'rxjs/operators/map';
-import { tap } from 'rxjs/operators/tap';
-import { delay } from 'rxjs/operators/delay';
-import { takeUntil } from 'rxjs/operators/takeUntil';
+import {
+    path,
+    compose,
+    always,
+    F,
+} from 'ramda';
+import { Observable, of as observableOf } from 'rxjs';
+import {
+    filter,
+    mergeMap,
+    map,
+    tap,
+    delay,
+    takeUntil,
+} from 'rxjs/operators';
 import PropTypes from 'prop-types';
 import { combineEpics, ofType } from 'redux-observable';
 
@@ -164,11 +167,11 @@ const pushNotificationsUnsubscribeEpic = action$ => action$.pipe(
     filter(F),
 );
 
-const showSnackbarOnQueueAddSuccessEpic = (action$, { getState }) => action$.pipe(
+const showSnackbarOnQueueAddSuccessEpic = (action$, state$) => action$.pipe(
     ofType(REQUEST_SUCCESS),
     filter(requestIdStartsWith('queue.add/')),
     filter(() => {
-        const { push: { isInitialized, isSubscribed } } = getState();
+        const { push: { isInitialized, isSubscribed } } = state$.value;
 
         return isInitialized && !isSubscribed;
     }),

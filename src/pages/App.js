@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import partial from 'ramda/src/partial';
-import { withStyles } from '@material-ui/core/styles';
+import { partial } from 'ramda';
+import { withStyles } from '@material-ui/styles';
 
 import { Route, Switch } from 'react-router-dom';
 import { GITHUB_ACCESS_TOKEN } from '../constants/localStorageKeys';

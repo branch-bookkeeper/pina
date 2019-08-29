@@ -1,19 +1,23 @@
-import partial from 'ramda/src/partial';
-import prop from 'ramda/src/prop';
-import compose from 'ramda/src/compose';
-import converge from 'ramda/src/converge';
-import objOf from 'ramda/src/objOf';
-import anyPass from 'ramda/src/anyPass';
-import path from 'ramda/src/path';
-import apply from 'ramda/src/apply';
-import concat from 'ramda/src/concat';
-import of from 'ramda/src/of';
-import unapply from 'ramda/src/unapply';
-import identity from 'ramda/src/identity';
-import ifElse from 'ramda/src/ifElse';
-import always from 'ramda/src/always';
-import { filter } from 'rxjs/operators/filter';
-import { map } from 'rxjs/operators/map';
+import {
+    partial,
+    prop,
+    compose,
+    converge,
+    objOf,
+    anyPass,
+    path,
+    apply,
+    concat,
+    of,
+    unapply,
+    identity,
+    ifElse,
+    always,
+} from 'ramda';
+import {
+    filter,
+    map,
+} from 'rxjs/operators';
 
 import fetchBranchQueue from '../../lib/fetchBranchQueue';
 import { default as doAddToBranchQueue } from '../../lib/addToBranchQueue';

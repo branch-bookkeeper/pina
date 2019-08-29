@@ -1,13 +1,15 @@
-import partial from 'ramda/src/partial';
-import prop from 'ramda/src/prop';
-import compose from 'ramda/src/compose';
-import converge from 'ramda/src/converge';
-import objOf from 'ramda/src/objOf';
-import indexBy from 'ramda/src/indexBy';
-import map from 'ramda/src/map';
-import merge from 'ramda/src/merge';
-import ifElse from 'ramda/src/ifElse';
-import always from 'ramda/src/always';
+import {
+    partial,
+    prop,
+    compose,
+    converge,
+    objOf,
+    indexBy,
+    map,
+    mergeRight,
+    ifElse,
+    always,
+} from 'ramda';
 
 import fetchPullRequest from '../../lib/fetchPullRequest';
 import fetchRepositoryPullRequests from '../../lib/fetchRepositoryPullRequests';
@@ -55,7 +57,7 @@ export const storeRepositoryPullRequests = ifElse(
         compose(
             objOf('pullRequests'),
             indexBy(({ owner, repository, pullRequestNumber }) => `${owner}/${repository}/${pullRequestNumber}`),
-            ({ result: pullRequests, meta: { owner, repository } }) => map(merge({ owner, repository }), pullRequests),
+            ({ result: pullRequests, meta: { owner, repository } }) => map(mergeRight({ owner, repository }), pullRequests),
             prop('payload'),
         ),
     ),

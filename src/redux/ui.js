@@ -1,7 +1,9 @@
-import T from 'ramda/src/T';
-import F from 'ramda/src/F';
-import always from 'ramda/src/always';
-import evolve from 'ramda/src/evolve';
+import {
+    T,
+    F,
+    always,
+    evolve,
+ } from 'ramda';
 import PropTypes from 'prop-types';
 
 // Constants

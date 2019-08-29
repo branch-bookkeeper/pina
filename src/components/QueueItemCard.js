@@ -1,8 +1,9 @@
-import isNil from 'ramda/src/isNil';
-import React, { Component } from 'react';
+import { isNil } from 'ramda';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
@@ -19,10 +20,8 @@ import UserAvatar from './UserAvatar';
 import { textGreyColor } from '../constants/colors';
 
 const propTypes = {
-    classes: PropTypes.objectOf(PropTypes.string).isRequired,
     elevation: PropTypes.number,
     index: PropTypes.number,
-    isRippleDisabled: PropTypes.bool,
     queueItem: queueItemShape.isRequired,
     pullRequest: pullRequestShape,
     showPullRequestLink: PropTypes.bool,
@@ -39,7 +38,7 @@ const defaultProps = {
     onClick: () => {},
 };
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
     root: theme.mixins.gutters({
         paddingTop: 16,
         paddingBottom: 16,
@@ -50,9 +49,15 @@ const styles = theme => ({
         minWidth: 0,
         position: 'relative',
     },
+    smallTitleWrapper: {
+        marginTop: theme.spacing(2),
+    },
     positionInQueue: {
-        lineHeight: '60px',
+        lineHeight: ({ matchesSmUp }) => matchesSmUp ? '60px' : '48px',
         color: textGreyColor,
+    },
+    pullRequestTitle: {
+        wordBreak: 'break-word',
     },
     hidden: {
         visibility: 'hidden',
@@ -73,116 +78,117 @@ const styles = theme => ({
         marginLeft: -20,
         marginTop: -20,
     },
-});
+}));
 
-class QueueItemCard extends Component {
-    state = {
-        menuAnchorEl: null,
-    };
+const QueueItemCard = ({
+    elevation,
+    index,
+    queueItem: { username },
+    pullRequest = {},
+    showPullRequestLink,
+    loading,
+    children,
+    renderMenu,
+}) => {
+    const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+    const matchesSmUp = useMediaQuery('@media (min-width:480px)');
+    const classes = useStyles({ matchesSmUp });
 
-    render() {
-        const {
-            classes,
-            elevation,
-            index,
-            queueItem: { username },
-            pullRequest = {},
-            showPullRequestLink,
-            loading,
-            children,
-            renderMenu,
-        } = this.props;
-        const {
-            menuAnchorEl,
-        } = this.state;
-
-        const menu = renderMenu({
-            open: Boolean(menuAnchorEl),
-            anchorEl: menuAnchorEl,
-            onClose: this.handleRequestClose,
-        });
-
-        return (
-            <Paper
-                className={classes.root}
-                elevation={elevation}
-                onClick={this.handleClick}
-                onMouseUp={this.handleMouseUp}
-                onMouseDown={this.handleMouseDown}
-                onMouseLeave={this.handleMouseLeave}
-                onTouchStart={this.handleTouchStart}
-                onTouchMove={this.handleTouchMove}
-                onTouchEnd={this.handleTouchEnd}
-            >
-                {loading && <CircularProgress className={classes.progress} />}
-                <Grid
-                    container
-                    direction="row"
-                    alignItems="flex-start"
-                    wrap="nowrap"
-                    spacing={16}
-                    className={classNames('outerGridContainer', {
-                        [classes.disabled]: loading,
-                    })}
-                >
-                    {!isNil(index) &&
-                        <Grid item>
-                            <Typography variant="h3" className={classes.positionInQueue}>
-                                {index + 1}
-                            </Typography>
-                        </Grid>}
-                    <Grid item>
-                        <ArrowTooltip title={username} enterDelay={500}>
-                            <UserAvatar username={username} size={60} />
-                        </ArrowTooltip>
-                    </Grid>
-                    <Grid item className={classes.titleGridItem}>
-                        <Typography variant="h5" component="h3">
-                            {pullRequest.title}
-                        </Typography>
-                        <Grid container alignItems="center">
-                            <Grid item style={{ flexGrow: 1 }}>
-                                <Typography variant="body2" component="p">
-                                    #{pullRequest.pullRequestNumber}
-                                </Typography>
-                            </Grid>
-                            {showPullRequestLink &&
-                                <Grid item>
-                                    <Button component="a" href={pullRequest.humanUrl} size="small">
-                                        <MarkGitHub style={{ marginRight: 8, width: 20, height: 20 }} />
-                                        Open in GitHub
-                                    </Button>
-                                </Grid>}
-                        </Grid>
-                    </Grid>
-                    <Grid item>
-                        <IconButton
-                            onClick={this.handleMoreClick}
-                            className={classNames({
-                                [classes.hidden]: !Boolean(menu),
-                            })}
-                        >
-                            <MoreVertIcon />
-                        </IconButton>
-                        {menu}
-                    </Grid>
-                </Grid>
-                {children}
-            </Paper>
-        );
-    }
-
-    handleMoreClick = event => {
+    const handleMoreClick = event => {
         event.stopPropagation();
-        this.setState({ menuAnchorEl: event.currentTarget });
+        setMenuAnchorEl(event.currentTarget);
     };
 
-    handleRequestClose = () => {
-        this.setState({ menuAnchorEl: null });
+    const handleRequestClose = () => {
+        setMenuAnchorEl(null);
     };
+
+    const menu = renderMenu({
+        open: Boolean(menuAnchorEl),
+        anchorEl: menuAnchorEl,
+        onClose: handleRequestClose,
+    });
+
+    const title = (
+        <>
+            <Typography variant="h5" component="h3" className={classes.pullRequestTitle}>
+                {pullRequest.title}
+            </Typography>
+            <Grid container alignItems="center">
+                <Grid item style={{ flexGrow: 1 }}>
+                    <Typography variant="body2" component="p">
+                        #{pullRequest.pullRequestNumber}
+                    </Typography>
+                </Grid>
+                {showPullRequestLink &&
+                    <Grid item>
+                        <Button component="a" href={pullRequest.humanUrl} size="small">
+                            <MarkGitHub style={{ marginRight: 8, width: 20, height: 20 }} />
+                            Open in GitHub
+                        </Button>
+                    </Grid>}
+            </Grid>
+        </>
+    );
+
+    return (
+        <Paper
+            className={classes.root}
+            elevation={elevation}
+        >
+            {loading && <CircularProgress className={classes.progress} />}
+            <Grid
+                container
+                direction="row"
+                alignItems="flex-start"
+                wrap="nowrap"
+                spacing={2}
+                className={classNames('outerGridContainer', {
+                    [classes.disabled]: loading,
+                })}
+            >
+                {!isNil(index) &&
+                    <Grid item>
+                        <Typography variant="h3" className={classes.positionInQueue}>
+                            {index + 1}
+                        </Typography>
+                    </Grid>}
+                <Grid item>
+                    <ArrowTooltip title={username} enterDelay={500}>
+                        <UserAvatar username={username} size={matchesSmUp ? 60 : 48} />
+                    </ArrowTooltip>
+                </Grid>
+                {matchesSmUp && (
+                    <Grid item className={classes.titleGridItem}>
+                        {title}
+                    </Grid>
+                )}
+                {!matchesSmUp && (
+                    <Grid item style={{ flex: 1 }} />
+                )}
+                <Grid item>
+                    <IconButton
+                        onClick={handleMoreClick}
+                        className={classNames({
+                            [classes.hidden]: !Boolean(menu),
+                        })}
+                    >
+                        <MoreVertIcon />
+                    </IconButton>
+                    {menu}
+                </Grid>
+            </Grid>
+            {!matchesSmUp && (
+                <div className={classes.smallTitleWrapper}>
+                    {title}
+                </div>
+            )}
+            {children}
+        </Paper>
+    );
 };
 
 QueueItemCard.propTypes = propTypes;
 QueueItemCard.defaultProps = defaultProps;
 
-export default withStyles(styles)(QueueItemCard);
+export default QueueItemCard;
