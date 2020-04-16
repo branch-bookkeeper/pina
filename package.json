@@ -42,6 +42,7 @@
     "start": "craco start",
     "build": "craco build",
     "analyze": "ANALYZE=yes craco build",
+    "functions:build": "netlify-lambda build functions/src",
     "test": "craco test"
   },
   "eslintConfig": {
