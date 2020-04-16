@@ -14,6 +14,8 @@
     "@material-ui/styles": "^4.0.2",
     "classnames": "^2.2.5",
     "ease-component": "^1.0.0",
+    "netlify-lambda": "^1.0.3",
+    "oauth": "^0.9.15",
     "parse-link-header": "^1.0.1",
     "pusher-js": "^4.2.2",
     "qs": "^6.5.1",
@@ -40,6 +42,7 @@
     "start": "craco start",
     "build": "craco build",
     "analyze": "ANALYZE=yes craco build",
+    "functions:build": "netlify-lambda build functions/src",
     "test": "craco test"
   },
   "eslintConfig": {
