@@ -37,5 +37,5 @@ const getGitHubOAuthAccessToken = (clientId, clientSecret, code) => {
 const redirect = (callback, url) => callback(null, { body: '', statusCode: 302, headers: { location: url } });
 
 export const handler = (event, context, callback) => getGitHubOAuthAccessToken(GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, event.queryStringParameters.code)
-  .then(accessToken => redirect(callback, `${FRONTEND_URL}/oauth/success#${qs.stringify({ access_token: accessToken })}`))
+  .then(accessToken => redirect(callback, `${FRONTEND_URL}/oauth/success?${qs.stringify({ access_token: accessToken })}`))
   .catch(e => redirect(callback, `${FRONTEND_URL}/oauth/failure?${qs.stringify({ error: e.message })}`));
