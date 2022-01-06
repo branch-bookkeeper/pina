@@ -16,7 +16,7 @@
     "ease-component": "^1.0.0",
     "netlify-lambda": "^1.0.3",
     "oauth": "^0.9.15",
-    "parse-link-header": "^1.0.1",
+    "parse-link-header": "^2.0.0",
     "pusher-js": "^4.2.2",
     "qs": "^6.5.1",
     "ramda": "^0.26.1",
